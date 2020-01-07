@@ -1,0 +1,3839 @@
+<ActorFrame InitCommand="%function(self)
+			self:sleep(0.01);
+			GreenQuadP1Flag = 0;
+			GreenQuadP2Flag = 0;
+			PurpleQuadP1Flag = 0;
+			PurpleQuadP2Flag = 0;
+			gnGreenQuadP1 = false;
+			gnGreenQuadP2 = false;
+			gnPurpleQuadP1 = false;
+			gnPurpleQuadP2 = false;
+			gnCustomPlayed = 0;
+			gnScreenEvaluationFlag = true;
+			if GAMESTATE:IsHumanPlayer(PLAYER_1) then
+				gnNoP1 = false;
+				else
+				gnNoP1 = true;
+				end
+			gnPlayer = 0;
+			if lowBPM == nil then
+				lowBPM = 0;
+				end
+			if highBPM == nil then
+				highBPM = 0;
+				end
+			if popTimer == nil then
+				popTimer = 0;
+				end
+			gnLastWinP1 = 0;
+			gnLastWinP2 = 0;
+			if gnStamina == nil then gnStamina = ''; end
+			if FinalBPM == nil then FinalBPM = 0; end
+			if curRate == nil then curRate = 1; end
+			
+			gnP1Winning = false;
+			gnP2Winning = false;
+			gnLowHealth = false;
+			gnRateRestore = 0;
+			gnLowHealth = false;
+			gnVoiceTimer = 0;
+			gnStaminaTimer = 0;
+			gnRandomVoice = math.random(1,5); 
+			gnRandomMark1 = math.random(5,92);
+			gnRandomMark2 = math.random(5,92);
+			gnRandomMark3 = math.random(5,92);
+			gnStaminaSongPercent = 0;
+			gnStamina25Window = 0;
+			gnStamina50Window = 0;
+			gnStamina75Window = 0;
+			gnStamina80Window = 0;
+			gnStamina90Window = 0;
+			gnStaminaLowHealth = 0;
+			gnStaminaRandom = 0;
+			gnStaminaRandomizer = 0;
+			gnStaminaStepP1 = 0;
+			gnStaminaStepP2 = 0;
+			gnStaminaStepCutoff = 0;
+			gnStreamCountP1 = 0;
+			gnStreamCountP2 = 0;
+			gnStaminaStepTarget = 0;
+			gnP1Restarter = 0;
+			gnP2Restarter = 0;
+			self:sleep(0.01);
+			self:queuecommand('KillBPM');
+			if GAMESTATE:GetEnv('Wag') == 'On' then
+				self:wag();
+				end
+end"
+KillBPMCommand="%function(self)
+SCREENMAN:GetTopScreen():GetChild('BPMDisplay'):addy(-10000);
+			if gnZoomRatio > 1 then
+				if GAMESTATE:IsHumanPlayer(PLAYER_1) and not GAMESTATE:PlayerUsingBothSides() then
+					SCREENMAN:GetTopScreen():GetChild('PlayerP1'):addx(0-CourseHorizontal()/1.5);
+					end
+				if GAMESTATE:IsHumanPlayer(PLAYER_2) and not GAMESTATE:PlayerUsingBothSides() then
+					SCREENMAN:GetTopScreen():GetChild('PlayerP2'):addx(0+CourseHorizontal()/1.5);
+					end
+				if GAMESTATE:IsDemonstration() then
+					SCREENMAN:GetTopScreen():GetChild('PlayerP1'):addx(0+CourseHorizontal()/3.1);
+					SCREENMAN:GetTopScreen():GetChild('PlayerP2'):addx(0-CourseHorizontal()/3.1);
+					end
+				end
+end"> <children>
+
+		
+		<ActorFrame InitCommand="x,409+CourseHorizontal();y,222;">
+			<children>
+	<!--Total PlayTime-->
+			<BitmapText
+				Text=""
+				File="_eurostile blue glow"
+				Condition="PlayTimeEnabled()"
+				InitCommand="DiffuseShift;EffectColor1,0.6,0.8,0.9,1;EffectColor2,0.6,0.8,0.9,1;queuecommand,Go"
+				GoCommand="%function(self)
+				self:x(-112);
+				self:y(248);
+				self:zoom(0.6);
+				self:shadowlength(0);
+				self:horizalign('Right');
+					self:settext('Total PlayTime');
+				end"
+			/>
+	<!--Total PlayTime Variables-->
+			<BitmapText
+				Text=""
+				File="_eurostile blue glow"
+				Condition="PlayTimeEnabled()"
+				InitCommand="%function(self)  self:x(-102) self:zoom(0.6); self:shadowlength(0) self:draworder(10000); self:addy(248); self:queuecommand('Update'); self:horizalign('left'); end"
+				UpdateCommand="%function(self)
+				self:stoptweening();
+				gnPlaySec = gnPlaySec + 1;
+				if gnPlaySec >= 60 then
+					gnPlaySec = gnPlaySec - 60;
+					gnPlayMin = gnPlayMin + 1;
+					end
+				if gnPlayMin >= 60 then
+					gnPlayMin = gnPlayMin - 60;
+					gnPlayHour = gnPlayHour + 1;
+					end
+					
+				if gnPlaySec < 10 then
+					gnPlaySecText = '0'..gnPlaySec
+					else
+					gnPlaySecText = ''..gnPlaySec
+					end
+				if gnPlayMin < 10 then
+					gnPlayMinText = '0'..gnPlayMin
+					else
+					gnPlayMinText = ''..gnPlayMin
+					end
+				if gnPlayHour < 10 then
+					gnPlayHourText = '0'..gnPlayHour
+					else
+					gnPlayHourText = ''..gnPlayHour
+					end
+					
+				self:settext(gnPlayHourText..':'..gnPlayMinText..':'..gnPlaySecText);
+				self:sleep(1);
+				self:queuecommand('Update');
+				end"
+			/>
+	<!--Song Count-->
+			<BitmapText
+				Text=""
+				File="_eurostile blue glow"
+				Condition="PlayTimeEnabled()"
+				InitCommand="%function(self)  self:x(-32) self:zoom(0.6); self:shadowlength(0) self:draworder(10000); self:addy(248); self:queuecommand('Update'); self:horizalign('left'); end"
+				UpdateCommand="%function(self)
+				self:stoptweening();
+				if gnSongCount == nil then
+					gnSongCount = 0;
+					end
+				
+				if gnSongCount == 1 then
+					self:settext('('..gnSongCount..' Song)');
+					else
+					self:settext('('..gnSongCount..' Songs)');
+					end
+
+				self:sleep(1);
+				self:queuecommand('Update');
+				end"
+			/>
+			</children>
+		</ActorFrame>
+		
+<!--Determine Who is Winning-->
+<ActorFrame Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and GAMESTATE:IsHumanPlayer(PLAYER_2)"
+InitCommand="%function(self) 
+gnCrownOn = TournamentCrownEnabled();
+if gnCrownOn == true then
+	self:sleep(0.05); 
+	self:queuecommand('Loop');
+	end
+end"
+LoopCommand="%function(self)
+self:stoptweening();
+if gnP1Winning then
+	if gnLastWinP1 ~= 1 then
+		MESSAGEMAN:Broadcast('P1Winning');
+		gnLastWinP1 = 1;
+		end
+	else
+	if gnLastWinP1 == 1 then
+		MESSAGEMAN:Broadcast('P1Losing');
+		gnLastWinP1 = 0;
+		end
+	end
+	
+if gnP2Winning then
+	if gnLastWinP2 ~= 1 then
+		MESSAGEMAN:Broadcast('P2Winning');
+		gnLastWinP2 = 1;
+		end
+	else
+	if gnLastWinP2 == 1 then
+		MESSAGEMAN:Broadcast('P2Losing');
+		gnLastWinP2 = 0;
+		end
+	end
+self:sleep(0.1);
+self:queuecommand('Loop');
+end">
+<children>
+<Layer File="winning"
+InitCommand="diffusealpha,0;"
+OnCommand="x,SCREEN_LEFT+23-9+(13*HorizontalRecovery());y,SCREEN_TOP+55+76;zoom,0.5;rotationz,-30;"
+P1WinningMessageCommand="queuecommand,On;stoptweening;sleep,0.2;linear,0.2;diffusealpha,1;"
+P1LosingMessageCommand="queuecommand,On;stoptweening;sleep,0.2;linear,0.2;diffusealpha,0;"
+/>
+<Layer File="winning"
+InitCommand="diffusealpha,0;"
+OnCommand="x,SCREEN_RIGHT-23+9-(13*HorizontalRecovery());y,SCREEN_TOP+55+76;zoom,0.5;rotationz,30;"
+P2WinningMessageCommand="queuecommand,On;stoptweening;sleep,0.2;linear,0.2;diffusealpha,1;"
+P2LosingMessageCommand="queuecommand,On;stoptweening;sleep,0.2;linear,0.2;diffusealpha,0;"
+/>
+</children>
+</ActorFrame>
+
+
+<!--Activate Stamina P1-->
+	<LayerType="BitmapText"
+		Font="Journey"
+		Text=""
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and not GAMESTATE:IsDemonstration()"
+		InitCommand="diffusealpha,0;shadowlength,0;x,320;y,200;hibernate,0.1;queuecommand,Start;"
+		StartCommand="%function(self)
+			if GAMESTATE:GetEnv('Wag') == 'On' then
+			SCREENMAN:GetTopScreen():GetChild('PlayerP1'):wag();
+			end
+			self:settext(gnStamina);
+			end"
+		/>
+		
+<!--Activate Stamina P2-->
+	<LayerType="BitmapText"
+		Font="Journey"
+		Text=""
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2) and not GAMESTATE:IsDemonstration()"
+		InitCommand="diffusealpha,0;shadowlength,0;x,320;y,220;hibernate,0.1;queuecommand,Start;"
+		StartCommand="%function(self)
+			if GAMESTATE:GetEnv('Wag') == 'On' then
+			SCREENMAN:GetTopScreen():GetChild('PlayerP2'):wag();
+			end
+			self:settext(gnStamina);
+			end"
+		/>
+
+<!--Stamina Mod for 1P Mode-->
+	<LayerType="BitmapText"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and not GAMESTATE:IsHumanPlayer(PLAYER_2)"
+		Font="Journey"
+		Text=""
+		InitCommand="diffusealpha,1;shadowlength,0;x,320;y,200;hibernate,0.2;queuecommand,Timer;"
+		TimerCommand="%function(self)
+		if gnStamina ~= '' then
+			SCREENMAN:SystemMessage('Stamina Mod ['..gnStamina..'] Activated');
+			self:queuecommand('Start');
+			end
+		end"
+		StartCommand="%function(self)
+		self:stoptweening();
+		
+		gnStaminaRandomizer = math.random(1,2);
+		
+		gnStaminaStepCutoff = gnStaminaStepCutoff + 1;
+		
+		if gnStaminaSongPercent < 92.5 then
+			if gnStaminaStepCutoff >= (math.floor((FinalBPM/60)*(650/FinalBPM)/curRate)+3) then
+				gnStaminaStepTarget = math.floor((FinalBPM/60)*(650/FinalBPM)/curRate)
+				if gnStaminaStepP1 > gnStaminaStepTarget then
+					gnStreamCountP1 = gnStreamCountP1 + 1;
+					else
+					if gnStreamCountP1 >= 16 then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Density-'..gnStaminaRandomizer )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 20;
+							end
+						end
+					gnStreamCountP1 = 0;
+					end
+				gnStaminaStepCutoff = 0;
+				gnStaminaStepP1 = 0;
+				gnStaminaStepP2 = 0;
+				end
+			end
+			
+		if gnLowHealth == true then
+			if gnStaminaLowHealth == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-LowHealth-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStaminaLowHealth = 150;
+					gnLowHealth = false;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+		
+		
+		if gnRandomVoice == 1 then	
+			if gnStamina == 'Zetorux' then
+				if CheckPlayerName('REEN') or CheckPlayerName('SteveReen') then
+					if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-SteveReen' )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 60;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			if gnStamina == 'SteveReen' then
+				if CheckPlayerName('PHIL') or CheckPlayerName('Zetorux') then
+					if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Zetorux' )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 60;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			end
+			
+			
+		if gnRandomVoice == 3 then
+			if gnStamina == 'Jayce' then
+				curSteps = GAMESTATE:GetCurrentSteps(PLAYER_1):GetDescription();
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnApostrophe = ',';
+						if curSteps ~= '(-[Jayce]-)' and curSteps ~= 'Jayce' and curSteps ~= 'Jayce'..gnApostrophe..'s Simfile' then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-NotChart-'..gnStaminaRandomizer )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 20;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			
+		
+			if gnStamina == 'WinDEU' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-1' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 20;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-2' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 20;
+						gnRandomMark2 = 0;
+						end
+					end
+				end
+		
+			if gnStamina == 'Zetorux' or gnStamina == 'SteveReen' or gnStamina == 'Aoreo' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(1,2);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(3,5);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark2 = 0;
+						end
+					end
+				end
+			end
+			
+
+		if gnRandomVoice == 5 then		
+			if gnStamina == 'Zetorux' or gnStamina == 'SteveReen' or gnStamina == 'Aoreo' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(1,2);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random3' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark2 = 0;
+						end
+					end
+				if gnRandomMark3 >= gnStaminaSongPercent and gnRandomMark3 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(4,5);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark3 = 0;
+						end
+					end
+				end
+			end
+			
+		if gnStaminaSongPercent >= 25 and gnStaminaSongPercent < 92 then
+			if gnStamina25Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-25Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina25Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 50 and gnStaminaSongPercent < 92 then
+			if gnStamina50Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-50Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina50Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 75 and gnStaminaSongPercent < 92 then
+			if gnStamina75Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-75Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina75Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 80 and gnStaminaSongPercent < 92 then
+			if gnStamina80Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-80Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina80Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 90 and gnStaminaSongPercent < 92 then
+			if gnStamina90Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-90Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina90Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+			
+		gnVoiceTimer = gnVoiceTimer - 1;
+		if gnVoiceTimer <= 0 then
+			gnVoiceTimer = 0;
+			end
+			
+		gnStaminaLowHealth = gnStaminaLowHealth - 1;
+		if gnStaminaLowHealth <= 0 then gnStaminaLowHealth = 0; end
+		
+		self:sleep(0.1);
+		self:queuecommand('Start');
+		end"
+		/>
+
+		
+<!--Stamina Mod for 2P Mode-->
+	<LayerType="BitmapText"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2) and not GAMESTATE:IsHumanPlayer(PLAYER_1)"
+		Font="Journey"
+		Text=""
+		InitCommand="diffusealpha,1;shadowlength,0;x,320;y,200;hibernate,0.2;queuecommand,Timer;"
+		TimerCommand="%function(self)
+		if gnStamina ~= '' then
+			SCREENMAN:SystemMessage('Stamina Mod ['..gnStamina..'] Activated');
+			self:queuecommand('Start');
+			end
+		end"
+		StartCommand="%function(self)
+		self:stoptweening();
+		
+		gnStaminaRandomizer = math.random(1,2);
+		
+		gnStaminaStepCutoff = gnStaminaStepCutoff + 1;
+		
+		if gnStaminaSongPercent < 92.5 then
+			if gnStaminaStepCutoff >= (math.floor((FinalBPM/60)*(650/FinalBPM)/curRate)+3) then
+				gnStaminaStepTarget = math.floor((FinalBPM/60)*(650/FinalBPM)/curRate)
+				if gnStaminaStepP2 > gnStaminaStepTarget then
+					gnStreamCountP2 = gnStreamCountP2 + 1;
+					else
+					if gnStreamCountP2 >= 16 then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Density-'..gnStaminaRandomizer )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 20;
+							end
+						end
+					gnStreamCountP2 = 0;
+					end
+				gnStaminaStepCutoff = 0;
+				gnStaminaStepP2 = 0;
+				gnStaminaStepP2 = 0;
+				end
+			end
+			
+		if gnLowHealth == true then
+			if gnStaminaLowHealth == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-LowHealth-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStaminaLowHealth = 150;
+					gnLowHealth = false;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+		
+		
+		if gnRandomVoice == 1 then	
+			if gnStamina == 'Zetorux' then
+				if CheckPlayerName('REEN') or CheckPlayerName('SteveReen') then
+					if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-SteveReen' )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 60;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			if gnStamina == 'SteveReen' then
+				if CheckPlayerName('PHIL') or CheckPlayerName('Zetorux') then
+					if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Zetorux' )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 60;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			end
+			
+			
+		if gnRandomVoice == 3 then
+			if gnStamina == 'Jayce' then
+				curSteps = GAMESTATE:GetCurrentSteps(PLAYER_1):GetDescription();
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnApostrophe = ',';
+						if curSteps ~= '(-[Jayce]-)' and curSteps ~= 'Jayce' and curSteps ~= 'Jayce'..gnApostrophe..'s Simfile' then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-NotChart-'..gnStaminaRandomizer )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 20;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			
+		
+			if gnStamina == 'WinDEU' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-1' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 20;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-2' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 20;
+						gnRandomMark2 = 0;
+						end
+					end
+				end
+		
+			if gnStamina == 'Zetorux' or gnStamina == 'SteveReen' or gnStamina == 'Aoreo' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(1,2);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(3,5);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark2 = 0;
+						end
+					end
+				end
+			end
+			
+
+		if gnRandomVoice == 5 then		
+			if gnStamina == 'Zetorux' or gnStamina == 'SteveReen' or gnStamina == 'Aoreo' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(1,2);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random3' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark2 = 0;
+						end
+					end
+				if gnRandomMark3 >= gnStaminaSongPercent and gnRandomMark3 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(4,5);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark3 = 0;
+						end
+					end
+				end
+			end
+			
+		if gnStaminaSongPercent >= 25 and gnStaminaSongPercent < 92 then
+			if gnStamina25Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-25Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina25Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 50 and gnStaminaSongPercent < 92 then
+			if gnStamina50Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-50Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina50Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 75 and gnStaminaSongPercent < 92 then
+			if gnStamina75Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-75Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina75Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 80 and gnStaminaSongPercent < 92 then
+			if gnStamina80Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-80Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina80Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 90 and gnStaminaSongPercent < 92 then
+			if gnStamina90Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-90Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina90Window = 1;
+					gnVoiceTimer = 20;
+					if gnStamina == 'Zetorux' then gnVoiceTimer = gnVoiceTimer * 1.8; end
+					end
+				end
+			end
+			
+		gnVoiceTimer = gnVoiceTimer - 1;
+		if gnVoiceTimer <= 0 then
+			gnVoiceTimer = 0;
+			end
+			
+		gnStaminaLowHealth = gnStaminaLowHealth - 1;
+		if gnStaminaLowHealth <= 0 then gnStaminaLowHealth = 0; end
+		
+		self:sleep(0.1);
+		self:queuecommand('Start');
+		end"
+		/>
+		
+		
+<!--Stamina Mod for Both Player Mode-->
+	<LayerType="BitmapText"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and GAMESTATE:IsHumanPlayer(PLAYER_2)"
+		Font="Journey"
+		Text=""
+		InitCommand="diffusealpha,1;shadowlength,0;x,320;y,200;hibernate,0.2;queuecommand,Timer;"
+		TimerCommand="%function(self)
+		gnStaminaDifficultyP1 = GAMESTATE:GetCurrentSteps(PLAYER_1):GetDifficulty();
+		gnStaminaDifficultyP2 = GAMESTATE:GetCurrentSteps(PLAYER_2):GetDifficulty();
+		if gnStamina ~= '' then
+			SCREENMAN:SystemMessage('Stamina Mod ['..gnStamina..'] Activated');
+			self:queuecommand('Start');
+			end
+		end"
+		StartCommand="%function(self)
+		self:stoptweening();
+		
+		gnStaminaRandomizer = math.random(1,2);
+		
+		gnStaminaStepCutoff = gnStaminaStepCutoff + 1;
+		
+		if gnStaminaSongPercent < 92.5 then
+			if gnStaminaStepCutoff >= (math.floor((FinalBPM/60)*(650/FinalBPM)/curRate)+3) then
+				gnStaminaStepTarget = math.floor((FinalBPM/60)*(650/FinalBPM)/curRate)
+				if gnStaminaDifficultyP1 >= gnStaminaDifficultyP2 then
+					if gnStaminaStepP1 > gnStaminaStepTarget then
+						gnStreamCountP1 = gnStreamCountP1 + 1;
+						else
+						if gnStreamCountP1 >= 16 then
+							if gnVoiceTimer == 0 then
+								gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Density-'..gnStaminaRandomizer )
+								SOUND:PlayOnce(gnStaminaSound);
+								gnVoiceTimer = 20;
+								end
+							end
+						gnStreamCountP1 = 0;
+						end
+					else
+					if gnStaminaStepP2 > gnStaminaStepTarget then
+						gnStreamCountP2 = gnStreamCountP2 + 1;
+						else
+						if gnStreamCountP2 >= 16 then
+							if gnVoiceTimer == 0 then
+								gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Density-'..gnStaminaRandomizer )
+								SOUND:PlayOnce(gnStaminaSound);
+								gnVoiceTimer = 20;
+								end
+							end
+						gnStreamCountP2 = 0;
+						end
+					end
+				gnStaminaStepCutoff = 0;
+				gnStaminaStepP1 = 0;
+				gnStaminaStepP2 = 0;
+				end
+			end
+			
+		if gnLowHealth == true then
+			if gnStaminaLowHealth == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-LowHealth-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStaminaLowHealth = 150;
+					gnLowHealth = false;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+		
+		if gnRandomVoice == 1 then	
+			if gnStamina == 'Zetorux' then
+				if CheckPlayerName('REEN') or CheckPlayerName('SteveReen') then
+					if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-SteveReen' )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 60;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			if gnStamina == 'SteveReen' then
+				if CheckPlayerName('PHIL') or CheckPlayerName('Zetorux') then
+					if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+						if gnVoiceTimer == 0 then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Zetorux' )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 60;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			end
+			
+			
+		if gnRandomVoice == 3 then
+			if gnStamina == 'Jayce' then
+				curSteps = GAMESTATE:GetCurrentSteps(PLAYER_1):GetDescription();
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnApostrophe = ',';
+						if curSteps ~= '(-[Jayce]-)' and curSteps ~= 'Jayce' and curSteps ~= 'Jayce'..gnApostrophe..'s Simfile' then
+							gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-NotChart-'..gnStaminaRandomizer )
+							SOUND:PlayOnce(gnStaminaSound);
+							gnVoiceTimer = 20;
+							gnRandomMark1 = 0;
+							end
+						end
+					end
+				end
+			
+		
+			if gnStamina == 'WinDEU' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-1' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 20;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-2' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 20;
+						gnRandomMark2 = 0;
+						end
+					end
+				end
+		
+			if gnStamina == 'Zetorux' or gnStamina == 'SteveReen' or gnStamina == 'Aoreo' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(1,2);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(3,5);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark2 = 0;
+						end
+					end
+				end
+			end
+			
+
+		if gnRandomVoice == 5 then		
+			if gnStamina == 'Zetorux' or gnStamina == 'SteveReen' or gnStamina == 'Aoreo' then
+				if gnRandomMark1 >= gnStaminaSongPercent and gnRandomMark1 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(1,2);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random-'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark1 = 0;
+						end
+					end
+				if gnRandomMark2 >= gnStaminaSongPercent and gnRandomMark2 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random3' )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark2 = 0;
+						end
+					end
+				if gnRandomMark3 >= gnStaminaSongPercent and gnRandomMark3 <= (gnStaminaSongPercent+0.3) then
+					if gnVoiceTimer == 0 then
+						gnStaminaRandomizer = math.random(4,5);
+						gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-Random'..gnStaminaRandomizer )
+						SOUND:PlayOnce(gnStaminaSound);
+						gnVoiceTimer = 60;
+						gnRandomMark3 = 0;
+						end
+					end
+				end
+			end
+		
+		if gnStaminaSongPercent >= 25 and gnStaminaSongPercent < 92 then
+			if gnStamina25Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-25Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina25Window = 1;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 50 and gnStaminaSongPercent < 92 then
+			if gnStamina50Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-50Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina50Window = 1;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 75 and gnStaminaSongPercent < 92 then
+			if gnStamina75Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-75Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina75Window = 1;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 80 and gnStaminaSongPercent < 92 then
+			if gnStamina80Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-80Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina80Window = 1;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+		if gnStaminaSongPercent >= 90 and gnStaminaSongPercent < 92 then
+			if gnStamina90Window == 0 then
+				if gnVoiceTimer == 0 then
+					gnStaminaSound = THEME:GetPath( EC_SOUNDS, '', 'gnStamina-'..gnStamina..'-90Percent-'..gnStaminaRandomizer )
+					SOUND:PlayOnce(gnStaminaSound);
+					gnStamina90Window = 1;
+					gnVoiceTimer = 20;
+					end
+				end
+			end
+			
+		gnVoiceTimer = gnVoiceTimer - 1;
+		if gnVoiceTimer <= 0 then
+			gnVoiceTimer = 0;
+			end
+			
+		gnStaminaLowHealth = gnStaminaLowHealth - 1;
+		if gnStaminaLowHealth <= 0 then gnStaminaLowHealth = 0; end
+			
+		self:sleep(0.1);
+		self:queuecommand('Start');
+		end"
+		/>
+	
+	<LayerType="BitmapText"
+		Font="Journey"
+		Text=""
+		InitCommand="diffusealpha,1;shadowlength,0;x,320;y,220;"
+		StepP1MessageCommand="%function(self)
+		if gnStaminaStepP1 == nil then gnStaminaStepP1 = 0; end
+		gnStaminaStepP1 = gnStaminaStepP1 + 1;
+		end"
+		StepP2MessageCommand="%function(self)
+		if gnStaminaStepP2 == nil then gnStaminaStepP2 = 0; end
+		gnStaminaStepP2 = gnStaminaStepP2 + 1;
+		end"
+		/>
+		
+		
+	<LayerType="BitmapText"
+		Font="Journey"
+		Text=""
+		InitCommand="diffusealpha,1;shadowlength,0;x,320;y,220;queuecommand,Loop"
+		LoopCommand="%function(self)
+		self:stoptweening();
+		if gnStaminaSongPercent > 95 then
+			gnLowHealth = false;
+			gnRateRestore = 0;
+			gnLowHealth = false;
+			gnVoiceTimer = 0;
+			gnStaminaTimer = 0;
+			gnRandomVoice = math.random(1,5); 
+			gnRandomMark1 = math.random(5,92);
+			gnRandomMark2 = math.random(5,92);
+			gnRandomMark3 = math.random(5,92);
+			gnStaminaSongPercent = 0;
+			gnStamina25Window = 0;
+			gnStamina50Window = 0;
+			gnStamina75Window = 0;
+			gnStamina80Window = 0;
+			gnStamina90Window = 0;
+			gnStaminaLowHealth = 0;
+			gnStaminaRandom = 0;
+			gnStaminaRandomizer = 0;
+			gnStaminaStepP1 = 0;
+			gnStaminaStepP2 = 0;
+			gnStaminaStepCutoff = 0;
+			gnStreamCountP1 = 0;
+			gnStreamCountP2 = 0;
+			gnStaminaStepTarget = 0;
+			end
+		self:sleep(0.1);
+		self:queuecommand('Loop');
+		end"
+		/>
+
+<!--Custom BPM Display-->
+<ActorFrame><children>
+	<LayerType="BitmapText"
+		Font="Journey"
+		Text="@GetRateMod()"
+		Condition="not GAMESTATE:IsDemonstration()"
+		InitCommand="x,-1000;shadowlength,0;sleep,0.01;queuecommand,Start;"
+		StartCommand="%function(self) 
+			SCREENMAN:GetTopScreen():GetChild('BPMDisplay'):addy(-10000);
+			FinalBPM = tonumber(SCREENMAN:GetTopScreen():GetChild('BPMDisplay'):GetChild('Text'):GetText());
+			if OPENITG then 
+				if FinalBPM <= math.ceil(highBPM*curRate) then
+
+				else
+					if FinalBPM >= math.floor(lowBPM*curRate) then
+					
+					else
+						FinalBPM = math.ceil(highBPM*curRate)
+					end
+				end
+			else
+				FinalBPM = math.ceil(FinalBPM*curRate)
+			end
+			self:settext(FinalBPM);
+			self:x(SCREEN_CENTER_X-1);
+			self:y(SCREEN_TOP-44);
+			self:zoom(1.1);
+			self:horizalign('center');
+			self:addy(100);
+			self:queuecommand('Update'); 
+		end"
+		UpdateCommand="%function(self)
+		self:stoptweening();
+		FinalBPM = tonumber(SCREENMAN:GetTopScreen():GetChild('BPMDisplay'):GetChild('Text'):GetText());
+		if OPENITG then 
+			if FinalBPM <= math.ceil(highBPM*curRate) then
+
+			else
+				if FinalBPM >= math.floor(lowBPM*curRate) then
+				
+				else
+					FinalBPM = math.ceil(highBPM*curRate)
+				end
+			end
+		else
+			FinalBPM = math.ceil(FinalBPM*curRate)
+		end
+		self:settext(FinalBPM);
+		self:x(SCREEN_CENTER_X-1);
+		self:sleep(0.08);
+		self:queuecommand('Update');
+		end"
+		OffCommand="accelerate,0.8;addy,-100"
+	/>
+</children></ActorFrame>
+
+
+<!--Default Stuff-->
+	<LayerType="BitmapText"
+		Condition="GAMESTATE:GetPlayMode() == PLAY_MODE_RAVE"
+		Font="Common normal"
+		Text="@GAMESTATE:GetPlayerDisplayName(PLAYER_1)"
+		OnCommand="x,SCREEN_CENTER_X-224;y,SCREEN_TOP+53;diffuse,#000000;zoom,.5;maxwidth,180;addy,-100;addy,+100"
+		OffCommand="accelerate,0.8;addy,-100"
+	/>
+	<Layer Type="BitmapText"
+		Condition="GAMESTATE:GetPlayMode() == PLAY_MODE_RAVE"
+		Font="Common normal"
+		Text="@GAMESTATE:GetPlayerDisplayName(PLAYER_2)"
+		OnCommand="x,SCREEN_CENTER_X+224;y,SCREEN_TOP+53;diffuse,#000000;zoom,.5;maxwidth,180;addy,-100;addy,+100"
+		OffCommand="accelerate,0.8;addy,-100"
+	/>
+
+	<Layer Type="ActorFrame"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_TOP+24;sleep,0.5;queuecommand,TweenOn"
+		OffCommand="queuecommand,TweenOff"
+		ShowGameplayTopFrameMessageCommand="playcommand,TweenOn"
+		HideGameplayTopFrameMessageCommand="playcommand,TweenOff"
+		TweenOnCommand=""
+		TweenOffCommand=""
+		> <children>
+		
+		<Layer File="meter measure" />
+		
+		<Layer
+			Type="SongMeterDisplay"
+			StreamWidth="390"
+			StreamPath="meter stream"
+			OnCommand="sleep,0.1;queuecommand,Check;"
+			CheckCommand="%function(self) self:stoptweening(); MESSAGEMAN:Broadcast('TipX'); self:sleep(0.1); self:queuecommand('Check'); end"
+		>
+			<Tip
+				File="tip"
+				OnCommand=""
+				TipXMessageCommand="%function(self) gnStaminaTimer = self:GetX(); gnStaminaSongPercent = math.floor((1-((195-gnStaminaTimer)/389))*100) end"
+			/>
+		</Layer>
+
+		<Layer File="meter frame" />
+
+		<Layer
+			Type="BitmapText"
+			Font="_eurostile normal"
+			OnCommand="y,0;zoom,.6;"
+			InitCommand="shadowlength,0;animate,0;playcommand,Update"
+			CurrentSongChangedMessageCommand="playcommand,Update"
+			UpdateCommand="%SetFromSongTitleAndCourseTitle"
+		/>
+	</children> </Layer>
+
+	<!-- Difficulty: -->
+	<Layer Type="ActorFrame"
+		OnCommand="sleep,0.5;queuecommand,TweenOn"
+		OffCommand="queuecommand,TweenOff"
+		ShowGameplayTopFrameMessageCommand="playcommand,TweenOn"
+		HideGameplayTopFrameMessageCommand="playcommand,TweenOff"
+		> <children>
+		
+		<ActorFrame Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1) and not GAMESTATE:IsCourseMode();" OnCommand="x,SCREEN_CENTER_X-264-CourseHorizontal()+(13*HorizontalRecovery());y,SCREEN_TOP+25;" TweenOnCommand="" TweenOffCommand=""><children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="animate,0;playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromSteps(self, PLAYER_1) end"
+			/>
+			<BitmapText
+					Text="@GetCurrentSongDifficulty(PLAYER_1)"
+					File="_eurostile normal"
+					OnCommand="%function(self) 
+					self:shadowlength(0);
+					self:horizalign('center')
+					self:zoom(0.5);
+					self:x(-12);
+					self:y(-1);
+					end"
+			/>
+			<BitmapText
+					Text="@GetCurrentSongMeter(PLAYER_1)"
+					File="_eurostile normal"
+					OnCommand="%function(self) 
+					self:shadowlength(0);
+					self:horizalign('center')
+					self:zoom(0.5);
+					self:x(33);
+					self:y(-1);
+					end"
+			/>
+		</children></ActorFrame>
+		
+		<ActorFrame Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1) and GAMESTATE:IsCourseMode();" OnCommand="x,SCREEN_CENTER_X-264-CourseHorizontal()+(13*HorizontalRecovery());y,SCREEN_TOP+25;" TweenOnCommand="" TweenOffCommand=""><children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="animate,0;playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromSteps(self, PLAYER_1) end"
+			/>
+					<Actor
+				Class="DifficultyMeter"
+				Type="ScreenGameplay DifficultyMeterP1"
+				OnCommand="playcommand,Update"
+				UpdateCommand="%function(self) 
+						if GAMESTATE:GetCurrentTrail(PLAYER_1) then 
+							self:SetFromTrail(GAMESTATE:GetCurrentTrail(PLAYER_1)) 
+						else
+							self:SetFromSteps(GAMESTATE:GetCurrentSteps(PLAYER_1))
+						end
+					end"
+			/>
+		</children></ActorFrame>
+		
+		<ActorFrame Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2) and not GAMESTATE:IsCourseMode();" OnCommand="x,SCREEN_CENTER_X+263+CourseHorizontal()-(13*HorizontalRecovery());y,SCREEN_TOP+25;" TweenOnCommand="" TweenOffCommand=""><children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="zoomx,-1;animate,0;playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromSteps(self, PLAYER_2) end"
+			/>
+			<BitmapText
+					Text="@GetCurrentSongDifficulty(PLAYER_2)"
+					File="_eurostile normal"
+					OnCommand="%function(self) 
+					self:shadowlength(0);
+					self:horizalign('center')
+					self:zoom(0.5);
+					self:x(13);
+					self:y(-1);
+					end"
+			/>
+			<BitmapText
+					Text="@GetCurrentSongMeter(PLAYER_2)"
+					File="_eurostile normal"
+					OnCommand="%function(self) 
+					self:shadowlength(0);
+					self:horizalign('center')
+					self:zoom(0.5);
+					self:x(-32);
+					self:y(-1);
+					end"
+			/>
+		</children></ActorFrame>
+		
+		<ActorFrame Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2) and GAMESTATE:IsCourseMode();" OnCommand="x,SCREEN_CENTER_X+263+CourseHorizontal()-(13*HorizontalRecovery());y,SCREEN_TOP+25;" TweenOnCommand="" TweenOffCommand=""><children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="animate,0;rotationy,180;playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromSteps(self, PLAYER_2) end"
+			/>
+					<Actor
+				Class="DifficultyMeter"
+				Type="ScreenGameplay DifficultyMeterP2"
+				OnCommand="playcommand,Update"
+				UpdateCommand="%function(self) 
+						if GAMESTATE:GetCurrentTrail(PLAYER_2) then 
+							self:SetFromTrail(GAMESTATE:GetCurrentTrail(PLAYER_2)) 
+						else
+							self:SetFromSteps(GAMESTATE:GetCurrentSteps(PLAYER_2))
+						end
+					end"
+			/>
+		</children></ActorFrame>
+	</children> </Layer>
+
+
+	<!-- Draw on top of the rest -->
+
+	<Layer
+		Type="Quad"
+		OnCommand="diffuse,#000000;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffusealpha,1;linear,0.1;diffusealpha,0"
+	/>
+
+	<Layer
+		Condition="not GAMESTATE:IsDemonstration()"
+		File="../_song credit display"
+		OnCommand="sleep,2.5;linear,0.3;diffusealpha,0"
+	/>
+
+	<!-- Demonstration only: -->
+	<Layer Class="ActorFrame" Condition="GAMESTATE:IsDemonstration()"><children>
+		<Layer
+			File="demonstration gradient"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;zoomtowidth,SCREEN_WIDTH;zoomtoheight,SCREEN_HEIGHT;diffusealpha,0.8"
+		/>
+		<Layer
+			File="demonstration logo"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-184;pulse;EffectMagnitude,1.0,0.9,0;effectclock,bgm;effectperiod,1"
+		/>
+	</children></Layer>
+
+	
+	
+	<!-- Easter Eggs -->
+<!--Summer Rain, I made this chart so I don't need to credit myself (oops)-->
+<ActorFrame Condition="EasterEggSummerRain()" InitCommand="addy,-(12*HorizontalRecovery());zoom,gnZoomRatio;"><children>
+<Layer
+File="easter_eggs/rainnear"
+OnCommand="x,320;y,240;customtexturerect,0,0,1,1;texcoordvelocity,0.00,-1.00;ZoomToWidth,640;ZoomToHeight,480;diffusealpha,0;linear,1;diffusealpha,1;"
+/>
+
+<Layer
+File="easter_eggs/rainmed"
+OnCommand="x,320;y,240;rotationz,5;customtexturerect,0,0,1,1;texcoordvelocity,0.00,-0.80;ZoomToWidth,640;ZoomToHeight,480;diffusealpha,0;linear,1;diffusealpha,1;"
+/>
+
+<Layer
+File="easter_eggs/rainfar"
+OnCommand="x,320;y,240;rotationz,-5;customtexturerect,0,0,1,1;texcoordvelocity,0.00,-0.6;ZoomToWidth,640;ZoomToHeight,480;diffusealpha,0;linear,1;diffusealpha,1;"
+/>
+
+<Layer
+File="easter_eggs/rainClouds"
+OnCommand="x,320;y,240;diffusealpha,0;linear,1.000;diffusealpha,1;"
+/>
+
+</children></ActorFrame>
+
+
+
+
+
+	<!-- Santa: Credit to Kytsune and his Little Pleasures Chart -->
+	<ActorFrame Condition="EasterEggSanta()"> <children>
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+64+CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;rotationz,90;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+128+CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+192+CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;rotationz,-180;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+256+CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;rotationz,-90;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+		<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-64-CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;rotationz,-90;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-128-CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;rotationz,180;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-192-CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-256-CourseHorizontal()/3;y,SCREEN_CENTER_Y-125;rotationz,90;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2) and not GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+64+32+CourseHorizontal();y,SCREEN_CENTER_Y-125;rotationz,90;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+128+32+CourseHorizontal();y,SCREEN_CENTER_Y-125;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+192+32+CourseHorizontal();y,SCREEN_CENTER_Y-125;rotationz,-180;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_LEFT+256+32+CourseHorizontal();y,SCREEN_CENTER_Y-125;rotationz,-90;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+		<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-64-32-CourseHorizontal();y,SCREEN_CENTER_Y-125;rotationz,-90;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-128-32-CourseHorizontal();y,SCREEN_CENTER_Y-125;rotationz,180;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-192-32-CourseHorizontal();y,SCREEN_CENTER_Y-125;diffuseblink;effectcolor1,0,1,0,0.5;effectcolor2,1,0,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/receptor"
+		OnCommand="x,SCREEN_RIGHT-256-32-CourseHorizontal();y,SCREEN_CENTER_Y-125;rotationz,90;diffuseblink;effectcolor1,1,0,0,0.5;effectcolor2,0,1,0,0.5;effectclock,bgm;effectperiod,2"
+		Condition="GAMESTATE:PlayerUsingBothSides()"
+	/>
+	
+	<layer
+		File="easter_eggs/far"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1,1;texcoordvelocity,0.05,-0.30;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,1"
+	/>
+	
+	<layer
+		File="easter_eggs/med"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1,1;texcoordvelocity,0.10,-0.60;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,1"
+	/>
+	
+	<layer
+		File="easter_eggs/near"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1,1;texcoordvelocity,0.15,-0.90;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,1;sleep,200"
+	/>
+	</children></ActorFrame>
+	
+	
+	<!--Frost: Credit to Puurokulho and his Napolese chart-->
+<ActorFrame Condition="EasterEggFrost()" InitCommand="addx,-CourseHorizontal();addy,-(12*HorizontalRecovery());zoom,gnZoomRatio;"> <children>
+
+<!-- Dicks -->
+
+	<Layer
+		File="easter_eggs/ice.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;zoom,1.07;diffusealpha,0;croptop,0.9;fadetop,0.1;sleep,0;linear,1;diffusealpha,0.5;linear,4.5;croptop,0;linear,0.1;fadetop,0"
+	/>
+
+<!-- 1 -->
+	<Layer
+		File="easter_eggs/line1.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+200;zoom,1;diffusealpha,0;sleep,0;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line1.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+200;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 2 -->
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+180;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.2;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+180;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.2;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 3 -->
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+160;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.4;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+160;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.4;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 4 -->
+
+	<Layer
+		File="easter_eggs/line4.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+140;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.6;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line4.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+140;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.6;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 5 -->
+
+	<Layer
+		File="easter_eggs/line5.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+120;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.8;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line5.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+120;zoom,1;diffusealpha,0;diffusealpha,0;sleep,0.8;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 6 -->
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+100;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+100;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-------------------- ADDFDAFADFADADFADFADFAD -------------------->
+
+<!-- 7 -->
+	<Layer
+		File="easter_eggs/line1.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+80;zoom,1;diffusealpha,0;sleep,1.2;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line1.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+80;zoom,1;diffusealpha,0;sleep,1.2;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 8 -->
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+60;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1.4;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+60;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1.4;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 9 -->
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+40;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1.6;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+40;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1.6;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 10 -->
+
+	<Layer
+		File="easter_eggs/line4.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+20;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1.8;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line4.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+20;zoom,1;diffusealpha,0;diffusealpha,0;sleep,1.8;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 11 -->
+
+	<Layer
+		File="easter_eggs/line5.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.0;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line5.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.0;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 12 -->
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-20;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.2;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-20;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.2;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-------------------- ADDFDAFADFADADFADFADFAD -------------------->
+
+<!-- 13 -->
+	<Layer
+		File="easter_eggs/line1.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-40;zoom,1;diffusealpha,0;sleep,2.4;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line1.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-40;zoom,1;diffusealpha,0;sleep,2.4;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 14 -->
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-60;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.6;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-60;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.6;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 15 -->
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-80;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.8;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-80;zoom,1;diffusealpha,0;diffusealpha,0;sleep,2.8;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 16 -->
+
+	<Layer
+		File="easter_eggs/line4.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-100;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.0;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line4.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-100;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.0;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 17 -->
+
+	<Layer
+		File="easter_eggs/line5.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-120;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.2;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line5.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-120;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.2;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 18 -->
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-140;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.4;linear,1;diffusealpha,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-140;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.4;linear,1;diffusealpha,0;linear,1;diffusealpha,0"
+	/>
+
+<!-- 19 -->
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-180;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.6;linear,1;diffusealpha,1;sleep,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line2.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-180;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.6;linear,1;diffusealpha,0;sleep,1;linear,1;diffusealpha,0"
+	/>
+
+<!-- 20 -->
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-200;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.8;linear,1;diffusealpha,1;sleep,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line3.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-200;zoom,1;diffusealpha,0;diffusealpha,0;sleep,3.8;linear,1;diffusealpha,0;sleep,1;linear,1;diffusealpha,0"
+	/>
+
+<!-- 21 -->
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-220;zoom,1;diffusealpha,0;diffusealpha,0;sleep,4.0;linear,1;diffusealpha,1;sleep,1;linear,1;diffusealpha,0"
+	/>
+
+	<Layer
+		File="easter_eggs/line6.png"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-220;zoom,1;diffusealpha,0;diffusealpha,0;sleep,4.0;linear,1;diffusealpha,0;sleep,1;linear,1;diffusealpha,0;sleep,17.923"
+	/>
+</children> </ActorFrame>
+
+
+
+
+
+<!--Snowflake: Credit to Puurokulho and his Napolese Chart-->
+<ActorFrame Condition="EasterEggBlizzard()"> <children>
+
+	<Layer Type="Quad"
+	InitCommand="sleep,1;queuecommand,Start;"
+	StartCommand="%function(self)
+					if GAMESTATE:IsHumanPlayer(PLAYER_1) then
+
+						GAMESTATE:ApplyGameCommand('mod,*1 50% Drunk,*1 150% Bumpy,*20 70% Dark',1);
+						SCREENMAN:GetTopScreen():GetChild('PlayerP1'):bounce()
+						SCREENMAN:GetTopScreen():GetChild('PlayerP1'):effectmagnitude(-20,20,0)
+						SCREENMAN:GetTopScreen():GetChild('PlayerP1'):effectclock('bgm')
+						SCREENMAN:GetTopScreen():GetChild('PlayerP1'):effectperiod(0.2)
+					end
+ 
+					if GAMESTATE:IsHumanPlayer(PLAYER_2) then
+
+						GAMESTATE:ApplyGameCommand('mod,*1 50% Drunk,*1 150% Bumpy,*20 70% Dark',2);
+						SCREENMAN:GetTopScreen():GetChild('PlayerP2'):bounce()
+						SCREENMAN:GetTopScreen():GetChild('PlayerP2'):effectmagnitude(-20,20,0)
+						SCREENMAN:GetTopScreen():GetChild('PlayerP2'):effectclock('bgm')
+						SCREENMAN:GetTopScreen():GetChild('PlayerP2'):effectperiod(0.2)
+					end
+	end"
+	/>
+	
+	<Layer
+	File="easter_eggs/blurredsnow.png"
+	OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1.5,1.5;texcoordvelocity,2.40,-1.90;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,0;bob;linear,1;diffusealpha,1;sleep,20;linear,1;diffusealpha,0"
+
+	/>
+
+
+	<Layer
+	File="easter_eggs/blurredsnow.png"
+	OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1,1;texcoordvelocity,1.40,-0.90;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,0;bob;linear,1;diffusealpha,1;sleep,20;linear,1;diffusealpha,0"
+
+	/>
+
+
+	<Layer
+	File="easter_eggs/white.png"
+	OnCommand="diffusealpha,0;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;sleep,1;linear,2;diffusealpha,0;sleep,20;linear,1;diffusealpha,0"
+
+	/>
+	
+	
+<!--- SNOW --->
+
+	<Layer
+	File="easter_eggs/blurredsnow.png"
+	OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1,1;texcoordvelocity,1.40,-0.90;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,0;bob;linear,1;diffusealpha,1;sleep,20000;linear,1;diffusealpha,0"
+
+	/>
+
+
+	<Layer
+	File="easter_eggs/blurredsnowFar.png"
+	OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1,1;texcoordvelocity,1.20,-0.90;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,0;bob;linear,1;diffusealpha,1;sleep,20000;linear,1;diffusealpha,0"
+
+	/>
+
+
+	<Layer
+	File="easter_eggs/blurredsnowNear.png"
+	OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;customtexturerect,0,0,1,1;texcoordvelocity,1.00,-0.90;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;diffusealpha,0;linear,1;diffusealpha,0;bob;linear,1;diffusealpha,1;sleep,20000;linear,1;diffusealpha,0"
+
+	/>
+
+
+
+
+
+<!--- OVERLAY --->
+
+	<Layer
+	File="easter_eggs/white.png"
+	OnCommand="diffusealpha,0;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;sleep,1;linear,2;diffusealpha,0.7;sleep,19000.5;linear,1;diffusealpha,0"
+
+	/>
+	
+
+</children> </ActorFrame>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	<!-- Foreground Mods -->
+	<!-- Shake -->
+	<ActorFrame> <children>
+<BitmapText
+			File="_eurostile normal"
+			Text=""
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_1)"
+			InitCommand="x,320;y,240;playcommand,Update;"
+			UpdateCommand="%function(self)
+					self:stoptweening();
+					getMod = 0;
+					FGmod = 0;
+					for getMod=0, 1, 0.1 do
+						if GAMESTATE:PlayerIsUsingModifier(PLAYER_1,''..getMod..'% tornado') then 
+								FGmod = getMod;
+								break
+							end
+						if GAMESTATE:PlayerIsUsingModifier(PLAYER_1,'no tornado') then 
+							break
+							end
+						end
+				self:sleep(0.5);
+				self:queuecommand('Update')
+			end"
+			/>
+<BitmapText
+			File="_eurostile normal"
+			Text=""
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_2)"
+			InitCommand="x,320;y,280;playcommand,Update;"
+			UpdateCommand="%function(self)
+					self:stoptweening();
+					getMod = 0;
+					FGmod = 0;
+					for getMod=0, 1, 0.1 do
+						if GAMESTATE:PlayerIsUsingModifier(PLAYER_2,''..getMod..'% tornado') then 
+								FGmod = getMod;
+								break
+							end
+						if GAMESTATE:PlayerIsUsingModifier(PLAYER_2,'no tornado') then 
+							break
+							end
+						end
+				self:sleep(0.5);
+				self:queuecommand('Update')
+			end"
+			/>
+<ActorFrame InitCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-2000;sleep,20000;">
+	<children>
+	
+	<layer
+	Type="Quad"
+	InitCommand="%function(self)
+	
+	end"
+	StepP1MessageCommand="%function(self)
+		if FGmod > 0 and FGmod < 0.2 then
+		SCREENMAN:GetTopScreen():finishtweening();
+		Mover = math.random(8,10);
+		Guesser = math.random(1,3);
+		Negator = math.random(1,2);
+		
+		if Negator == 1 then
+			Multiplier = 1;
+			end
+		if Negator == 2 then
+			Multiplier = -1;
+			end
+		
+		SCREENMAN:GetTopScreen():accelerate(0.05);
+		SCREENMAN:GetTopScreen():GetChild('PlayerP1'):accelerate(0.05);
+
+		SCREENMAN:GetTopScreen():GetChild('PlayerP1'):rotationz(Mover*Multiplier);
+		
+		if Guesser == 1 then
+			SCREENMAN:GetTopScreen():addx(Mover*Multiplier);
+			end
+		if Guesser == 2 then
+			SCREENMAN:GetTopScreen():addy(Mover*Multiplier);
+			end
+		if Guesser == 3 then
+			SCREENMAN:GetTopScreen():addx(Mover*Multiplier);
+			SCREENMAN:GetTopScreen():addy(Mover*Multiplier);
+			end
+		
+		SCREENMAN:GetTopScreen():decelerate(0.05);
+		SCREENMAN:GetTopScreen():GetChild('PlayerP1'):decelerate(0.05);
+
+		SCREENMAN:GetTopScreen():GetChild('PlayerP1'):rotationz(0);
+		
+		SCREENMAN:GetTopScreen():x(0);
+		SCREENMAN:GetTopScreen():y(0);
+
+		end	
+	end"
+	
+
+	
+	
+StepP2MessageCommand="%function(self)
+		if FGmod > 0 and FGmod < 0.2 then
+		SCREENMAN:GetTopScreen():finishtweening();
+		Mover = math.random(8,10);
+		Guesser = math.random(1,3);
+		Negator = math.random(1,2);
+		
+		if Negator == 1 then
+			Multiplier = 1;
+			end
+		if Negator == 2 then
+			Multiplier = -1;
+			end
+		
+		SCREENMAN:GetTopScreen():accelerate(0.05);
+		SCREENMAN:GetTopScreen():GetChild('PlayerP2'):accelerate(0.05);
+
+		SCREENMAN:GetTopScreen():GetChild('PlayerP2'):rotationz(Mover*Multiplier);
+		
+		if Guesser == 1 then
+			SCREENMAN:GetTopScreen():addx(Mover*Multiplier);
+			end
+		if Guesser == 2 then
+			SCREENMAN:GetTopScreen():addy(Mover*Multiplier);
+			end
+		if Guesser == 3 then
+			SCREENMAN:GetTopScreen():addx(Mover*Multiplier);
+			SCREENMAN:GetTopScreen():addy(Mover*Multiplier);
+			end
+		
+		SCREENMAN:GetTopScreen():decelerate(0.05);
+		SCREENMAN:GetTopScreen():GetChild('PlayerP2'):decelerate(0.05);
+
+		SCREENMAN:GetTopScreen():GetChild('PlayerP2'):rotationz(0);
+		
+		SCREENMAN:GetTopScreen():x(0);
+		SCREENMAN:GetTopScreen():y(0);
+
+		end	
+	end"
+	/>
+
+	</children>
+</ActorFrame>
+
+	<!-- Phase -->
+<ActorFrame InitCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-2000;sleep,20000;">
+	<children>
+	
+	<layer
+	Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"
+	Type="Quad"
+	InitCommand="%function(self)
+	P1Mods = -1;
+	end"
+	StepP1MessageCommand="%function(self)
+	if FGmod > 0.1 and FGmod < 0.3 then
+	SCREENMAN:GetTopScreen():GetChild('PlayerP1'):wag();
+	SCREENMAN:GetTopScreen():GetChild('PlayerP1'):effectmagnitude(1,1,1);
+	if GAMESTATE:GetSongBeat() > 0 then
+		if P1Mods == 1 then
+			GAMESTATE:ApplyGameCommand('mod, *2.5 99% stealth',1);
+			GAMESTATE:ApplyGameCommand('mod, *7 no dark',1);
+			GAMESTATE:ApplyGameCommand('mod, *2 10% mini',1);
+
+			P1Mods = -1;
+			else
+			GAMESTATE:ApplyGameCommand('mod, *7 no stealth',1);
+			GAMESTATE:ApplyGameCommand('mod, *7 dark',1);
+			GAMESTATE:ApplyGameCommand('mod, no mini',1);
+			
+			P1Mods = 1;
+			end
+		end
+	end
+	end"
+	/>
+	
+	<layer
+	Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2)"
+	Type="Quad"
+	InitCommand="%function(self)
+	P2Mods = -1;
+	end"
+	StepP2MessageCommand="%function(self)
+	if FGmod > 0.1 and FGmod < 0.3 then
+	SCREENMAN:GetTopScreen():GetChild('PlayerP2'):wag();
+	SCREENMAN:GetTopScreen():GetChild('PlayerP2'):effectmagnitude(1,1,1);
+	if GAMESTATE:GetSongBeat() > 0 then
+		if P2Mods == 1 then
+			GAMESTATE:ApplyGameCommand('mod, *2.5 99% stealth',2);
+			GAMESTATE:ApplyGameCommand('mod, *7 no dark',2);
+			GAMESTATE:ApplyGameCommand('mod, *2 10% mini',2);
+			
+			P2Mods = -1;
+			else
+			GAMESTATE:ApplyGameCommand('mod, *7 no stealth',2);
+			GAMESTATE:ApplyGameCommand('mod, *7 dark',2);
+			GAMESTATE:ApplyGameCommand('mod, no mini',2);
+			
+			P2Mods = 1;
+			end
+		end
+	end
+	end"
+
+	/>	
+
+	</children>
+</ActorFrame>
+	</children> </ActorFrame>
+	
+	<!-- Misty -->
+<ActorFrame InitCommand="%function(self) MistAlpha = 0; self:sleep(0.1); self:queuecommand('Start'); end" StartCommand="%function(self)
+	if FGmod <= 0.29 or FGmod >= 0.39 then
+		self:hidden(1); self:hibernate(200000);
+		end
+	end">
+	<children>
+
+	<ActorFrame>
+	<children>
+				<BitmapText
+			File="_eurostile normal"
+			Text=" "
+			InitCommand="x,320;y,240;playcommand,StartTimer;"
+			StartTimerCommand="%function(self)
+			MistAlpha = MistAlpha + 0.01;
+			if MistAlpha >= 0.9 then
+				MistAlpha = 0.9
+				end
+			self:sleep(0.09);
+			self:queuecommand('StartTimer');
+			end"
+			/>
+			
+						<BitmapText
+			File="_eurostile normal"
+			Text=" "
+			InitCommand="x,200;y,200;"
+			StepP1MessageCommand="%function(self)
+			if GAMESTATE:IsPlayerEnabled(PLAYER_2) then
+			MistAlpha = MistAlpha - 0.01;
+			else
+			MistAlpha = MistAlpha - 0.02;
+			end
+			if MistAlpha <= 0 then
+			MistAlpha = 0;
+			end
+			end"
+			StepP2MessageCommand="%function(self)
+			if GAMESTATE:IsPlayerEnabled(PLAYER_1) then
+			MistAlpha = MistAlpha - 0.01;
+			else
+			MistAlpha = MistAlpha - 0.02;
+			end
+			if MistAlpha <= 0 then
+			MistAlpha = 0;
+			end
+			end"
+			/>		
+
+	</children>	
+	</ActorFrame>	
+	<ActorFrame InitCommand="sleep,0.1;x,CourseHorizontal();queuecommand,Start;" StartCommand="%function(self)
+	if FGmod <= 0.29 or FGmod >= 0.39 then
+		self:hidden(1); self:hibernate(200000);
+		end
+	end"><children>		
+<ActorFrame InitCommand="%function(self)
+			self:diffusealpha(0);
+			self:linear(0.2);
+			self:diffusealpha(1);
+			self:queuecommand('Shifter');
+			self:zoom(1*gnZoomRatio);
+			end"
+			ShifterCommand="%function(self)
+			self:x(640);
+			self:y(240);
+			self:linear(30);
+			self:addx(-1280);
+			self:queuecommand('Shifter');
+			end">
+	<children>
+			<BitmapText
+			File="_eurostile normal"
+			Text=" "
+			InitCommand="sleep,2000;"
+			/>
+			
+			<layer
+			File="Mist.png"
+			InitCommand="diffusealpha,0;queuecommand,Alpha;"
+			AlphaCommand="%function(self)
+			if FGmod > 0.2 and FGmod < 0.35 then
+				self:linear(0.5);
+				self:diffusealpha(MistAlpha);
+				self:queuecommand('Alpha');
+				else
+				self:stoptweening();
+				self:sleep(0.01);
+				self:queuecommand('Alpha');
+				end
+			end
+			"
+			/>
+			
+			<layer
+			File="Mist.png"
+			InitCommand="diffusealpha,0;x,1280;queuecommand,Alpha;"
+			AlphaCommand="%function(self)
+			if FGmod > 0.2 and FGmod < 0.35 then
+				self:linear(0.5);
+				self:diffusealpha(MistAlpha);
+				self:queuecommand('Alpha');
+				else
+				self:stoptweening();
+				self:sleep(0.01);
+				self:queuecommand('Alpha');
+				end
+			end
+			"
+			/>	
+
+	</children>
+</ActorFrame>
+
+<ActorFrame InitCommand="%function(self)
+			MistAlpha = 0;
+			self:zoom(1*gnZoomRatio);
+			self:queuecommand('Shifter');
+			end"
+			ShifterCommand="%function(self)
+			self:x(0);
+			self:y(240);
+			self:linear(30);
+			self:addx(1280);
+			self:queuecommand('Shifter');
+			end">
+	<children>
+			<BitmapText
+			File="_eurostile normal"
+			Text=" "
+			InitCommand="sleep,2000;"
+			/>
+			
+			<layer
+			File="Mist.png"
+			InitCommand="diffusealpha,0;queuecommand,Alpha;"
+			AlphaCommand="%function(self)
+			if FGmod > 0.2 and FGmod < 0.35 then
+				self:linear(0.5);
+				self:diffusealpha(MistAlpha);
+				self:queuecommand('Alpha');
+				else
+				self:stoptweening();
+				self:sleep(0.01);
+				self:queuecommand('Alpha');
+				end
+			end
+			"
+			/>
+			
+			<layer
+			File="Mist.png"
+			InitCommand="diffusealpha,0;x,-1280;queuecommand,Alpha;"
+			AlphaCommand="%function(self)
+			if FGmod > 0.2 and FGmod < 0.35 then
+				self:linear(0.5);
+				self:diffusealpha(MistAlpha);
+				self:queuecommand('Alpha');
+				else
+				self:stoptweening();
+				self:sleep(0.01);
+				self:queuecommand('Alpha');
+				end
+			end
+			"
+			/>
+	
+
+	</children>
+</ActorFrame>
+</children>
+</ActorFrame>
+
+	<ActorFrame InitCommand="sleep,0.1;queuecommand,Start;" StartCommand="%function(self)
+	if FGmod <= 0.29 or FGmod >= 0.39 then
+		self:hidden(1); self:hibernate(200000);
+		end
+	end">
+	<children>
+	
+				<layer
+			File="clear.png"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_1)"
+			InitCommand="diffusealpha,0;sleep,1;x,160+(CourseHorizontal()/3);y,240;linear,0.5;diffusealpha,1;sleep,4;linear,0.5;diffusealpha,0;"
+			/>
+			
+				<layer
+			File="clear.png"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_2)"
+			InitCommand="diffusealpha,0;sleep,1;x,480+(CourseHorizontal()/0.6);y,240;linear,0.5;diffusealpha,1;sleep,4;linear,0.5;diffusealpha,0;"
+			/>
+			
+			<layer
+			File="step.png"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_1)"
+			InitCommand="diffusealpha,0;sleep,1;x,160+(CourseHorizontal()/3);y,240;playcommand,Checker;"
+
+			CheckerCommand="%function(self)
+			if MistAlpha >= 0.65 then
+			self:linear(0.5);
+			self:diffusealpha(1)
+			else
+			self:linear(0.5);
+			self:diffusealpha(0);
+			end
+			self:queuecommand('Checker');
+			end
+			"
+			/>
+			
+			<layer
+			File="step.png"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_2)"
+			InitCommand="diffusealpha,0;x,480+(CourseHorizontal()/0.6);y,240;playcommand,Checker;"
+
+			CheckerCommand="%function(self)
+			if MistAlpha >= 0.65 then
+			self:linear(0.5);
+			self:diffusealpha(1)
+			else
+			self:linear(0.5);
+			self:diffusealpha(0);
+			end
+			self:queuecommand('Checker');
+			end
+			"
+			/>
+	
+	</children>
+</ActorFrame>
+
+	</children>
+</ActorFrame>
+
+<!-- Nyan Cat -->
+
+<ActorFrame InitCommand="sleep,0.1;queuecommand,Start;" StartCommand="%function(self)
+	if FGmod <= 0.38 or FGmod > 0.49 then
+		self:hidden(1); self:hibernate(200000);
+		end
+	end">
+	<children>
+	
+	
+			
+		<layer
+			File="nyancat.sprite"
+			InitCommand="hibernate,3;playcommand,Start;"
+			StartCommand="%function(self)
+			catsX = 0;
+			catsY = 0;
+			self:x(0);
+			self:y(0);
+			self:diffusealpha(0.3);
+			catsDir = math.random(1,2);
+			
+			self:playcommand('Runcats');
+			end"
+			
+			RuncatsCommand="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats2');
+			end"
+			
+			Runcats2Command="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats');
+			end"
+
+			/>
+			
+		<layer
+			File="nyancat.sprite"
+			InitCommand="hibernate,9;playcommand,Start;"
+			StartCommand="%function(self)
+			catsX = 0;
+			catsY = 0;
+			self:x(0);
+			self:y(0);
+			self:diffusealpha(0.3);
+			catsDir = math.random(1,2);
+			
+			self:playcommand('Runcats');
+			end"
+			
+			RuncatsCommand="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats2');
+			end"
+			
+			Runcats2Command="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats');
+			end"
+
+			/>
+			
+		<layer
+			File="nyancat.sprite"
+			InitCommand="hibernate,15;playcommand,Start;"
+			StartCommand="%function(self)
+			catsX = 0;
+			catsY = 0;
+			self:x(0);
+			self:y(0);
+			self:diffusealpha(0.3);
+			catsDir = math.random(1,2);
+			
+			self:playcommand('Runcats');
+			end"
+			
+			RuncatsCommand="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats2');
+			end"
+			
+			Runcats2Command="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats');
+			end"
+
+			/>
+			
+		<layer
+			File="nyancat.sprite"
+			InitCommand="hibernate,22;playcommand,Start;"
+			StartCommand="%function(self)
+			catsX = 0;
+			catsY = 0;
+			self:x(0);
+			self:y(0);
+			self:diffusealpha(0.3);
+			catsDir = math.random(1,2);
+			
+			self:playcommand('Runcats');
+			end"
+			
+			RuncatsCommand="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats2');
+			end"
+			
+			Runcats2Command="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300);
+				else
+				catsDir = 1;
+				self:addx(-1300);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats');
+			end"
+
+			/>
+			
+<layer
+			File="nyancat.sprite"
+			InitCommand="hibernate,29;playcommand,Start;"
+			StartCommand="%function(self)
+			catsX = 0;
+			catsY = 0;
+			self:x(0);
+			self:y(0);
+			catsDir = math.random(1,2);
+			self:playcommand('Runcats');
+			end"
+			
+			RuncatsCommand="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats2');
+			end"
+			
+			Runcats2Command="%function(self)
+			catsY = math.random(40,360);
+			self:zoom(0.4);
+			if catsDir == 1 then
+				catsX = -380;
+				self:rotationy(0);
+				else
+				catsX = 1020;
+				self:rotationy(180);
+				end
+			self:x(catsX);
+			self:y(catsY);
+			self:linear(7);
+			if catsDir == 1 then
+				catsDir = 2;
+				self:addx(1300+CourseHorizontal()*2);
+				else
+				catsDir = 1;
+				self:addx(-1300-CourseHorizontal()*2);
+				end
+			self:sleep(1);
+			self:queuecommand('Runcats');
+			end"
+
+			/>
+			
+			
+		<layer
+			Type="Quad"
+			InitCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;zoom,640*gnZoomRatio;diffusealpha,0;rainbow;"
+			
+			StepP1MessageCommand="%function(self)
+					if FGmod >= 0.4 and FGmod < 0.5 then
+					SCREENMAN:GetTopScreen():GetChild('PlayerP1'):wag();
+					SCREENMAN:GetTopScreen():GetChild('PlayerP1'):effectmagnitude(1,1,1);
+					GAMESTATE:ApplyGameCommand('mod, 10% tipsy',1);
+					GAMESTATE:ApplyGameCommand('mod, 10% drunk',1);
+					GAMESTATE:ApplyGameCommand('mod, 10% dizzy',1);
+					GAMESTATE:ApplyGameCommand('mod, 10% beat',1);
+					
+					self:stoptweening();
+					self:linear(3);
+					self:diffusealpha(0.1);
+					end
+			end"
+			
+			StepP2MessageCommand="%function(self)
+					if FGmod >= 0.4 and FGmod < 0.5 then
+					SCREENMAN:GetTopScreen():GetChild('PlayerP2'):wag();
+					SCREENMAN:GetTopScreen():GetChild('PlayerP2'):effectmagnitude(1,1,1);
+					GAMESTATE:ApplyGameCommand('mod, -10% tipsy',2);
+					GAMESTATE:ApplyGameCommand('mod, -10% drunk',2);
+					GAMESTATE:ApplyGameCommand('mod, -10% dizzy',2);
+					GAMESTATE:ApplyGameCommand('mod, -10% beat',2);
+					
+					self:stoptweening();
+					self:linear(3);
+					self:diffusealpha(0.1);
+					end
+			end"
+
+			/>
+
+	</children>
+</ActorFrame>
+	
+<!-- Popcorn -->
+<ActorFrame InitCommand="x,CourseHorizontal()*1;queuecommand,Start;" StartCommand="%function(self)
+	if FGmod <= 0.48 or FGmod > 0.59 then
+		self:hidden(1); self:hibernate(200000);
+		end
+	end"><children>
+		<ActorFrame> <children>
+			<Layer
+				File="blank.png"
+				InitCommand="sleep,20000;"
+				StepP1MessageCommand="%function(self)
+				popTimer = popTimer + 1;
+				if popTimer > 6 then
+				popTimer = 1;
+				end
+				end"
+				StepP2MessageCommand="%function(self)
+				popTimer2 = popTimer2 + 1;
+				if popTimer2 > 6 then
+				popTimer2 = 1;
+				end
+				end"
+
+			/>
+
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						popTimer = 0;
+						popTimer2 = 0;
+						P1Switch = 0;
+						P2Switch = 0;
+						P3Switch = 0;
+						P4Switch = 0;
+						P5Switch = 0;
+						P6Switch = 0;
+						
+						end"
+			StepP1MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer == 1 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer == 6 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer == 1 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 6 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer == 1 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 6 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="popcorn1.png"
+				StepP1MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer == 1 then
+					if P1Switch == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P1Switch = 1;
+					end
+				else
+				if popTimer == 6 then
+					self:stoptweening();
+					end
+					P1Switch = 0;
+					end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP1MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer == 2 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer == 1 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer == 2 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 1 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer == 2 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 1 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="popcorn2.png"
+				StepP1MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer == 2 then
+					if P2Switch == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P2Switch = 1;
+					end
+				else
+				if popTimer == 1 then
+					self:stoptweening();
+					end
+					P2Switch = 0;
+					end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP1MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer == 3 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer == 2 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer == 3 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 2 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer == 3 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 2 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="popcorn3.png"
+				StepP1MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer == 3 then
+					if P3Switch == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P3Switch = 1;
+					end
+				else
+				if popTimer == 2 then
+					self:stoptweening();
+					end
+					P3Switch = 0;
+					end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+				
+			</children> </ActorFrame>
+			
+
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP1MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer == 4 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer == 3 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer == 4 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 3 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer == 4 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 3 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="popcorn4.png"
+				StepP1MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer == 4 then
+					if P4Switch == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P4Switch = 1;
+					end
+				else
+				if popTimer == 3 then
+					self:stoptweening();
+					end
+					P4Switch = 0;
+					end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP1MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer == 5 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer == 4 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer == 5 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 4 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer == 5 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 4 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="popcorn5.png"
+				StepP1MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer == 5 then
+					if P5Switch == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P5Switch = 1;
+					end
+				else
+				if popTimer == 4 then
+					self:stoptweening();
+					end
+					P5Switch = 0;
+					end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP1MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer == 6 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer == 5 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer == 6 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 5 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP1MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer == 6 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer == 5 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+
+				<Layer
+				File="popcorn6.png"
+				StepP1MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer == 6 then
+					if P6Switch == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P6Switch = 1;
+					end
+				else
+				if popTimer == 5 then
+					self:stoptweening();
+					end
+					P6Switch = 0;
+					end
+				end"
+		Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"		/>
+				
+			</children> </ActorFrame>
+			
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						popTimer2 = 0;
+						popTimer2 = 0;
+						P1Switch2 = 0;
+						P2Switch2 = 0;
+						P3Switch2 = 0;
+						P4Switch2 = 0;
+						P5Switch2 = 0;
+						P6Switch2 = 0;
+						
+						end"
+			StepP2MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer2 == 1 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:addx(320);
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer2 == 6 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer2 == 1 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 6 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer2 == 1 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 6 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="popcorn1.png"
+				StepP2MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer2 == 1 then
+					if P1Switch2 == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P1Switch2 = 1;
+					end
+				else
+				if popTimer2 == 6 then
+					self:stoptweening();
+					end
+					P1Switch2 = 0;
+					end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP2MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer2 == 2 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:addx(320);
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer2 == 1 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer2 == 2 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 1 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer2 == 2 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 1 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="popcorn2.png"
+				StepP2MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer2 == 2 then
+					if P2Switch2 == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P2Switch2 = 1;
+					end
+				else
+				if popTimer2 == 1 then
+					self:stoptweening();
+					end
+					P2Switch2 = 0;
+					end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP2MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer2 == 3 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:addx(320);
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer2 == 2 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer2 == 3 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 2 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer2 == 3 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 2 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="popcorn3.png"
+				StepP2MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer2 == 3 then
+					if P3Switch2 == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P3Switch2 = 1;
+					end
+				else
+				if popTimer2 == 2 then
+					self:stoptweening();
+					end
+					P3Switch2 = 0;
+					end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+				
+			</children> </ActorFrame>
+			
+
+			<ActorFrame InitCommand="%function(self)
+						
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP2MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer2 == 4 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:addx(320);
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer2 == 3 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer2 == 4 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 3 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer2 == 4 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 3 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="popcorn4.png"
+				StepP2MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer2 == 4 then
+					if P4Switch2 == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P4Switch2 = 1;
+					end
+				else
+				if popTimer2 == 3 then
+					self:stoptweening();
+					end
+					P4Switch2 = 0;
+					end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP2MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer2 == 5 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:addx(320);
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer2 == 4 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer2 == 5 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 4 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer2 == 5 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 4 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="popcorn5.png"
+				StepP2MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer2 == 5 then
+					if P5Switch2 == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P5Switch2 = 1;
+					end
+				else
+				if popTimer2 == 4 then
+					self:stoptweening();
+					end
+					P5Switch2 = 0;
+					end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+				
+			</children> </ActorFrame>
+
+
+			<ActorFrame InitCommand="%function(self)
+						
+						self:x(2000)
+						self:y(SCREEN_CENTER_Y)
+						end"
+			StepP2MessageCommand="playcommand,Update0"
+			Update0Command="%function(self)
+			if popTimer2 == 6 then
+				self:diffusealpha(1);
+				self:zoom(0.1);
+				self:x(-100+(100*math.random(3))+(10*math.random(9))+(1*math.random(9)));
+				self:addx(320);
+				self:y(10+(100*math.random(2))+(10*math.random(7))+(1*math.random(9)));
+				self:decelerate(0.25);
+				self:zoom((math.random(2))+(0.1*math.random(9))+(0.01*math.random(9)));
+				self:sleep(0.001);
+				self:diffusealpha(0);
+				else
+				if popTimer2 == 5 then
+					self:stoptweening();
+					end
+				end
+			end"> <children>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update1"
+				Update1Command="%function(self)
+				if popTimer2 == 6 then
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 5 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="explosion.png"
+				StepP2MessageCommand="playcommand,Update2"
+				Update2Command="%function(self)
+				if popTimer2 == 6 then	
+					self:diffusealpha(1);
+					self:rotationz(100*(math.random(-6,6)));
+					self:decelerate(0.25);
+					self:rotationz(0);
+					self:diffusealpha(0);
+				else
+				if popTimer2 == 5 then
+					self:stoptweening();
+					end
+				end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+
+				<Layer
+				File="popcorn6.png"
+				StepP2MessageCommand="x,0;y,0;playcommand,Update3"
+				Update3Command="%function(self)
+				if popTimer2 == 6 then
+					if P6Switch2 == 0 then
+					Rotit = (100*(math.random(-6,6)));
+					Xit = (math.random(-2,2)*((10*math.random(-9,9))+(1*math.random(-9,9))));
+					Yit = (-1*(10+(10*math.random(5,9))+(1*math.random(5,9))));
+					
+					self:diffusealpha(1);
+					self:rotationz(Rotit);
+					self:decelerate(0.2);
+					self:addx(Xit);
+					self:addy(Yit);
+					self:rotationz(0);
+					self:accelerate(0.2);
+					
+					Rotit = (Rotit * (-1));
+					
+					self:rotationz(Rotit);
+					self:addx(Xit);
+					self:addy(600);
+					self:sleep(0.001);
+					self:diffusealpha(0);
+					P6Switch2 = 1;
+					end
+				else
+				if popTimer2 == 5 then
+					self:stoptweening();
+					end
+					P6Switch2 = 0;
+					end
+				end"
+		Condition="(GAMESTATE:IsPlayerEnabled(PLAYER_2))"		/>
+				
+			</children> </ActorFrame>
+			
+		</children> </ActorFrame>
+
+</children></ActorFrame>
+
+</children> </ActorFrame>
+

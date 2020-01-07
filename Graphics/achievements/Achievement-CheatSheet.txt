@@ -1,0 +1,7 @@
+achievement0001 = Quads Obtained (100,500,1000)
+achievement0002 = Tri Stars Obtained (100,500,1000)
+achievement0003 = Double Stars Obtained (100,500,1000)
+achievement0004 = Single Star Obtained (100,500,1000)
+achievement0005-0007 = Songs Played (100,500,1000)
+achievement0011-0013 = Times Died (25,50,100)
+achievement0014-00016 = Stars Obtained (100,500,1000) (as in collective stars?)

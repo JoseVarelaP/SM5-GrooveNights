@@ -1,0 +1,1 @@
+return loadfile( THEME:GetPathB("_fade out","normal/default") )()
