@@ -5,6 +5,8 @@ local starpos = {
 	{85,80}
 }
 
+local player = ...
+
 local t = Def.ActorFrame{
 	OnCommand=function(s)
 		s:zoom(0.2):xy(-1,-1):wag():effectmagnitude(0,0,2)
@@ -19,7 +21,7 @@ for _,v in pairs(starpos) do
 		end,
 
 		Def.Sprite{
-			Texture="GradeTier0001.png",
+			Texture=LoadModule("Score.CustomTierGraphic.lua")(player,1),
 			OnCommand=function(s) s:sleep(0.2) end,
 			InitCommand=function(s)
 				s:diffusealpha(0)

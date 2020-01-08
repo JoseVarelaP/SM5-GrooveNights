@@ -40,7 +40,7 @@ end
 
 -- Grade and Frame Info
 local DoublesIsOn = GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_OnePlayerTwoSides"
-for player in ivalues(PlayerNumber) do
+for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 	t[#t+1] = Def.ActorFrame{
 	Condition=GAMESTATE:IsPlayerEnabled(player);
 		LoadActor( THEME:GetPathG("","ScreenEvaluation grade frame"), player )..{
