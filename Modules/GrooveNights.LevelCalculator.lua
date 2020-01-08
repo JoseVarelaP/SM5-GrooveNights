@@ -82,7 +82,7 @@ return function( player )
     end
 
     -- EXP Achievement check
-    for _,var in pairs( Achievements[4] ) do if totalStars > var then AchievementStats.StarCount = _ end end
+    for _,var in pairs( Achievements[2] ) do if PlayerLevel > var then AchievementStats.ExpCount = _ end end
     
     -- Now with everything complete, let's return 4 results. One is a progress bar, the other is the raw
     -- points of the current level, next is the current level and last one is the achievements.
@@ -91,6 +91,6 @@ return function( player )
         gnTotalPlayer,
         PlayerLevel,
         curlevcurve,
-        Achievements={ AchievementStats.SongCount, 0, 0, AchievementStats.StarCount }
+        Achievements={ AchievementStats.SongCount, AchievementStats.ExpCount, 0, AchievementStats.StarCount }
     }
 end
