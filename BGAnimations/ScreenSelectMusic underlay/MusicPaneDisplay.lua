@@ -20,7 +20,9 @@ local t = Def.ActorFrame{
 	BeginLoadCommand=function(s) MESSAGEMAN:Broadcast("UpdateInfoPlayer") end,
 	UpdateInfoPlayerMessageCommand=function(s)
 		ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
-	end
+	end,
+	SelectMenuOpenedMessageCommand=function(s,param) if param.Player == player then s:playcommand("LVBarOn") end end,
+	SelectMenuClosedMessageCommand=function(s,param) if param.Player == player then s:playcommand("LVBarOff") end end,
 }
 
 local BI = Def.ActorFrame{
@@ -49,8 +51,8 @@ local BI = Def.ActorFrame{
 				s:xy( -130 + (24 * (_-1)), -53 ):zoom(0.8)
 				s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
 			end,
-			SelectMenuOpenedMessageCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
-			SelectMenuClosedMessageCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
+			LVBarOnCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
+			LVBarOffCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
 			UpdateInfoPlayerMessageCommand=function(s)
 				s:Load( THEME:GetPathG("",ach.Achievements[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+ach.Achievements[_]) or "achievements/achievement".. string.format("%04i",(v)) ) )
 				s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
@@ -68,8 +70,8 @@ local BI = Def.ActorFrame{
 			OnCommand=function(s)
 				s:xy( -106+(34*(i-1)), -53 ):rotationx(90)
 			end,
-			SelectMenuOpenedMessageCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
-			SelectMenuClosedMessageCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
+			LVBarOnCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
+			LVBarOffCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
 			Def.Sprite{
 				Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),
 				OnCommand=function(s) s:x( -26 ):zoom(0.6) end,
