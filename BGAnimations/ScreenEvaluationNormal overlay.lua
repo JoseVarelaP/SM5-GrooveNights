@@ -45,7 +45,7 @@ for player in ivalues(PlayerNumber) do
 	Condition=GAMESTATE:IsPlayerEnabled(player);
 		LoadActor( THEME:GetPathG("","ScreenEvaluation grade frame"), player )..{
 		InitCommand=function(self)
-		self:xy( DoublesIsOn and SCREEN_CENTER_X or ( SCREEN_CENTER_X+((-130*1.2)*side(player)) ),SCREEN_CENTER_Y+54)
+		self:xy( DoublesIsOn and SCREEN_CENTER_X or ( SCREEN_CENTER_X+((-130*1.2)*side(player)) ),SCREEN_CENTER_Y+58)
 		end,
 		};
 	};

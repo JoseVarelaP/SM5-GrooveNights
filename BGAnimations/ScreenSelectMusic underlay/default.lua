@@ -4,6 +4,9 @@ t[#t+1] = Def.Sprite{
     InitCommand=function(s)
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y)
     end,
+    SelectMenuOpenedMessageCommand=function()
+        SOUND:PlayOnce( THEME:GetPathS("gnJudgeBar","1.ogg") )
+    end,
 }
 
 for pn in ivalues( PlayerNumber ) do

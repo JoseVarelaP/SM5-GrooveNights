@@ -1,6 +1,7 @@
 -- GrooveNights level calculator
 -- By Jayce Newton for OpenITG. Rewritten for SM5 by JoseVarela.
 return function( player )
+    if not PROFILEMAN:GetProfile(player) then return end
     -- Current EXP from the player
     local gnTotalPlayer = 0
     local PlayerLevel = 1
@@ -41,8 +42,14 @@ return function( player )
         if PROFILEMAN:GetProfile(player):GetNumTotalSongsPlayed() > var then AchievementStats.SongCount = _ end
     end
     -- Star Count Calculation
+    -- Had to do the Tier calculation again because the data gets lost before
+    -- it reaches here.
     local totalStars = 0
-    for i=1,4 do totalStars = totalStars + TierSum["Grade_Tier"..string.format("%02i",i)] end
+    for i,v in pairs( Difs ) do
+        for Ti=1,4 do
+            totalStars = totalStars + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti))
+        end
+    end
     for _,var in pairs( Achievements[4] ) do if totalStars > var then AchievementStats.StarCount = _ end end
 
     ExpMultiplier = ExpMultiplier + ( AchievementStats.SongCount/10 ) + ( AchievementStats.StarCount/10 )
@@ -73,6 +80,9 @@ return function( player )
 			break
         end
     end
+
+    -- EXP Achievement check
+    for _,var in pairs( Achievements[4] ) do if totalStars > var then AchievementStats.StarCount = _ end end
     
     -- Now with everything complete, let's return 4 results. One is a progress bar, the other is the raw
     -- points of the current level, next is the current level and last one is the achievements.
