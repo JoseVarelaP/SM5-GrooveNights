@@ -47,7 +47,7 @@ return function( player )
     local totalStars = 0
     for i,v in pairs( Difs ) do
         for Ti=1,4 do
-            totalStars = totalStars + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti))
+            totalStars = totalStars + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
         end
     end
     for _,var in pairs( Achievements[4] ) do if totalStars > var then AchievementStats.StarCount = _ end end
