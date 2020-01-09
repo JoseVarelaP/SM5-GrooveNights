@@ -113,5 +113,23 @@ t[#t+1] = Def.Sprite{
     end;
 }
 
+t[#t+1] = Def.BitmapText{
+    Font="_eurostile normal",
+    InitCommand=function(s)
+        s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6)
+        :playcommand("Update")
+    end,
+    UpdateCommand=function(s)
+        local pn = GAMESTATE:GetMasterPlayerNumber()
+        local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
+        local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
+        local SongPlayed = STATSMAN:GetStagesPlayed()
+        s:finishtweening()
+        s:settext( "Total PlayTime: ".. SecondsToHHMMSS(TotalTime) .. " (".. SongPlayed .. " songs)"  )
+        local TextLength = string.len(s:GetText())
+        s:AddAttribute(0, { Length=TextLength-19; Diffuse=color("#FFA314") } )
+    end,
+}
+
 collectgarbage();
 return t;
