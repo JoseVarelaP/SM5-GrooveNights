@@ -24,11 +24,17 @@ return function(Prefs)
 				Choices = v.Choices,
 				Values = v.Values,
 				LoadSelections = function(self, list, pn)
+					if v.LoadFunc then
+						v.LoadFunc(self,list,pn)
+						return
+					end
 					local reset = false
 					if getenv(k.."env"..pn) then reset = true setenv(k.."env"..pn,false) end
 					local Location = "Save/GrooveNightsPrefs.ini"
-					if v.UserPref then Location = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini" end
-					if not reset and LoadModule("Config.Exists.lua")(k,Location) then
+					if v.UserPref then
+						Location = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+					end
+					if not reset and not v.SkipLocation and LoadModule("Config.Exists.lua")(k,Location) then
 						local CurPref = LoadModule("Config.Load.lua")(k,Location)
 						for i,v2 in ipairs(self.Values) do
 							if tostring(v2) == tostring(CurPref) then list[i] = true return end
@@ -68,10 +74,14 @@ return function(Prefs)
 						MESSAGEMAN:Broadcast(v.GenForOther[1], {pn=pn,choice=choice})
 						setenv(v.GenForOther[1].."env"..pn,Reset[tonumber(string.sub(pn,-1))]) -- need to double this because bug.
 					end
-					MESSAGEMAN:Broadcast(k.."Change", {pn=pn,choice=choice})
+					MESSAGEMAN:Broadcast(k.."Change", {pn=pn,choice=choice,TextChoice=self.Choices[choice]})
 				end,
 				SaveSelections = function(self, list, pn)
 					local Location = "Save/GrooveNightsPrefs.ini"
+					if v.SaveFunc then
+						v.SaveFunc(self,list,pn)
+						return
+					end
 					if v.UserPref then 
 							Location = CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
 					end

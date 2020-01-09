@@ -177,7 +177,7 @@ t[#t+1] = Def.ActorFrame{
 				Condition=LoadModule("Config.Load.lua")("ToggleEXPCounter","Save/GrooveNightsPrefs.ini"),
 				Font="Common Normal",
 				OnCommand=function(s)
-					s:halign(1):xy( 48, -11 ):zoom(0.4)
+					s:halign(1):xy( 48, -11 ):zoom(0.35)
 					s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
 				end,
 			},
