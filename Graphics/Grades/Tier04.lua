@@ -19,7 +19,7 @@ local t = Def.ActorFrame{
 				:decelerate(0.1):zoom(1.1):diffusealpha(0.8):accelerate(0.1):zoom(1.3):diffusealpha(1)
 			end,
 			GradeSoundCommand=function(s)
-				SOUND:PlayOnce( THEME:GetPathS("","grade6") )
+				SOUND:PlayOnce( THEME:GetPathS("gnGradeUp","1") )
 			end,
 		}
 	}

@@ -127,7 +127,7 @@ t[#t+1] = Def.ActorFrame{
 		Def.BitmapText{
 			Font="Common Normal",
 			OnCommand=function(s)
-				s:zoom(0.5):xy(104,-2)
+				s:zoom(0.5):xy(102,-2):maxwidth(200)
 				s:settext(
 					GAMESTATE:GetCurrentSteps(player):GetAuthorCredit() and GAMESTATE:GetCurrentSteps(player):GetAuthorCredit()
 					or GAMESTATE:GetCurrentSteps(player):GetDescription()

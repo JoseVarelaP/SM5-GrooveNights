@@ -29,7 +29,7 @@ for _,v in pairs(starpos) do
 				:decelerate(0.1):zoom(1.1):diffusealpha(0.8):accelerate(0.1):zoom(1.3):diffusealpha(1)
 			end,
 			GradeSoundCommand=function(s)
-				SOUND:PlayOnce( THEME:GetPathS("","grade" .. 4+(_-1)) )
+				SOUND:PlayOnce( THEME:GetPathS("gnGradeUp",_) )
 			end,
 		}
 	}
