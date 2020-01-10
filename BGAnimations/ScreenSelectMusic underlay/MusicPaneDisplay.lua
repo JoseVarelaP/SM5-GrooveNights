@@ -13,13 +13,16 @@ local t = Def.ActorFrame{
         s:xy( SCREEN_CENTER_X-160*side(player)-3, SCREEN_CENTER_Y+154 )
         :diffusealpha( GAMESTATE:IsPlayerEnabled(player) and 1 or 0 )
     end,
-	PlayerJoinedMessageCommand=function(s)
-		s:linear(0.2):diffusealpha( GAMESTATE:IsPlayerEnabled(player) and 1 or 0 )
-		s:sleep(0.1):queuecommand("BeginLoad")
+	PlayerJoinedMessageCommand=function(s,param)
+		if param.Player == player then
+			s:linear(0.2):diffusealpha( GAMESTATE:IsPlayerEnabled(player) and 1 or 0 )
+			s:sleep(0.1):queuecommand("BeginLoad")
+		end
 	end,
-	BeginLoadCommand=function(s) MESSAGEMAN:Broadcast("UpdateInfoPlayer") end,
-	UpdateInfoPlayerMessageCommand=function(s)
+	-- Perform Load
+	BeginLoadCommand=function(s,param)
 		ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
+		MESSAGEMAN:Broadcast("UpdateInfoPlayer",{pn=player})
 	end,
 	SelectMenuOpenedMessageCommand=function(s,param) if param.Player == player then s:playcommand("LVBarOn") end end,
 	SelectMenuClosedMessageCommand=function(s,param) if param.Player == player then s:playcommand("LVBarOff") end end,
@@ -30,7 +33,7 @@ local BI = Def.ActorFrame{
 		s:y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
 	end,
 	UpdateInfoPlayerMessageCommand=function(s)
-		s:sleep(1):decelerate(0.3):y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
+		s:sleep(1.4):decelerate(0.3):y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
 	end,
 }
 
@@ -53,19 +56,17 @@ local BI = Def.ActorFrame{
 			end,
 			LVBarOnCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
 			LVBarOffCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
-			UpdateInfoPlayerMessageCommand=function(s)
-				s:Load( THEME:GetPathG("",ach.Achievements[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+ach.Achievements[_]) or "achievements/achievement".. string.format("%04i",(v)) ) )
-				s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
+			UpdateInfoPlayerMessageCommand=function(s,param)
+				if param.pn == player then
+					s:Load( THEME:GetPathG("",ach.Achievements[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+ach.Achievements[_]) or "achievements/achievement".. string.format("%04i",(v)) ) )
+					s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
+				end
 			end,
 		}
 	end
 
-	local DataToCalculate = {"Beginner","Easy","Medium","Hard","Challenge"}
 	for i=1,4 do
-		total = 0
-		for v in ipairs(DataToCalculate) do
-			total = total + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier".. string.format( "%02i", i ) )
-		end
+		local total = ach[5]["Grade_Tier0"..i]
 		BI[#BI+1] = Def.ActorFrame{
 			OnCommand=function(s)
 				s:xy( -106+(34*(i-1)), -53 ):rotationx(90)
@@ -77,12 +78,11 @@ local BI = Def.ActorFrame{
 				OnCommand=function(s) s:x( -26 ):zoom(0.6) end,
 			},
 			Def.BitmapText{ Font="_eurostile normal", Text=total, OnCommand=function(s) s:x(-8):zoom(0.5) end,
-			UpdateInfoPlayerMessageCommand=function(s)
-				total = 0
-				for v in ipairs(DataToCalculate) do
-					total = total + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier".. string.format( "%02i", i ) )
+			UpdateInfoPlayerMessageCommand=function(s,param)
+				if param.pn == player then
+					local total = ach[5]["Grade_Tier0"..i]
+					s:settext( total )
 				end
-				s:settext( total )
 			end,
 		}
 	}
@@ -100,8 +100,10 @@ local BI = Def.ActorFrame{
 				s:halign(0):xy( -38, -11 ):zoom(0.4)
 				s:settext( "Level ".. ach[3] )
 			end,
-			UpdateInfoPlayerMessageCommand=function(s)
-				s:settext( "Level ".. ach[3] )
+			UpdateInfoPlayerMessageCommand=function(s,param)
+				if param.pn == player then
+					s:settext( "Level ".. ach[3] )
+				end
 			end,
 		},
 		Def.BitmapText{
@@ -111,21 +113,25 @@ local BI = Def.ActorFrame{
 				s:halign(1):xy( 48, -11 ):zoom(0.3)
 				s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
 			end,
-			UpdateInfoPlayerMessageCommand=function(s)
-				s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
+			UpdateInfoPlayerMessageCommand=function(s,param)
+				if param.pn == player then
+					s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
+				end
 			end,
 		},
 		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.1,0.1,0.1,1") ):zoomto(90,4):xy(4,-2) end, },
 		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2)
 			:cropright( (100-ach[1])/100 ) end,
-			UpdateInfoPlayerMessageCommand=function(s)
-				s:cropright( (100-ach[1])/100 )
+			UpdateInfoPlayerMessageCommand=function(s,param)
+				if param.pn == player then
+					s:cropright( (100-ach[1])/100 )
+				end
 			end,
 		},
 		Def.Sprite{ Texture=THEME:GetPathG("","EXP/expBar") },
 	}
 
-	BI[#BI+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( color("#1C2C3C") ):zoom(0.8):xy(-28,-33) end }
+	BI[#BI+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( color("#1C2C3C") ):zoom(0.8):xy(-28,-33):cropleft(0.02) end }
 
 t[#t+1] = BI
 
@@ -143,11 +149,16 @@ t[#t+1] = Def.Sprite {
 			s:diffuse( PlayerColor(player) )
 		end
 	end,
-	UpdateInfoPlayerMessageCommand=function(s)
+	UpdateInfoPlayerMessageCommand=function(s,param)
+		if param.pn == player then
+			s:sleep(1):linear(0.3):diffusealpha(0):sleep(0.01):queuecommand("UpdateIcon")
+		end
+	end,
+	UpdateIconCommand=function(s)
 		s:Load( LoadModule("Options.GetProfileData.lua")(player)["Image"] )
 		:setsize(64,64)
 		if LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card" then
-			s:diffuse(Color.White)
+			s:linear(0.3):diffuse(Color.White)
 		end
 	end,
 };
@@ -168,10 +179,8 @@ t[#t+1] = Def.BitmapText {
     OnCommand=function(s)
         s:xy(-114,22):zoom(0.5):diffuse( PlayerColor(player) )
 	end,
-	PlayerJoinedMessageCommand=function(s)
-		if PROFILEMAN:GetProfile(player):GetDisplayName() == "" then
-			s:settext("Loading...")
-		end
+	PlayerJoinedMessageCommand=function(s,param)
+		if param.Player == player then s:settext("Loading...") end
 	end,
 	UpdateInfoPlayerMessageCommand=function(s)
 		s:settext( PROFILEMAN:GetProfile(player):GetDisplayName() )
@@ -227,12 +236,13 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
                         ,-24+14*(vind-1)
                     ):halign(1)
                 end,
-                CurrentSongChangedMessageCommand=function(s)
+				CurrentSongChangedMessageCommand=function(s)
+					s:diffuse(Color.White)
                     if not GAMESTATE:GetCurrentSong() then
                         s:settext("?")
                     end
                 end,
-                ["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
+				["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
 					if GAMESTATE:GetCurrentSteps(player) and val[2] then
 						s:settext( val[2]() )
 						if val[3] then

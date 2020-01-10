@@ -266,12 +266,8 @@ for _,v in pairs(Achievements) do
 end
 
 -- Now show the achieved scores
-local DataToCalculate = {"Beginner","Easy","Medium","Hard","Challenge"}
 for i=1,4 do
-	total = 0
-	for v in ipairs(DataToCalculate) do
-		total = total + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier".. string.format( "%02i", i ) )
-	end
+	local total = ach[5]["Grade_Tier0"..i]
 	t[#t+1] = Def.Sprite{
 		Condition=isvalidplayer,
         Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),
@@ -357,7 +353,6 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 		CalculateCommand=function(s)
 			local JudgeText = math.ceil(tonumber(STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)) / totalnote * 121);
 			if JudgeText >= 121 then JudgeText = 121 end
-			-- lua.ReportScriptError( JudgeText .."/" .. totalnote )
 			s:sleep( ((index-1)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
 		end,
 		SFXCommand=function(s)
@@ -485,57 +480,5 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 }
-
-
---[[
-local Tags = { "BPM", "Speed", "Steps" }
-
-for _,v in pairs(Tags) do
-	t[#t+1] = Def.BitmapText{
-		Font="_eurostile normal",
-		Text= player == PLAYER_1 and v..":" or ":"..v,
-		OnCommand=function(s)
-			s:halign( player == PLAYER_1 and 0 or 1 ):zoom(0.5):diffuse(color("0.6,0.8,0.9,1"))
-			s:xy( -140*side(player), -196+(14*(_-1)) )
-		end,
-	}
-
-	t[#t+1] = Def.BitmapText{
-		Font="_eurostile normal",
-		Text=100,
-		OnCommand=function(s)
-			s:halign( player == PLAYER_1 and 0 or 1 ):zoom(0.5)
-			s:xy( -104*side(player), -196+(14*(_-1)) ):maxwidth(120)
-
-			local funct = {
-				function()
-					local Steps = GAMESTATE:GetCurrentSteps(player)
-			        local val = ""
-			        if Steps then
-				        local bpms = Steps:GetDisplayBpms()
-				        if bpms[1] == bpms[2] then
-					        val = string.format("%i", math.floor(bpms[1]) )
-				        else
-					        val = string.format("%i-%i",math.floor(bpms[1]),math.floor(bpms[2]))
-				        end
-					end
-					return val
-				end,
-				function()
-					return GetSpeedModeAndValueFromPoptions(player)
-				end,
-				function()
-					if GAMESTATE:GetCurrentSteps(player) then
-						local st = GAMESTATE:GetCurrentSteps(player)
-						return st:GetAuthorCredit() and st:GetAuthorCredit() or st:GetDescription()
-					end
-				end,
-			}
-
-			s:settext( funct[_]() )
-		end,
-	}
-end
-]]
 
 return t;

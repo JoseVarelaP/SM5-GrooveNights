@@ -4,7 +4,9 @@ return function( player )
     if not PROFILEMAN:GetProfile(player) then return end
     -- Current EXP from the player
     local gnTotalPlayer = 0
+    -- Current Level for player (will be calculated later.)
     local PlayerLevel = 1
+    -- Experience multiplier.
     local ExpMultiplier = 1
     -- First let's define neccesary elements.
     -- Based on the difficulty, we'll reward with a multiplier.
@@ -14,11 +16,18 @@ return function( player )
     local TierMult = { 10,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1,1 }
 
     -- Time to calculate!
+    -- This will get all achieved scores on each tier (01 to 17)
+    -- and combine then into a table.
     local TierSum = {}
     for i,v in pairs( Difs ) do
         for Ti=1,17 do
-            TierSum["Grade_Tier"..string.format("%02i",Ti)] = PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti))
-            gnTotalPlayer = gnTotalPlayer + i * TierMult[Ti] * TierSum["Grade_Tier"..string.format("%02i",Ti)]
+            if not TierSum["Grade_Tier"..string.format("%02i",Ti)] then
+                TierSum["Grade_Tier"..string.format("%02i",Ti)] = 0
+            end
+            TierSum["Grade_Tier"..string.format("%02i",Ti)] = TierSum["Grade_Tier"..string.format("%02i",Ti)] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                "StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti))
+            gnTotalPlayer = gnTotalPlayer + i * TierMult[Ti] * PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                    "StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti))
         end
     end
 
@@ -39,7 +48,7 @@ return function( player )
     }
     -- Song Count Calculation
     for _,var in pairs( Achievements[1] ) do
-        if PROFILEMAN:GetProfile(player):GetNumTotalSongsPlayed() > var then AchievementStats.SongCount = _ end
+        if PROFILEMAN:GetProfile(player):GetNumTotalSongsPlayed() >= var then AchievementStats.SongCount = _ end
     end
     -- Star Count Calculation
     -- Had to do the Tier calculation again because the data gets lost before
@@ -47,25 +56,35 @@ return function( player )
     local totalStars = 0
     for i,v in pairs( Difs ) do
         for Ti=1,4 do
-            totalStars = totalStars + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade("StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
+            totalStars = totalStars + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                "StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
         end
     end
-    for _,var in pairs( Achievements[4] ) do if totalStars > var then AchievementStats.StarCount = _ end end
+    for _,var in pairs( Achievements[4] ) do if totalStars >= var then AchievementStats.StarCount = _ end end
 
-    ExpMultiplier = ExpMultiplier + ( AchievementStats.SongCount/10 ) + ( AchievementStats.StarCount/10 )
+    -- Lose Count Calculation
+    -- Same with Star Calculation, the data gets lost on the way here, so
+    -- we need to recalculate the tier.
+    local TotalDeaths = 0
+    for i,v in pairs( Difs ) do
+        TotalDeaths = TotalDeaths + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+            "StepsType_Dance_Single",v,"Grade_Failed")
+    end
+    for _,var in pairs( Achievements[3] ) do if TotalDeaths >= var then AchievementStats.DeadCount = _ end end
+
+    ExpMultiplier = ExpMultiplier + ( AchievementStats.SongCount/10 ) + ( AchievementStats.StarCount/10 ) + ( AchievementStats.ExpCount/10 )
 
     -- Done main calculation, now multiply based on the EXP Mult!
     gnTotalPlayer = gnTotalPlayer * ExpMultiplier
 
     -- Time to return our current level.
     local GNExperience = 0
-    local gnExpCurve = 75
     local GNPercentage = 0
     local curlevcurve = 0
     for i= 1, 999 do
         -- Calculate each level before we check.
         local NewCurve = GNExperience
-        GNExperience = GNExperience + ( gnExpCurve * math.pow( 1.5, i ))
+        GNExperience = GNExperience + ( 75 * math.pow( 1.5, i ))
 
         if GNExperience <= gnTotalPlayer then
             -- yoy did gud, have another level
@@ -82,7 +101,7 @@ return function( player )
     end
 
     -- EXP Achievement check
-    for _,var in pairs( Achievements[2] ) do if PlayerLevel > var then AchievementStats.ExpCount = _ end end
+    for _,var in pairs( Achievements[2] ) do if PlayerLevel >= var then AchievementStats.ExpCount = _ end end
     
     -- Now with everything complete, let's return 4 results. One is a progress bar, the other is the raw
     -- points of the current level, next is the current level and last one is the achievements.
@@ -91,6 +110,12 @@ return function( player )
         gnTotalPlayer,
         PlayerLevel,
         curlevcurve,
-        Achievements={ AchievementStats.SongCount, AchievementStats.ExpCount, 0, AchievementStats.StarCount }
+        TierSum,
+        Achievements={
+            AchievementStats.SongCount,
+            AchievementStats.ExpCount,
+            AchievementStats.DeadCount,
+            AchievementStats.StarCount
+        }
     }
 end
