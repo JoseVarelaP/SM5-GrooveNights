@@ -123,11 +123,14 @@ t[#t+1] = Def.BitmapText{
         local pn = GAMESTATE:GetMasterPlayerNumber()
         local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
         local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
-        local SongPlayed = STATSMAN:GetStagesPlayed()
+        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
         s:finishtweening()
-        s:settext( "Total PlayTime: ".. SecondsToHHMMSS(TotalTime) .. " (".. SongPlayed .. " songs)"  )
-        local TextLength = string.len(s:GetText())
-        s:AddAttribute(0, { Length=TextLength-19; Diffuse=color("#FFA314") } )
+        s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
+        s:AddAttribute(0, {
+            Length=string.len(s:GetText())-(string.len(Comtp)+string.len(SongsCount));
+			Diffuse=color("#FFA314") }
+		)
     end,
 }
 

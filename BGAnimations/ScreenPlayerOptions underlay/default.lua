@@ -1,5 +1,18 @@
 local t = Def.ActorFrame{}
 
+local Steps = {}
+local DifficultyIndex = {
+    ["Difficulty_Beginner"] = 1,
+    ["Difficulty_Easy"] = 2,
+    ["Difficulty_Medium"] = 3,
+    ["Difficulty_Hard"] = 4,
+    ["Difficulty_Challenge"] = 5,
+    ["Difficulty_Edit"] = 6,
+}
+
+for _,v in pairs( GAMESTATE:GetCurrentSong():GetStepsByStepsType( GAMESTATE:GetCurrentStyle():GetStepsType() ) ) do
+    Steps[ DifficultyIndex[ v:GetDifficulty() ] ] = v
+end
 t[#t+1] = Def.Quad{
     OnCommand=function(s)
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y)
@@ -10,53 +23,64 @@ t[#t+1] = Def.Quad{
 
 t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("options","page"),
-    OnCommand=function(s) s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y) end
+    OnCommand=function(s) s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+10):diffuse( color("#060A0E") ) end
 }
 
 
 t[#t+1] = Def.Sprite{
     Texture="ScreenOptions frame",
     OnCommand=function(s)
-        s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y)
+        s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+10):diffuse( color("#1C2C3C") )
     end
 }
+local function side(pn)
+	local s = 1
+	if pn == PLAYER_1 then return s end
+	return s*(-1)
+end
 
-local PPos ={ [PLAYER_1] = SCREEN_CENTER_X-269, [PLAYER_2] = SCREEN_CENTER_X+269 }
 for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
     -- Profile picture?
         t[#t+1] = Def.ActorFrame{
             Condition=GAMESTATE:Env()["ToGame"],
+            OnCommand=function(s)
+                s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
+            end,
+
+            Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay under.png", OnCommand=function(s) s:diffuse( color("#060A0E") ) end },
+            Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay B", OnCommand=function(s) s:diffuse( color("#060A0E") ) end },
+
+            
+            -- Profile Managaer
             Def.Sprite {
                 Texture=LoadModule("Options.GetProfileData.lua")(pn)["Image"];
                 OnCommand=function(s)
-                    s:xy( PPos[pn],SCREEN_CENTER_Y-96)
-                    :setsize(80,80)
+                    s:xy(-114,-2)
+                    :setsize(64,64)
+                    if LoadModule("Options.GetProfileData.lua")(pn)["Name"] == "No Card" then
+                        s:diffuse( PlayerColor(pn) )
+                    end
                 end,
             },
-
-            Def.Sprite{
-                Condition=GAMESTATE:IsHumanPlayer(pn),
-                Texture=THEME:GetPathG("","PlayerReady"),
+            Def.Quad {
+                Condition=PROFILEMAN:GetProfile(pn):GetDisplayName() ~= "",
+                OnCommand=function(s) s:zoomto(64,64):xy(-114,-2):croptop(0.7):fadetop(0.1):diffuse(Color.Black) end,
+            },
+            Def.Sprite {
+                Texture=THEME:GetPathG("","AvatarFrame");
                 OnCommand=function(s)
-                    s:diffusealpha(0)
-                    :xy( PPos[pn],SCREEN_CENTER_Y-76)
-                    :zoom(1)
-                    :draworder(5)
-                    :diffuseblink()
+                    s:xy(-114,-2):diffuse( color("#1C2C3C") )
                 end,
-                ["ExitSelected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
-                    s:zoom(1):diffusealpha(1)
-                    SOUND:PlayOnce( THEME:GetPathS( 'PlayerReady', 'sound' ) )
-                end,
-                ["ExitUnselected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
-                    s:zoom(0):diffusealpha(0)
-                    SOUND:PlayOnce( THEME:GetPathS( 'PlayerNotReady', 'sound' ) )
-                end,
-                AllReadyMessageCommand=function(s)
-                    SOUND:PlayOnce( THEME:GetPathS( 'PlayerBothReady', 'sound' ) )
+            },
+            Def.BitmapText {
+                Font="_eurostile normal",
+                Text=PROFILEMAN:GetProfile(pn):GetDisplayName(),
+                OnCommand=function(s)
+                    s:xy(-114,22):zoom(0.5):diffuse( PlayerColor(pn) )
                 end,
             },
 
+            --[[
             Def.Sprite{
                 Condition=GAMESTATE:IsHumanPlayer(pn),
                 Texture="ScreenOptions playerframe",
@@ -65,37 +89,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                     :zoomx( pn == PLAYER_2 and -1 or 1 )
                 end,
             },
-
-            --Player 1/2's BPM & Speed Display
-            Def.BitmapText{
-                Condition=GAMESTATE:GetCurrentSong(),
-                Font="_eurostile blue glow", Text="BPM:",
-                OnCommand=function(s)
-                    s:halign(0):zoom(0.55):diffuse( color("0.6,0.8,0.9,1") )
-                    s:xy( PPos[pn]-38, SCREEN_CENTER_Y-45 )
-                end,
-            },
-            Def.BitmapText{
-                Condition=GAMESTATE:GetCurrentSong(),
-                Font="_eurostile blue glow", Text="SPEED:",
-                OnCommand=function(s)
-                    s:halign(0):zoom(0.55):diffuse( color("0.6,0.8,0.9,1") )
-                    s:xy( PPos[pn]-38, SCREEN_CENTER_Y-33 )
-                end,
-            },
-                
-                -- Player Name
-                Def.BitmapText{
-                Condition=GAMESTATE:GetCurrentSong(),
-                Font="_eurostile blue glow", Text=LoadModule("Options.GetProfileData.lua")(pn)["Name"],
-                OnCommand=function(s)
-                    local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
-                    local color = GameColor.PlayerColors[pn_to_color_name[pn]]
-
-                    s:zoom(0.6):diffuse( color )
-                    s:xy( PPos[pn], SCREEN_CENTER_Y-154 )
-                end,
-            },
+            ]]
 
             -- BPM Display
             Def.BitmapText{
@@ -103,7 +97,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 Font="_eurostile blue glow",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(70)
-                    s:xy( PPos[pn], SCREEN_CENTER_Y-45 )
+                    s:xy( -30, -26+( 16*(0) ) )
                     -- We need to calculate the possible BPM of the CURRENT CHART.
                     -- This is because SM5 support separate timings.
                     local Steps = GAMESTATE:GetCurrentSteps(pn)
@@ -126,7 +120,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 Font="_eurostile blue glow",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(70)
-                    s:xy( PPos[pn], SCREEN_CENTER_Y-33 )
+                    s:xy( -30, -26+( 16*(1) ) )
                 end,
                 InitCommand= function(s)
                     local speed, mode= GetSpeedModeAndValueFromPoptions(pn)
@@ -138,7 +132,76 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                     s:settext( speed or "" )
 		        end
             },
+
+            -- STEPS
+            Def.BitmapText{
+                Font="_eurostile blue glow",
+                OnCommand=function(s)
+                    s:halign(0):zoom(0.55):maxwidth(330)
+                    s:xy( -30, -26+( 16*(2) ) )
+                    local st = GAMESTATE:GetCurrentSteps(pn):GetAuthorCredit() and GAMESTATE:GetCurrentSteps(pn):GetAuthorCredit() or GAMESTATE:GetCurrentSteps(pn):GetDescription()
+                    s:settext( st )
+                end,
+                ["OptionRowSteps"..ToEnumShortString(pn).."ChangedMessageCommand"]=function(s,param)
+                    if param.Index then
+                        if Steps[param.Index] then
+                            local st = Steps[param.Index]:GetAuthorCredit() and Steps[param.Index]:GetAuthorCredit() or Steps[param.Index]:GetDescription()
+                            s:settext( st )
+                        end
+                    end
+                end,
+            },
+
+            -- LENGTH
+            Def.BitmapText{
+                Font="_eurostile blue glow",
+                OnCommand=function(s)
+                    s:halign(0):zoom(0.55):maxwidth(70)
+                    :xy( -30, -26+( 16*(3) ) )
+                    :settext( SecondsToMMSS( GAMESTATE:GetCurrentSong():MusicLengthSeconds() ) )
+                end,
+            },
         }
+    
+        local Labels = {"BPM","Speed","Steps","Length"}
+        for _,v in pairs(Labels) do
+            t[#t+1] = Def.BitmapText{
+                Condition=GAMESTATE:GetCurrentSong(),
+                Font="_eurostile blue glow", Text=v..":",
+                OnCommand=function(s)
+                    s:halign(0):zoom(0.5):diffuse( color("#FFA314") )
+                    s:xy( SCREEN_CENTER_X-160*side(pn)-78, SCREEN_CENTER_Y+154-26+( 16*(_-1) ) )
+                end
+            }
+        end
+
+        -- Draw ready on top of everything else
+        t[#t+1] = Def.Sprite{
+            Condition=GAMESTATE:IsHumanPlayer(pn),
+            Texture=THEME:GetPathG("","PlayerReady"),
+            OnCommand=function(s)
+                s:diffusealpha(0):zoom(0.3):draworder(5):diffuseshift()
+                :effectcolor1( PlayerColor(pn) ):effectcolor2( ColorDarkTone( PlayerColor(pn) ) )
+                s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
+            end,
+            ["ExitSelected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
+                s:decelerate(0.2):zoom(1):diffusealpha(1)
+                SOUND:PlayOnce( THEME:GetPathS( 'PlayerReady', 'sound' ) )
+            end,
+            ["ExitUnselected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
+                s:decelerate(0.2):zoom(0.3):diffusealpha(0)
+                SOUND:PlayOnce( THEME:GetPathS( 'PlayerNotReady', 'sound' ) )
+            end,
+            AllReadyMessageCommand=function(s)
+                SOUND:PlayOnce( THEME:GetPathS( 'PlayerBothReady', 'sound' ) )
+            end,
+        }
+
+        t[#t+1] = Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay F",
+        OnCommand=function(s)
+            s:diffuse( color("#1C2C3C") )
+            s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
+        end }
 end
 
 t[#t+1] = Def.Sprite{
@@ -153,6 +216,26 @@ t[#t+1] = Def.Sprite{
 	OnCommand=function(s)
 		s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y)
 	end,
+}
+
+t[#t+1] = Def.BitmapText{
+    Font="_eurostile normal",
+    InitCommand=function(s)
+        s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):playcommand("Update")
+    end,
+    UpdateCommand=function(s)
+        local pn = GAMESTATE:GetMasterPlayerNumber()
+        local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
+        local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
+        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
+        s:finishtweening()
+        s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
+        s:AddAttribute(0, {
+            Length=string.len(s:GetText())-(string.len(Comtp)+string.len(SongsCount));
+			Diffuse=color("#FFA314") }
+		)
+    end,
 }
 
 return t;

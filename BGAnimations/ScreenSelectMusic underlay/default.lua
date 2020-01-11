@@ -19,24 +19,6 @@ local Labels = {
     {"RANK", "LENGTH"}
 }
 
-local function GetBPM()
-    if GAMESTATE:GetCurrentSteps( GAMESTATE:GetMasterPlayerNumber() ) then
-        local Steps = GAMESTATE:GetCurrentSteps( GAMESTATE:GetMasterPlayerNumber() )
-        local val = ""
-        if Steps then
-            local bpms = Steps:GetDisplayBpms()
-            if bpms[1] == bpms[2] then
-                val = string.format("%i", math.floor(bpms[1]) )
-            else
-                val = string.format("%i-%i",math.floor(bpms[1]),math.floor(bpms[2]))
-            end
-            return val
-        end
-    else
-        return ""
-    end
-end
-
 local function GetOrdinalSongRank()
     local sufixes = {"th","st","nd","rd"}
 	local song = GAMESTATE:GetCurrentSong()
@@ -66,18 +48,22 @@ for _,v in pairs(Labels) do
             Font="_eurostile normal",
             OnCommand=function(s)
                 s:halign(0):xy( SCREEN_CENTER_X-248+(200*_), SCREEN_CENTER_Y-70+(16*a) )
-                :zoom(0.6)
+                :zoom(0.6):playcommand("Update")
             end,
-            CurrentSongChangedMessageCommand=function(s)
+            CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
+            CurrentStepsP1ChangedMessageCommand=function(s) s:playcommand("Update") end,
+            CurrentStepsP2ChangedMessageCommand=function(s) s:playcommand("Update") end,
+            UpdateCommand=function(s)
+                s:settext("")
+                local Steps = GAMESTATE:GetCurrentSteps( GAMESTATE:GetMasterPlayerNumber() )
                 if GAMESTATE:GetCurrentSong() then
                     local data = {
-                        { GAMESTATE:GetCurrentSong():GetDisplayArtist(), GetBPM(), GAMESTATE:GetCurrentSong():GetSongDir() },
+                        { GAMESTATE:GetCurrentSong():GetDisplayArtist(), LoadModule("SelectMusic.ObtainBPM.lua")( Steps ), GAMESTATE:GetCurrentSong():GetSongDir() },
                         { GetOrdinalSongRank(), SecondsToMMSS( GAMESTATE:GetCurrentSong():MusicLengthSeconds() ) },
                         Widths = { 240,240,400,80,80 }
                     }
+                    data[1][2] = LoadModule("SelectMusic.ObtainBPM.lua")( Steps )
                     s:settext( " ".. data[_][a] ):maxwidth( data.Widths[ _*a ] )
-                else
-                    s:settext("")
                 end
             end,
         }
@@ -116,10 +102,14 @@ t[#t+1] = Def.BitmapText{
         local pn = GAMESTATE:GetMasterPlayerNumber()
         local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
         local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
-        local SongPlayed = STATSMAN:GetStagesPlayed()
-        s:settext( "Total PlayTime: ".. SecondsToHHMMSS(TotalTime) .. " (".. SongPlayed .. " songs)"  )
-        local TextLength = string.len(s:GetText())
-        s:AddAttribute(0, { Length=TextLength-19; Diffuse=color("#FFA314") } )
+        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
+        s:finishtweening()
+        s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
+        s:AddAttribute(0, {
+            Length=string.len(s:GetText())-(string.len(Comtp)+string.len(SongsCount));
+			Diffuse=color("#FFA314") }
+		)
     end,
 }
 

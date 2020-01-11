@@ -3,7 +3,7 @@ local ProgressBar = Def.ActorFrame{
     OnCommand=function(s)
         s:xy( SCREEN_CENTER_X, 24 )
     end,
-    Def.Sprite{ Texture="meter measure", OnCommand=function(s) s:zoomtowidth( WideScale(440, 424+154) ) end, },
+    Def.Sprite{ Texture="meter measure", OnCommand=function(s) s:zoomtowidth( WideScale(440, 424+154) ):diffuse( color("#1C2C3C") ) end, },
     Def.SongMeterDisplay{
         StreamWidth=WideScale(414, 424+128),
         Stream=Def.Sprite{ 
@@ -206,11 +206,14 @@ local TotalPlayTime = Def.BitmapText{
         local pn = GAMESTATE:GetMasterPlayerNumber()
         local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
         local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
-        local SongPlayed = STATSMAN:GetStagesPlayed()
+        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
         s:finishtweening()
-        s:settext( "Total PlayTime: ".. SecondsToHHMMSS(TotalTime+TimeRightNow) .. " (".. SongPlayed .. " songs)"  )
-        local TextLength = string.len(s:GetText())
-        s:AddAttribute(0, { Length=TextLength-19; Diffuse=color("#FFA314") } )
+        s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
+        s:AddAttribute(0, {
+            Length=string.len(s:GetText())-(string.len(Comtp)+string.len(SongsCount));
+			Diffuse=color("#FFA314") }
+		)
         s:sleep(1):queuecommand("Update")
     end,
 }

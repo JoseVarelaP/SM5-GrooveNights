@@ -10,7 +10,7 @@ local ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
 local t = Def.ActorFrame{
     OnCommand=function(s)
         local ymargin = player == PLAYER_1 and 30 or 130
-        s:xy( SCREEN_CENTER_X-160*side(player)-3, SCREEN_CENTER_Y+154 )
+        s:xy( SCREEN_CENTER_X-160*side(player)-8, SCREEN_CENTER_Y+154 )
         :diffusealpha( GAMESTATE:IsPlayerEnabled(player) and 1 or 0 )
     end,
 	PlayerJoinedMessageCommand=function(s,param)
@@ -33,7 +33,7 @@ local BI = Def.ActorFrame{
 		s:y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
 	end,
 	UpdateInfoPlayerMessageCommand=function(s)
-		s:sleep(1.4):decelerate(0.3):y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
+		s:sleep(1.8):decelerate(0.3):y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
 	end,
 }
 
@@ -151,7 +151,7 @@ t[#t+1] = Def.Sprite {
 	end,
 	UpdateInfoPlayerMessageCommand=function(s,param)
 		if param.pn == player then
-			s:sleep(1):linear(0.3):diffusealpha(0):sleep(0.01):queuecommand("UpdateIcon")
+			s:sleep(1.3):linear(0.3):diffusealpha(0):sleep(0.01):queuecommand("UpdateIcon")
 		end
 	end,
 	UpdateIconCommand=function(s)
