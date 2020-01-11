@@ -92,6 +92,8 @@ local t = Def.ActorFrame {
 				local zoomed = LoadModule("Config.Load.lua")("ToggleComboSize","Save/GrooveNightsPrefs.ini") and (scale( s:GetText() ,0,500,0.9,1.4) > 1.4 and 1.4 or scale( s:GetText() ,0,500,0.9,1.4)) or 1
 				if LoadModule("Config.Load.lua")("ToggleComboBounce","Save/GrooveNightsPrefs.ini") then
 					s:finishtweening():zoom( (1.05*zoomed)*staticzoom ):linear(0.05):zoom( zoomed*staticzoom )
+				else
+					s:finishtweening():zoom( 1*staticzoom )
 				end
 			end
 		end;
@@ -103,12 +105,22 @@ local t = Def.ActorFrame {
 			local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini")
 				if LoadModule("Config.Load.lua")("ToggleComboBounce","Save/GrooveNightsPrefs.ini") then
 					s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
+				else
+					s:finishtweening():zoom( 1*staticzoom )
 				end
 		end;
 	};
 	LoadActor("misses") .. {
 		Name="Misses";
-		OnCommand = THEME:GetMetric("Combo", "LabelOnCommand");
+		InitCommand = THEME:GetMetric("Combo", "LabelOnCommand");
+		ComboCommand=function(s)
+			local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini")
+			if LoadModule("Config.Load.lua")("ToggleComboBounce","Save/GrooveNightsPrefs.ini") then
+				s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
+			else
+				s:finishtweening():zoom( 1*staticzoom )
+			end
+		end,
 	};
 
 

@@ -158,7 +158,10 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(70)
                     :xy( -30, -26+( 16*(3) ) )
-                    :settext( SecondsToMMSS( GAMESTATE:GetCurrentSong():MusicLengthSeconds() ) )
+                    :settext(
+                        math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) == 105 and "Patched" or
+                        SecondsToMMSS( math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) )
+                    )
                 end,
             },
         }

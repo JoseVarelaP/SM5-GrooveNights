@@ -204,12 +204,9 @@ t[#t+1] = Def.ActorFrame{
 			end
 		},
 
-	--[[
-
 		Def.ComboGraph{
-			Condition=GAMESTATE:GetPlayMode() ~= "PlayMode_Rave",
 			InitCommand=function(self)
-				self:y(-7+(1.3))
+				self:xy( 2, 134-14 )
 			end,
 			BeginCommand=function(self)
 				self:Load("ComboGraphP"..pnum(player))
@@ -218,8 +215,7 @@ t[#t+1] = Def.ActorFrame{
 				self:Set(stageStats, playerStageStats)
 			end,
 		},
-		
-	]]
+
 		Def.BitmapText{
 			Font="_futurist metalic", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player), OnCommand=function(self)
 				self:xy(-46*side(player),-20-83-50):diffuse(PlayerColor(player))
