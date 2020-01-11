@@ -33,4 +33,23 @@ t[#t+1] = Def.Sprite{
     end;
 }
 
+t[#t+1] = Def.HelpDisplay {
+	File="_eurostile normal",
+	OnCommand=function(s)
+		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
+	end,
+	InitCommand=function(s)
+        local str = (THEME:GetString("ScreenPlayerOptions","HelpTextNormal") .. "::"
+        .. THEME:GetString("ScreenPlayerOptions","SelectAvailableHelpTextAppend"))
+		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
+		s:SetTipsColonSeparated(str)
+	end,
+	SelectMenuOpenedMessageCommand=function(s)
+		s:stoptweening():decelerate(0.2):zoomy(0)
+	end,
+	SelectMenuClosedMessageCommand=function(s)
+		s:stoptweening():bouncebegin(0.2):zoomy(0.75)
+	end
+}
+
 return t;

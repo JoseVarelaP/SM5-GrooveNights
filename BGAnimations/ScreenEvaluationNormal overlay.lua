@@ -114,7 +114,8 @@ t[#t+1] = Def.Sprite{
 }
 
 t[#t+1] = Def.BitmapText{
-    Font="_eurostile normal",
+	Font="_eurostile normal",
+	Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini"),
     InitCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6)
         :playcommand("Update")
@@ -132,6 +133,28 @@ t[#t+1] = Def.BitmapText{
 			Diffuse=color("#FFA314") }
 		)
     end,
+}
+
+t[#t+1] = Def.HelpDisplay {
+	File="_eurostile normal",
+	OnCommand=function(s)
+		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
+	end,
+	InitCommand=function(s)
+		local str = THEME:GetString("ScreenEvaluation","HelpTextNormal") .. "::" ..
+			THEME:GetString("ScreenEvaluation","TakeScreenshotHelpTextAppend")
+		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
+		s:SetTipsColonSeparated(str)
+	end,
+	SetHelpTextCommand=function(s, params)
+		s:SetTipsColonSeparated( params.Text )
+	end,
+	SelectMenuOpenedMessageCommand=function(s)
+		s:stoptweening():decelerate(0.2):zoomy(0)
+	end,
+	SelectMenuClosedMessageCommand=function(s)
+		s:stoptweening():bouncebegin(0.2):zoomy(0.75)
+	end
 }
 
 collectgarbage();

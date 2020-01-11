@@ -3,8 +3,9 @@ local crownon = true
 local curzoom = 1
 t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("Judgment","label"),
+    Condition=GAMESTATE:Env()["GNSetting"] == "Judgment",
     OnCommand=function(s)
-        s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+100):animate(0)
+        s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+170):animate(0)
         :zoom( 0.75*LoadModule("Config.Load.lua")("DefaultJudgmentSize","Save/GrooveNightsPrefs.ini") )
         :diffusealpha( LoadModule("Config.Load.lua")("DefaultJudgmentOpacity","Save/GrooveNightsPrefs.ini") )
     end,
@@ -27,8 +28,9 @@ t[#t+1] = Def.Sprite{
 }
 
 t[#t+1] = Def.ActorFrame{
+    Condition=GAMESTATE:Env()["GNSetting"] == "Judgment",
     InitCommand=function(s)
-        s:xy( SCREEN_CENTER_X-100, SCREEN_CENTER_Y+100 )
+        s:xy( SCREEN_CENTER_X-100, SCREEN_CENTER_Y+170 )
     end,
 
     Def.Sprite{
@@ -60,9 +62,10 @@ t[#t+1] = Def.ActorFrame{
 
 t[#t+1] = Def.BitmapText{
     Font="_xenotron metal",
+    Condition=GAMESTATE:Env()["GNSetting"] == "Judgment",
     Text=math.random(1,100),
     OnCommand=function(s)
-        s:xy(SCREEN_CENTER_X+150,SCREEN_CENTER_Y+100):animate(0)
+        s:xy(SCREEN_CENTER_X+150,SCREEN_CENTER_Y+170):animate(0)
         :zoom( LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini") )
     end,
     ComboTweenMessageCommand=function(s,param)
