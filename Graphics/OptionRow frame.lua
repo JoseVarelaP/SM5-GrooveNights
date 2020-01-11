@@ -1,16 +1,20 @@
 local t = Def.ActorFrame{}
 local CurDir = {}
+local RowName = ""
 
 t[#t+1] = Def.Actor{
-	OnCommand=function(s)
+	InitCommand=function(s)
 		s:visible(false)
 		local OpRow = s:GetParent():GetParent():GetParent()
-		if OpRow:GetName() == "Steps" then
-			s:visible(true)
-			for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
-				CurDir[pn] = OpRow:GetChoiceInRowWithFocus(pn)
+		if OpRow then
+			RowName = OpRow:GetName()
+			if OpRow:GetName() == "Steps" then
+				s:visible(true)
+				for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
+					CurDir[pn] = OpRow:GetChoiceInRowWithFocus(pn)
+				end
+				s:queuecommand("Update")
 			end
-			s:queuecommand("Update")
 		end
 	end,
 	UpdateCommand=function(s)
@@ -23,6 +27,42 @@ t[#t+1] = Def.Actor{
 		end
 		s:sleep(4/60):queuecommand("Update")
 	end,
+}
+
+t[#t+1] = Def.ActorFrame{
+	OnCommand=function(s)
+		s:y(6)
+		s:visible( s:GetParent():GetParent():GetParent():GetName() == "gnGlobalOffset" )
+	end,
+	Def.Quad{
+		OnCommand=function(s)
+			s:xy( 74,-4 ):zoomto( 380,4 ):halign(0):diffuse( color("#1C2C3C") )
+		end,
+	},
+	Def.Sprite{
+		Texture=THEME:GetPathG("","EXP/expBar"),
+		OnCommand=function(s)
+			s:x( 240 ):zoom(1.8):zoomx(4)
+		end,
+	},
+	Def.BitmapText{
+		Font="Common Normal",
+		InitCommand=function(s)
+			s:zoom(0.4):y( -16 )
+		end,
+		gnGlobalOffsetChangeMessageCommand=function(s,param)
+			s:x( scale( param.choice, 0, 150, 70, 440 ) )
+			s:settext( -1.5 + (0.02*(param.choice-1)) )
+		end,
+	},
+	Def.Quad{
+		InitCommand=function(s)
+			s:xy( 70, -4 ):zoom(8):rotationz(45)
+		end,
+		gnGlobalOffsetChangeMessageCommand=function(s,param)
+			s:x( scale( param.choice, 0, 150, 70, 440 ) )
+		end,
+	},
 }
 
 return t;

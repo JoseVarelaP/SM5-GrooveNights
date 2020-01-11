@@ -1,5 +1,6 @@
 local c;
 local player = Var "Player";
+local PDir = PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."/GrooveNightsPrefs.ini"
 local ShowComboAt = THEME:GetMetric("Combo", "ShowComboAt");
 local Pulse = function(self)
 	local combo=self:GetZoom()
@@ -88,9 +89,9 @@ local t = Def.ActorFrame {
 		end;
 		ComboCommand=function(s)
 			if s:GetText() and s:GetText() ~= "" then
-				local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini")
-				local zoomed = LoadModule("Config.Load.lua")("ToggleComboSize","Save/GrooveNightsPrefs.ini") and (scale( s:GetText() ,0,500,0.9,1.4) > 1.4 and 1.4 or scale( s:GetText() ,0,500,0.9,1.4)) or 1
-				if LoadModule("Config.Load.lua")("ToggleComboBounce","Save/GrooveNightsPrefs.ini") then
+				local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize",PDir)
+				local zoomed = LoadModule("Config.Load.lua")("ToggleComboSize",PDir) and (scale( s:GetText() ,0,500,0.9,1.4) > 1.4 and 1.4 or scale( s:GetText() ,0,500,0.9,1.4)) or 1
+				if LoadModule("Config.Load.lua")("ToggleComboBounce",PDir) then
 					s:finishtweening():zoom( (1.05*zoomed)*staticzoom ):linear(0.05):zoom( zoomed*staticzoom )
 				else
 					s:finishtweening():zoom( 1*staticzoom )
@@ -102,8 +103,8 @@ local t = Def.ActorFrame {
 		Name="Label";
 		OnCommand = THEME:GetMetric("Combo", "LabelOnCommand");
 		ComboCommand=function(s)
-			local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini")
-				if LoadModule("Config.Load.lua")("ToggleComboBounce","Save/GrooveNightsPrefs.ini") then
+			local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize",PDir)
+				if LoadModule("Config.Load.lua")("ToggleComboBounce",PDir) then
 					s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
 				else
 					s:finishtweening():zoom( 1*staticzoom )
@@ -114,8 +115,8 @@ local t = Def.ActorFrame {
 		Name="Misses";
 		InitCommand = THEME:GetMetric("Combo", "LabelOnCommand");
 		ComboCommand=function(s)
-			local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini")
-			if LoadModule("Config.Load.lua")("ToggleComboBounce","Save/GrooveNightsPrefs.ini") then
+			local staticzoom = LoadModule("Config.Load.lua")("DefaultComboSize",PDir)
+			if LoadModule("Config.Load.lua")("ToggleComboBounce",PDir) then
 				s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
 			else
 				s:finishtweening():zoom( 1*staticzoom )
@@ -196,7 +197,7 @@ local t = Def.ActorFrame {
 		c.Number:finishtweening();
 		c.Label:finishtweening();
 		-- Pulse
-		if LoadModule("Config.Load.lua")("ToggleComboBounce","Save/GrooveNightsPrefs.ini") then
+		if LoadModule("Config.Load.lua")("ToggleComboBounce",PDir) then
 			Pulse( c.Number );
 			PulseLabel( c.Label, param );
 			PulseLabel( c.Misses, param );

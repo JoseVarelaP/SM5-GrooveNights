@@ -1,5 +1,6 @@
 local c;
 local player = Var "Player";
+local PDir = PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."/GrooveNightsPrefs.ini"
 
 local TNSFrames = {
 	TapNoteScore_W1 = 0;
@@ -58,13 +59,13 @@ t[#t+1] = Def.ActorFrame {
 		
 		self:playcommand("Reset");
 
-		local DJS = LoadModule("Config.Load.lua")("DefaultJudgmentSize","Save/GrooveNightsPrefs.ini") or 1
+		local DJS = LoadModule("Config.Load.lua")("DefaultJudgmentSize",PDir) or 1
 
 		c.Judgment:visible( true )
-		c.Judgment:diffusealpha( LoadModule("Config.Load.lua")("DefaultJudgmentOpacity","Save/GrooveNightsPrefs.ini") or 1 )
+		c.Judgment:diffusealpha( LoadModule("Config.Load.lua")("DefaultJudgmentOpacity",PDir) or 1 )
 		c.Judgment:setstate( iFrame )
 		c.Judgment:rotationz( RotTween[param.TapNoteScore][math.random(1,2)] );
-		c.Judgment:zoom( LoadModule("Config.Load.lua")("ToggleJudgmentBounce","Save/GrooveNightsPrefs.ini") and 0.8*DJS or 0.75*DJS )
+		c.Judgment:zoom( LoadModule("Config.Load.lua")("ToggleJudgmentBounce",PDir) and 0.8*DJS or 0.75*DJS )
 		c.Judgment:decelerate( 0.1 )
 		c.Judgment:zoom( 0.75*DJS )
 	end;

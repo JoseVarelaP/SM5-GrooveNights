@@ -9,6 +9,7 @@ local t = Def.ActorFrame{
 	},
 };
 
+GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
 if not GAMESTATE:IsCourseMode() then
 t[#t+1] = LoadActor("../_song credit display")..{
 	OnCommand=function(self)

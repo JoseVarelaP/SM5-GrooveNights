@@ -38,6 +38,7 @@ t[#t+1] = Def.HelpDisplay {
 	end
 }
 
+GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
 t[#t+1] = Def.ActorFrame{
     OnCommand=function(s)
         s:y( SCREEN_BOTTOM-17-18 )

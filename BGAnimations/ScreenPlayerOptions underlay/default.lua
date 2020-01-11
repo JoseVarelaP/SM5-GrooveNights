@@ -205,6 +205,40 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             s:diffuse( color("#1C2C3C") )
             s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
         end }
+
+        t[#t+1] = Def.Sprite{
+            Texture=THEME:GetPathG("Judgment","label"),
+            Condition=GAMESTATE:Env()["gnNextScreen"] == "gnPlayerSettings",
+            OnCommand=function(s)
+                local PDir = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+                s:animate(0):xy( SCREEN_CENTER_X-240*side(pn), SCREEN_CENTER_Y-166 )
+                :zoom( 0.75*LoadModule("Config.Load.lua")("DefaultJudgmentSize",PDir) )
+                :diffusealpha( LoadModule("Config.Load.lua")("DefaultJudgmentOpacity",PDir) )
+            end,
+            DefaultJudgmentSizeChangeMessageCommand=function(s,param)
+                if param.pn == pn and param.choice then
+                    s:finishtweening():zoom( 0.75*(param.choice)/10 ) curzoom = (param.choice-1)/10 end
+            end,
+            DefaultJudgmentOpacityChangeMessageCommand=function(s,param)
+                if param.pn == pn and param.choice then
+                    s:diffusealpha( (param.choice-1)/10 ) end
+            end,
+        }
+
+        t[#t+1] = Def.BitmapText{
+            Font="_xenotron metal",
+            Condition=GAMESTATE:Env()["gnNextScreen"] == "gnPlayerSettings",
+            Text=math.random(50),
+            OnCommand=function(s)
+                local PDir = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+                s:animate(0):xy( SCREEN_CENTER_X-120*side(pn), SCREEN_CENTER_Y-166 )
+                :zoom( 0.75*LoadModule("Config.Load.lua")("DefaultComboSize",PDir) )
+            end,
+            DefaultComboSizeChangeMessageCommand=function(s,param)
+                if param.pn == pn and param.choice then
+                    s:finishtweening():zoom( 0.75*(param.choice)/10 ) curzoom = (param.choice-1)/10 end
+            end,
+        }
 end
 
 t[#t+1] = Def.Sprite{
