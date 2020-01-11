@@ -12,9 +12,9 @@ return Def.ActorFrame{
     },
 
     Def.Sprite{
-        Texture=THEME:GetPathG("","_saving"),
+        Texture=THEME:GetPathG("","Loading"),
         OnCommand=function(s)
-            s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+100):accelerate(0.2):diffusealpha(0)
+            s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+70):accelerate(0.2):diffusealpha(0)
         end,
     },
 

@@ -11,6 +11,13 @@ return Def.ActorFrame{
     },
 
     Def.Sprite{
+        Texture=THEME:GetPathG("","Loading"),
+        OnCommand=function(s)
+            s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+70):diffusealpha(0):sleep(0.3):linear(0.2):diffusealpha(1)
+        end,
+    },
+
+    Def.Sprite{
         Texture=THEME:GetPathG("","TransitionArrow"),
         OnCommand=function(s)
             s:xy(SCREEN_RIGHT+200,SCREEN_CENTER_Y):rotationz(-90):decelerate(0.2):x( SCREEN_CENTER_X )
