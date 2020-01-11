@@ -16,15 +16,18 @@ t[#t+1] = LoadActor("../_song credit display")..{
 	end;
 };
 t[#t+1] = Def.ActorFrame{
-		InitCommand=function(s) s:hibernate(0.199):decelerate(0.15):addy(-80):accelerate(0.15):addy(80) end,
-		Def.Sprite{
-			Texture=THEME:GetPathG("Stages/ScreenGameplay","stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage())),
-			OnCommand=function(self)
-				self:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y):zoom(0):linear(0.15):zoom(0.5):linear(0.15):zoom(1)
-			end;
-		},
+		InitCommand=function(s) s:hibernate(0.199):xy( SCREEN_CENTER_X,SCREEN_BOTTOM+100 ):bounceend(0.5):y( SCREEN_CENTER_Y ) end,
+		Def.Sprite{ Texture=THEME:GetPathG("Stages/ScreenGameplay","stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage())) },
 };
 end
+
+t[#t+1] = Def.Sprite{
+    Texture=THEME:GetPathG("","TransitionArrow"),
+    OnCommand=function(s)
+		s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):accelerate(0.2):y(-60)
+		SOUND:PlayOnce( THEME:GetPathS("gnScreenTransition whoosh", "long") )
+    end,
+}
 
 if GAMESTATE:IsCourseMode() then
 t[#t+1] = Def.ActorFrame{

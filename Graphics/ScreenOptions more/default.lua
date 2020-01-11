@@ -5,7 +5,7 @@ local ExitSelect = {
 local t = Def.ActorFrame{
 	BeginCommand=function(s)
 		local screen = SCREENMAN:GetTopScreen():GetName()
-		s:y( THEME:GetMetric(screen,"SeparateExitRowY") ):addx(-SCREEN_WIDTH):decelerate(0.3):addx(SCREEN_WIDTH)
+		s:y( THEME:GetMetric(screen,"SeparateExitRowY") )
 	end;
 	CancelMessageCommand=function(s) s:playcommand("Off") end;
 }
