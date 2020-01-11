@@ -39,7 +39,7 @@ for _,v in pairs(Labels) do
             Font="_eurostile normal",
             Text=e..":",
             OnCommand=function(s)
-                s:halign(1):xy( SCREEN_CENTER_X-48+(280*(_-1)), SCREEN_CENTER_Y-56+(16*a) ):diffuse(color("0.6,0.8,0.9,1"))
+                s:halign(1):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-56+(16*a) ):diffuse(color("#FFA314"))
                 :zoom(0.6)
             end,
         }
@@ -47,7 +47,7 @@ for _,v in pairs(Labels) do
         t[#t+1] = Def.BitmapText{
             Font="_eurostile normal",
             OnCommand=function(s)
-                s:halign(0):xy( SCREEN_CENTER_X-48+(280*(_-1)), SCREEN_CENTER_Y-56+(16*a) )
+                s:halign(0):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-56+(16*a) )
                 :zoom(0.6):playcommand("Update")
             end,
             CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
@@ -59,7 +59,9 @@ for _,v in pairs(Labels) do
                 if GAMESTATE:GetCurrentSong() then
                     local data = {
                         { GAMESTATE:GetCurrentSong():GetDisplayArtist(), LoadModule("SelectMusic.ObtainBPM.lua")( Steps ), GAMESTATE:GetCurrentSong():GetSongDir() },
-                        { GetOrdinalSongRank(), SecondsToMMSS( GAMESTATE:GetCurrentSong():MusicLengthSeconds() ) },
+                        { GetOrdinalSongRank(),
+                        math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) == 105 and "Patched" or  SecondsToMMSS( math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) )
+                        },
                         Widths = { 240,240,600,80,80 }
                     }
                     data[1][2] = LoadModule("SelectMusic.ObtainBPM.lua")( Steps )

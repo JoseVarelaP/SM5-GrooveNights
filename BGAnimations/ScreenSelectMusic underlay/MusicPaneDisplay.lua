@@ -273,7 +273,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
     t[#t+1] = Def.BitmapText{
         Font="_eurostile normal",
         Text="Step Artist",
-		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-24):maxwidth(120):zoom(0.53):diffuse(color("0.6,0.8,0.9,1")) end;
+		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-24):maxwidth(120):zoom(0.53):diffuse( color("#FFA314") ) end;
 	};
     
     t[#t+1] = Def.BitmapText{
