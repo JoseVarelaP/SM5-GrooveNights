@@ -1,3 +1,4 @@
+local Data = ...
 local t = Def.ActorFrame{
 	OnCommand=function(s)
 		s:zoom(0.28):x(-1):y(-1):wag():effectmagnitude(0,0,2)
@@ -9,7 +10,7 @@ local t = Def.ActorFrame{
 		end,
 
 		Def.Sprite{
-			Texture="GradeTier0005",
+			Texture="GradeTier"..string.format( "%04i", Data[2] ),
 			OnCommand=function(s) s:sleep(0.2) end,
 			InitCommand=function(s)
 				s:diffusealpha(0)

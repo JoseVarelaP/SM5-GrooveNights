@@ -9,12 +9,13 @@ local PlayerOptions = PlayerState:GetPlayerOptionsArray(0)
 -- We begin with an empty set.
 local optionslist = ""
 local PlayerGrade = "Grade_Tier17"
+local GradeNum = 17
 
 PlayerGrade = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetGrade()
+GradeNum = tonumber(string.sub( ToEnumShortString( PlayerGrade ), 5 ))
 if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetFailed( player ) then
 	PlayerGrade = "Grade_Failed"
 end
-
 -- Now set a ipairs instance to get all things.
 for k,option in ipairs(PlayerOptions) do
 	if k < #PlayerOptions then
@@ -89,7 +90,7 @@ t[#t+1] = Def.ActorFrame{
 		OnCommand=function(s) s:xy( -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.7):addrotationz(10) end,
 	},
 
-	LoadActor( THEME:GetPathG("", "Grades/".. ToEnumShortString( PlayerGrade ) .. ".lua" ), player )..{
+	LoadActor( THEME:GetPathG("", "Grades/".. (GradeNum > 4 and "TierCommon" or ToEnumShortString( PlayerGrade )) ..".lua" ), {player,GradeNum} )..{
 		OnCommand=function(s) s:xy( -30*side(player), -200 ) end,
 	},
 

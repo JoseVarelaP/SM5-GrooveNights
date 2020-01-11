@@ -1,4 +1,4 @@
-local player = ...
+local Data = ...
 local t = Def.ActorFrame{
 	OnCommand=function(s)
 		s:zoom(0.28):x(-1):y(-1):wag():effectmagnitude(0,0,2)
@@ -10,7 +10,7 @@ local t = Def.ActorFrame{
 		end,
 
 		Def.Sprite{
-			Texture=LoadModule("Score.CustomTierGraphic.lua")(player,4),
+			Texture=LoadModule("Score.CustomTierGraphic.lua")(Data[1],4),
 			OnCommand=function(s) s:sleep(0.2) end,
 			InitCommand=function(s)
 				s:diffusealpha(0)

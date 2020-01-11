@@ -5,7 +5,7 @@ local starpos = {
 	{85,80}
 }
 
-local player = ...
+local Data = ...
 
 local t = Def.ActorFrame{
 	OnCommand=function(s)
@@ -21,7 +21,7 @@ for _,v in pairs(starpos) do
 		end,
 
 		Def.Sprite{
-			Texture=LoadModule("Score.CustomTierGraphic.lua")(player,1),
+			Texture=LoadModule("Score.CustomTierGraphic.lua")(Data[1],1),
 			OnCommand=function(s) s:sleep(0.2) end,
 			InitCommand=function(s)
 				s:diffusealpha(0)
