@@ -10,7 +10,7 @@ t[#t+1] = Def.Sprite{
         :decelerate(0.1):zoom(0.9):diffusealpha(0.8):accelerate(0.1):zoom(1):diffusealpha(1)
     end,
     GradeSoundCommand=function(s)
-        SOUND:PlayOnce( THEME:GetPathS("","grade1") )
+        SOUND:PlayOnce( THEME:GetPathS("gnGradeUp","0") )
     end,
     OnCommand=function(s) s:sleep(0.2) end,
 }

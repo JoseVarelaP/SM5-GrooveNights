@@ -90,7 +90,10 @@ t[#t+1] = Def.ActorFrame{
 		OnCommand=function(s) s:xy( -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.7):addrotationz(10) end,
 	},
 
-	LoadActor( THEME:GetPathG("", "Grades/".. (GradeNum > 4 and "TierCommon" or ToEnumShortString( PlayerGrade )) ..".lua" ), {player,GradeNum} )..{
+	LoadActor( THEME:GetPathG("", "Grades/".. (
+		ToEnumShortString( PlayerGrade ) ~= "Failed" and (GradeNum > 4 and "TierCommon" or ToEnumShortString( PlayerGrade ))
+		or "Failed"
+		) ..".lua" ), {player,GradeNum} )..{
 		OnCommand=function(s) s:xy( -30*side(player), -200 ) end,
 	},
 
