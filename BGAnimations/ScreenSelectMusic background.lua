@@ -14,6 +14,13 @@ t[#t+1] = Def.ActorFrame{
 t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("ScreenSelectMusic divider","B"),
     InitCommand=function(s)
+        s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):MaskSource()
+    end,
+}
+
+t[#t+1] = Def.Sprite{
+    Texture=THEME:GetPathG("ScreenSelectMusic divider","B"),
+    InitCommand=function(s)
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):diffuse( color("#060A0E") )
     end,
 }
