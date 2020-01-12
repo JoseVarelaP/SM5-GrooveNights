@@ -231,7 +231,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             Text=math.random(50),
             OnCommand=function(s)
                 local PDir = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
-                s:animate(0):xy( SCREEN_CENTER_X-120*side(pn), SCREEN_CENTER_Y-166 )
+                s:animate(0):xy( SCREEN_CENTER_X-130*side(pn), SCREEN_CENTER_Y-166 )
                 :zoom( 0.75*LoadModule("Config.Load.lua")("DefaultComboSize",PDir) )
             end,
             DefaultComboSizeChangeMessageCommand=function(s,param)

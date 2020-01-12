@@ -1,6 +1,11 @@
 local t = Def.ActorFrame{}
 local CurDir = {}
 local RowName = ""
+if not GAMESTATE:Env()["OriginalOffset"] then
+	GAMESTATE:Env()["OriginalOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
+end
+local set = string.format( "%.2f", GAMESTATE:Env()["OriginalOffset"] )
+local OperatorSet = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 
 t[#t+1] = Def.Actor{
 	InitCommand=function(s)
@@ -31,8 +36,9 @@ t[#t+1] = Def.Actor{
 
 t[#t+1] = Def.ActorFrame{
 	OnCommand=function(s)
+		local name = s:GetParent():GetParent():GetParent():GetName()
 		s:y(6)
-		s:visible( s:GetParent():GetParent():GetParent():GetName() == "gnGlobalOffset" )
+		s:visible( name == "gnGlobalOffset" or name == "OPERATORGlobalOffset" )
 	end,
 	Def.Quad{
 		OnCommand=function(s)
@@ -45,6 +51,15 @@ t[#t+1] = Def.ActorFrame{
 			s:x( 240 ):zoom(1.8):zoomx(4)
 		end,
 	},
+	Def.Quad{
+		InitCommand=function(s)
+			s:xy(
+				scale( GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set, -1.5, 1.5, 70, 440 )
+				, -4
+			):zoom(4):rotationz(45):diffuse( Color.Green )
+		end,
+	},
+
 	Def.BitmapText{
 		Font="Common Normal",
 		InitCommand=function(s)
@@ -54,13 +69,23 @@ t[#t+1] = Def.ActorFrame{
 			s:x( scale( param.choice, 0, 150, 70, 440 ) )
 			s:settext( -1.5 + (0.02*(param.choice-1)) )
 		end,
+		OPERATORGlobalOffsetChangeMessageCommand=function(s,param)
+			s:x( scale( param.choice, 0, 150, 70, 440 ) )
+			s:settext( -1.5 + (0.02*(param.choice-1)) )
+		end,
 	},
 	Def.Quad{
 		InitCommand=function(s)
 			s:xy( 70, -4 ):zoom(8):rotationz(45)
 		end,
 		gnGlobalOffsetChangeMessageCommand=function(s,param)
+			local spot = string.format( "%.2f", (-1.5 + (0.02*(param.choice-1))))
 			s:x( scale( param.choice, 0, 150, 70, 440 ) )
+			s:diffuse( spot == set and Color.Green or Color.White )
+		end,
+		OPERATORGlobalOffsetChangeMessageCommand=function(s,param)
+			s:x( scale( param.choice, 0, 150, 70, 440 ) )
+			s:diffuse( Color.Green )
 		end,
 	},
 }

@@ -95,14 +95,40 @@ return {
 		Choices = fnrformat(-1.5,1.5,0.02,""),
 		Values = fornumrange(-1.5,1.5,0.02),
 		LoadFunc = function(self,list)
-			local function roundyes(x)
-				return x>0 and math.floor(x+0.5) or math.ceil(x-0.5)
+			if not GAMESTATE:Env()["NewOffset"] then GAMESTATE:Env()["NewOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
+			local envset = string.format("%.2f",GAMESTATE:Env()["NewOffset"])
+			local set = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
+			for i,_ in ipairs(self.Values) do
+				if string.format("%.2f",_) == envset then
+					list[i] = true
+					SCREENMAN:SystemMessage( string.format("%.2f",_) .. " " .. string.format("%.2f",GAMESTATE:Env()["NewOffset"]) )
+					-- SCREENMAN:SystemMessage( "success 1" )
+					MESSAGEMAN:Broadcast("gnGlobalOffsetChange",{choice=i})
+					return
+				end
 			end
+			list[16] = true
+		end,
+		SaveFunc = function(self,list,player)
+			if not GAMESTATE:Env()["OriginalOffset"] then GAMESTATE:Env()["OriginalOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
+			for i,_ in ipairs(self.Values) do
+				if list[i] == true then
+					GAMESTATE:Env()["NewOffset"] = _
+				end
+			end
+		end,
+	},
+	OPERATORGlobalOffset =
+	{
+		Default = 0,
+		Choices = fnrformat(-1.5,1.5,0.02,""),
+		Values = fornumrange(-1.5,1.5,0.02),
+		LoadFunc = function(self,list)
 			local set = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 			for i,_ in ipairs(self.Values) do
 				if string.format("%.2f",_) == set then
 					list[i] = true
-					MESSAGEMAN:Broadcast("gnGlobalOffsetChange",{choice=i})
+					MESSAGEMAN:Broadcast("OPERATORGlobalOffsetChange",{choice=i})
 					return
 				end
 			end
@@ -111,9 +137,15 @@ return {
 		SaveFunc = function(self,list,player)
 			for i,_ in ipairs(self.Values) do
 				if list[i] == true then
-					PREFSMAN:SetPreference( "GlobalOffsetSeconds", _ )
+					PREFSMAN:SetPreference("GlobalOffsetSeconds", _)
 				end
 			end
 		end,
+	},
+	ToggleSystemClock = 
+	{
+		Default = false,
+		Choices = { OptionNameString('Off'), OptionNameString('On') },
+		Values = { false, true }
 	},
 }

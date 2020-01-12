@@ -10,6 +10,7 @@ local t = Def.ActorFrame{
 };
 
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
+PREFSMAN:SetPreference( "GlobalOffsetSeconds", GAMESTATE:Env()["NewOffset"] )
 if not GAMESTATE:IsCourseMode() then
 t[#t+1] = LoadActor("../_song credit display")..{
 	OnCommand=function(self)

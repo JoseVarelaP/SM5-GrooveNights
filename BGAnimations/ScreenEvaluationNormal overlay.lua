@@ -118,7 +118,7 @@ t[#t+1] = Def.BitmapText{
 	Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini"),
     InitCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6)
-        :playcommand("Update")
+		:playcommand("Update")
     end,
     UpdateCommand=function(s)
         local pn = GAMESTATE:GetMasterPlayerNumber()
