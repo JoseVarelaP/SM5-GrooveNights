@@ -1,6 +1,9 @@
 local t = Def.ActorFrame{}
 local CurDir = {}
 local RowName = ""
+if not GAMESTATE:Env()["GNSetting"] then
+	GAMESTATE:Env()["GNSetting"] = "nil"
+end
 if not GAMESTATE:Env()["OriginalOffset"] then
 	GAMESTATE:Env()["OriginalOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 end
@@ -40,6 +43,22 @@ t[#t+1] = Def.ActorFrame{
 		s:y(6)
 		s:visible( name == "gnGlobalOffset" or name == "OPERATORGlobalOffset" )
 	end,
+
+	Def.Quad{
+		InitCommand=function(s)
+			s:xy( 340, 6 ):zoom(4):rotationz(45):diffuse( Color.Green )
+		end,
+	},
+
+	Def.BitmapText{
+		Font="Common Normal",
+		Text="Original Offset (".. (GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set) ..")",
+		InitCommand=function(s)
+			s:zoom(0.4):xy( 350, 6 ):halign(0)
+		end,
+	},
+
+
 	Def.Quad{
 		OnCommand=function(s)
 			s:xy( 74,-4 ):zoomto( 380,4 ):halign(0):diffuse( color("#1C2C3C") )
