@@ -18,7 +18,21 @@ t[#t+1] = loadfile( THEME:GetPathG('ScreenSelectMusic','StepsDisplayList') )()..
 t[#t+1] = Def.HelpDisplay {
 	File="_eurostile normal",
 	OnCommand=function(s)
-		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
+        s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
+        
+        local OptionStrings = {
+            ["DefaultJudgmentSize"] = 1,
+            ["DefaultJudgmentOpacity"] = 1,
+            ["DefaultComboSize"] = 1,
+            ["ToggleComboBounce"] = true,
+            ["ToggleJudgmentBounce"] = true,
+            ["ToggleComboExplosion"] = true,
+        }
+        for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
+            for _,v in pairs(OptionStrings) do
+                if not GAMESTATE:Env()[_.."Machinetemp"..pn] then GAMESTATE:Env()[_.."Machinetemp"..pn] = v end
+            end
+        end
 	end,
 	InitCommand=function(s)
 		local str = THEME:GetString("ScreenSelectMusic","HelpTextNormal") .. "::" ..

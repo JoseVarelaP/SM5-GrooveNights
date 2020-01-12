@@ -40,6 +40,10 @@ local function side(pn)
 end
 
 for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
+    local PDir = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+    local DJS = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentSize",PDir) or GAMESTATE:Env()["DefaultJudgmentSizeMachinetemp"..pn]
+    local DJO = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentOpacity",PDir) or GAMESTATE:Env()["DefaultJudgmentOpacityMachinetemp"..pn]
+    local DCS = PDir and LoadModule("Config.Load.lua")("DefaultComboSize",PDir) or GAMESTATE:Env()["DefaultComboSizeMachinetemp"..pn]
     -- Profile picture?
         t[#t+1] = Def.ActorFrame{
             Condition=GAMESTATE:Env()["ToGame"],
@@ -210,10 +214,9 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             Texture=THEME:GetPathG("Judgment","label"),
             Condition=GAMESTATE:Env()["gnNextScreen"] == "gnPlayerSettings",
             OnCommand=function(s)
-                local PDir = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
                 s:animate(0):xy( SCREEN_CENTER_X-240*side(pn), SCREEN_CENTER_Y-166 )
-                :zoom( 0.75*LoadModule("Config.Load.lua")("DefaultJudgmentSize",PDir) )
-                :diffusealpha( LoadModule("Config.Load.lua")("DefaultJudgmentOpacity",PDir) )
+                :zoom( 0.75*DJS )
+                :diffusealpha( DJO )
             end,
             DefaultJudgmentSizeChangeMessageCommand=function(s,param)
                 if param.pn == pn and param.choice then
@@ -230,9 +233,8 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             Condition=GAMESTATE:Env()["gnNextScreen"] == "gnPlayerSettings",
             Text=math.random(50),
             OnCommand=function(s)
-                local PDir = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
                 s:animate(0):xy( SCREEN_CENTER_X-130*side(pn), SCREEN_CENTER_Y-166 )
-                :zoom( 0.75*LoadModule("Config.Load.lua")("DefaultComboSize",PDir) )
+                :zoom( 0.75*DCS )
             end,
             DefaultComboSizeChangeMessageCommand=function(s,param)
                 if param.pn == pn and param.choice then
