@@ -101,8 +101,6 @@ return {
 			for i,_ in ipairs(self.Values) do
 				if string.format("%.2f",_) == envset then
 					list[i] = true
-					SCREENMAN:SystemMessage( string.format("%.2f",_) .. " " .. string.format("%.2f",GAMESTATE:Env()["NewOffset"]) )
-					-- SCREENMAN:SystemMessage( "success 1" )
 					MESSAGEMAN:Broadcast("gnGlobalOffsetChange",{choice=i})
 					return
 				end
