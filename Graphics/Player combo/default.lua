@@ -1,6 +1,6 @@
 local c;
 local player = Var "Player";
-local PDir = PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."/GrooveNightsPrefs.ini"
+local PDir = MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none' and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..player
 local ShowComboAt = THEME:GetMetric("Combo", "ShowComboAt");
 local Pulse = function(self)
 	local combo=self:GetZoom()

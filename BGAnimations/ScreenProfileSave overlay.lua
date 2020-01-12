@@ -1,7 +1,11 @@
 return Def.ActorFrame{
     BeginCommand=function(s)
         if SCREENMAN:GetTopScreen():HaveProfileToSave() then
-            s:sleep(1)
+            for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
+                if PROFILEMAN:IsPersistentProfile(pn) then
+                    PROFILEMAN:SaveProfile( pn )
+                end
+            end
         end
         s:queuecommand("Load")
     end,

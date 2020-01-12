@@ -40,7 +40,7 @@ local function side(pn)
 end
 
 for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
-    local PDir = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+    local PDir = MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none' and PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..pn
     local DJS = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentSize",PDir) or GAMESTATE:Env()["DefaultJudgmentSizeMachinetemp"..pn]
     local DJO = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentOpacity",PDir) or GAMESTATE:Env()["DefaultJudgmentOpacityMachinetemp"..pn]
     local DCS = PDir and LoadModule("Config.Load.lua")("DefaultComboSize",PDir) or GAMESTATE:Env()["DefaultComboSizeMachinetemp"..pn]

@@ -32,7 +32,7 @@ return function(Prefs)
 					if getenv(k.."env"..pn) then reset = true setenv(k.."env"..pn,false) end
 					local Location = "Save/GrooveNightsPrefs.ini"
 					if v.UserPref then
-						Location = PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+						Location = MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none' and CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..pn
 					end
 					if not reset and not v.SkipLocation and LoadModule("Config.Exists.lua")(k,Location) then
 						local CurPref = LoadModule("Config.Load.lua")(k,Location)
@@ -83,10 +83,13 @@ return function(Prefs)
 						return
 					end
 					if v.UserPref then 
-							Location = CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+						Location = MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none' and CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..pn
 					end
 					for i,_ in ipairs(self.Values) do
-							if list[i] == true then LoadModule("Config.Save.lua")(k,tostring(self.Values[i]),Location) setenv(k.."Machinetemp"..pn,self.Values[i]) end
+							if list[i] == true then
+								LoadModule("Config.Save.lua")( k, tostring(self.Values[i]) ,Location )
+								setenv(k.."Machinetemp"..pn,self.Values[i])
+							end
 					end
 				end,
 				Reload = function() return "ReloadChanged_All" end,
