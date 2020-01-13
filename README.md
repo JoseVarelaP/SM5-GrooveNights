@@ -1,4 +1,6 @@
-# GrooveNights for StepMania 5
+<p align="center">
+  <img src="https://raw.githubusercontent.com/wiki/JoseVarelaP/SM5-GrooveNights/NewLogoWiki.png" width="400">
+</p>
 
 ## Current Compatibility
 This theme has been made on 5.3, and thus uses Modules, which allow for faster loading of single use scripts.
@@ -8,6 +10,7 @@ It is planned to backport the theme for 5.0.12 users, but for now, I want to foc
 * Level System
 * Judgment/Combo Sizing
 * ITG Grading weights (ITG timing is not yet there)
+* [Temporary Player Adjustable Offset](https://github.com/JoseVarelaP/SM5-GrooveNights/wiki/AdjustableOffset)
 
 ## Considered in the future
 * Implement Judgment skins (using 5.3's Appearance subdirectory)
