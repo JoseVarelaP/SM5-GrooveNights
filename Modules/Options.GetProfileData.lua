@@ -21,5 +21,8 @@ return function(PData)
 			if string.match(v, "(%w+)Avatar") == profile:GetDisplayName() then Info[PData].Image = THEME:GetPathG("","NoAvatar/"..v) end
 		end
 	end
+	if GAMESTATE:Env()["Konami"] then
+		Info[PData].Image = THEME:GetPathG("","NoAvatar/KonamiAvatar")
+	end
 	return Info[PData]
 end

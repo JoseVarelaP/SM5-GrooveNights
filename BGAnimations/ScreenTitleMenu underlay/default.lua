@@ -7,5 +7,9 @@ return Def.ActorFrame{
         :zoomx(1.1)
         setenv( "ToGame", false )
     end,
+    CodeMessageCommand=function(s,param)
+        SCREENMAN:SystemMessage( param.Name .." code Activated" )
+        GAMESTATE:Env()[param.Name] = true
+    end;
 }
 }

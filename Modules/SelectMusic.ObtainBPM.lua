@@ -1,5 +1,4 @@
 return function(Steps)
-    -- local Steps = GAMESTATE:GetCurrentSteps(pn)
 	local val = ""
 	if Steps then
 		local bpms = Steps:GetDisplayBpms()

@@ -1,4 +1,16 @@
-local t = Def.ActorFrame{}
+local t = Def.ActorFrame{
+	OnCommand=function(s)
+		if GAMESTATE:Env()["Vibrate"] then
+            if SCREENMAN:GetTopScreen() then
+                for v in pairs( SCREENMAN:GetTopScreen():GetChildren() ) do
+                    if SCREENMAN:GetTopScreen():GetChild(v) then
+                        SCREENMAN:GetTopScreen():GetChild(v):vibrate():effectmagnitude(2,2,2)
+                    end
+                end
+            end
+        end
+	end
+}
 
 local pos = { SCREEN_BOTTOM-36, SCREEN_TOP+40 }
 
@@ -18,7 +30,14 @@ for var in ivalues(pos) do
 end
 t[#t+1] = Def.BitmapText{
 	Font="_eurostile blue glow",
-	Text=string.upper(Screen.String("HeaderText")),
+	InitCommand=function(s)
+		local sClass = Var "LoadingScreen"
+		local string = Screen.String("HeaderText")
+		if GAMESTATE:Env()["AngryGrandpa"] and THEME:HasString( sClass, "GrandpaHeader" ) then
+			string = Screen.String("GrandpaHeader")
+		end
+		s:settext( string )
+	end,
 	OnCommand=function(s) s:xy( s:GetWidth()/2+20, 41 ) end,
 }
 

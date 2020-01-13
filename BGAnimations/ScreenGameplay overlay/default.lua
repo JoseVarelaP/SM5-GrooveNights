@@ -220,8 +220,26 @@ local TotalPlayTime = Def.BitmapText{
     end,
 }
 
+local Special = Def.ActorFrame{}
+local EnvCh = {"Rain","Blizzard","Frost","Santa"}
+for v in ivalues(EnvCh) do
+    if GAMESTATE:Env()[v] then
+        Special[#Special+1] = loadfile( THEME:GetPathB("ScreenGameplay","Overlay/"..v) )()
+    end
+end
 
 return Def.ActorFrame{
+    OnCommand=function(s)
+		if GAMESTATE:Env()["Vibrate"] then
+            if SCREENMAN:GetTopScreen() then
+                for v in pairs( SCREENMAN:GetTopScreen():GetChildren() ) do
+                    if SCREENMAN:GetTopScreen():GetChild(v) then
+                        SCREENMAN:GetTopScreen():GetChild(v):vibrate():effectmagnitude(2,2,2)
+                    end
+                end
+            end
+        end
+	end,
     ProgressBar,
     BPMDisplay,
     Score,
@@ -236,4 +254,5 @@ return Def.ActorFrame{
         end;
     };
     CurrentStage,
+    Special,
 }

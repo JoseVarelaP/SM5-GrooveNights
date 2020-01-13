@@ -15,8 +15,8 @@ end
 
 -- Time To Write song info
 local Labels = {
-    {"ARTIST", "BPM", "FOLDER"},
-    {"RANK", "LENGTH"}
+    Normal = {{"ARTIST", "BPM", "FOLDER"}, {"RANK", "LENGTH"}},
+    Grandpa = {{"music", "GO!", "where"}, {"like", "longer"}}
 }
 
 local function GetOrdinalSongRank()
@@ -33,7 +33,7 @@ local function GetOrdinalSongRank()
 	end
 end
 
-for _,v in pairs(Labels) do
+for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.Normal ) do
     for a,e in ipairs(v) do
         t[#t+1] = Def.BitmapText{
             Font="_eurostile normal",
