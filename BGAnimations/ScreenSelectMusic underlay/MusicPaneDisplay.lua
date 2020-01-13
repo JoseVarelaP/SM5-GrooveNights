@@ -263,7 +263,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
 		if StepsOrCourse() then
 			s:settext(
-				THEME:GetString("Difficulty", ToEnumShortString( StepsOrCourse():GetDifficulty() ) )
+				LoadModule("Gameplay.DifficultyName.lua")( "Steps", player )
 			)
 			:diffuse( DifficultyColor( StepsOrCourse():GetDifficulty() ) )
 		end
