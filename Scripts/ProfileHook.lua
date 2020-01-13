@@ -1,10 +1,10 @@
 local OptionStrings = {
-	["DefaultJudgmentSize"] = "number",
-	["DefaultJudgmentOpacity"] = "number",
-	["DefaultComboSize"] = "number",
-	["ToggleComboBounce"] = "boolean",
-	["ToggleJudgmentBounce"] = "boolean",
-	["ToggleComboExplosion"] = "boolean",
+	["DefaultJudgmentSize"] = 1,
+	["DefaultJudgmentOpacity"] = 1,
+	["DefaultComboSize"] = 1,
+	["ToggleComboBounce"] = true,
+	["ToggleJudgmentBounce"] = true,
+	["ToggleComboExplosion"] = true,
 }
 local filename = "GrooveNights.save"
 -- Hook called during profile load
@@ -35,6 +35,13 @@ function LoadProfileCustom(profile, dir)
 		if profile == PROFILEMAN:GetProfile(player) then
 			pn = player
 			break
+		end
+	end
+
+	-- Reset all temporary options.
+	if pn then
+		for k,v in pairs( OptionStrings ) do
+			LoadModule("Config.Save.lua")( k, tostring(v) , "Save/TEMP"..pn )
 		end
 	end
 

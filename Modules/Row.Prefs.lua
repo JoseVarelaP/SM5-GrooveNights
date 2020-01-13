@@ -32,7 +32,11 @@ return function(Prefs)
 					if getenv(k.."env"..pn) then reset = true setenv(k.."env"..pn,false) end
 					local Location = "Save/GrooveNightsPrefs.ini"
 					if v.UserPref then
-						Location = MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none' and CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..pn
+						Location = (
+							( PROFILEMAN:GetProfile(pn):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none') and
+							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+							or "Save/TEMP"..pn
+						)
 					end
 					if not reset and not v.SkipLocation and LoadModule("Config.Exists.lua")(k,Location) then
 						local CurPref = LoadModule("Config.Load.lua")(k,Location)

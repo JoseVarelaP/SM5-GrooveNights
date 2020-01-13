@@ -1,11 +1,18 @@
 local c;
 local player = Var "Player";
-local PDir = MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none' and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..player
-local DJS = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentSize",PDir) or GAMESTATE:Env()["DefaultJudgmentSizeMachinetemp"..player]
-local DJO = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentOpacity",PDir) or GAMESTATE:Env()["DefaultJudgmentOpacityMachinetemp"..player]
-local DCS = PDir and LoadModule("Config.Load.lua")("DefaultComboSize",PDir) or GAMESTATE:Env()["DefaultComboSizeMachinetemp"..player]
-local TJB = PDir and LoadModule("Config.Load.lua")("ToggleJudgmentBounce",PDir) or GAMESTATE:Env()["ToggleJudgmentBounceMachinetemp"..player]
-
+local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
+local PDir = (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..player
+local settings = {"DefaultJudgmentSize","DefaultJudgmentOpacity","ToggleJudgmentBounce"}
+for _,v in pairs(settings) do
+	-- In case the profile is an actual profile or USB
+	if isRealProf then
+		settings[_] = LoadModule("Config.Load.lua")(v,PDir)
+	-- If not, then we'll use the temporary set for regular players.
+	else
+		settings[_] = GAMESTATE:Env()[v.."Machinetemp"..player]
+	end
+	lua.ReportScriptError( v .. " = ".. tostring(settings[_]) )
+end
 
 local TNSFrames = {
 	TapNoteScore_W1 = 0;
@@ -64,12 +71,12 @@ t[#t+1] = Def.ActorFrame {
 		
 		self:playcommand("Reset");
 		c.Judgment:visible( true )
-		c.Judgment:diffusealpha( DJO or 1 )
+		c.Judgment:diffusealpha( settings[2] or 1 )
 		c.Judgment:setstate( iFrame )
 		c.Judgment:rotationz( RotTween[param.TapNoteScore][math.random(1,2)] );
-		c.Judgment:zoom( TJB and 0.8*DJS or 0.75*DJS )
+		c.Judgment:zoom( settings[3] and 0.8*settings[1] or 0.75*settings[1] )
 		c.Judgment:decelerate( 0.1 )
-		c.Judgment:zoom( 0.75*DJS )
+		c.Judgment:zoom( 0.75*settings[1] )
 	end;
 };
 
