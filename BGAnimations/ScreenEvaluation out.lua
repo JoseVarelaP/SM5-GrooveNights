@@ -24,7 +24,7 @@ return Def.ActorFrame{
     Def.Sprite{
         Texture=THEME:GetPathG("","_saving"),
         OnCommand=function(s)
-            s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+100):diffusealpha(0):sleep(0.2):linear(0.2):diffusealpha(1)
+            s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+70):diffusealpha(0):sleep(0.2):linear(0.2):diffusealpha(1)
         end,
     }
 }

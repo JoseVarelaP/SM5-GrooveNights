@@ -6,7 +6,10 @@ local function side(pn)
 	if pn == PLAYER_1 then return s end
 	return s*(-1)
 end
-local ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
+if not GAMESTATE:Env()[player.."gnCalculation"] then
+	GAMESTATE:Env()[player.."gnCalculation"] = LoadModule("GrooveNights.LevelCalculator.lua")(player)
+end
+local ach = GAMESTATE:Env()[player.."gnCalculation"]
 local t = Def.ActorFrame{
     OnCommand=function(s)
         local ymargin = player == PLAYER_1 and 30 or 130
