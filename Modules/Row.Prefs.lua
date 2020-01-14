@@ -37,7 +37,6 @@ return function(Prefs)
 							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
 							or "Save/TEMP"..pn
 						)
-						lua.ReportScriptError( Location )
 					end
 					if not reset and not v.SkipLocation and LoadModule("Config.Exists.lua")(k,Location) then
 						local CurPref = LoadModule("Config.Load.lua")(k,Location)

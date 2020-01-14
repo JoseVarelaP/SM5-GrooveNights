@@ -14,15 +14,11 @@ local function LoadContents(path)
 		file:destroy()
 		return nil
 	end
-
 	local contents = file:Read()
 	file:Close()
 	file:destroy()
-
 	return contents
 end
-
-local MemoryData = {}
 
 function LoadProfileCustom(profile, dir)
 	

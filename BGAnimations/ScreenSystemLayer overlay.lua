@@ -33,8 +33,8 @@ t[#t+1] = Def.ActorFrame {
 -- Text
 t[#t+1] = Def.ActorFrame {
 	InitCommand=function(s) s:y(-40) end,
-	OnCommand=function(s) s:y(-40):linear(0.2):y(-10) SOUND:PlayOnce( THEME:GetPathS( 'gnSystemMessage', 'sound' ) ) end,
-	OffCommand=function(s) s:sleep(3):linear(0.2):y(-40) end,
+	OnCommand=function(s) s:finishtweening():y(-40):decelerate(0.2):y(-10) SOUND:PlayOnce( THEME:GetPathS( 'gnSystemMessage', 'sound' ) ) end,
+	OffCommand=function(s) s:sleep(2):bouncebegin(0.2):y(-40) end,
 	Def.Sprite {
 		Texture=THEME:GetPathG("ScreenSystemLayer","MessageFrame"),
 		InitCommand=function(s)

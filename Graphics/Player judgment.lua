@@ -11,7 +11,6 @@ for _,v in pairs(settings) do
 	else
 		settings[_] = GAMESTATE:Env()[v.."Machinetemp"..player]
 	end
-	lua.ReportScriptError( v .. " = ".. tostring(settings[_]) )
 end
 
 local TNSFrames = {

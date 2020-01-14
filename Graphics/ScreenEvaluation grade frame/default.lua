@@ -210,7 +210,7 @@ t[#t+1] = Def.ActorFrame{
 
 		Def.ComboGraph{
 			InitCommand=function(self)
-				self:xy( 2, 134-14 )
+				self:y( 134-14 )
 			end,
 			BeginCommand=function(self)
 				self:Load("ComboGraphP"..pnum(player))
