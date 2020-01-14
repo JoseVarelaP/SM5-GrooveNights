@@ -37,6 +37,7 @@ return function(Prefs)
 							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
 							or "Save/TEMP"..pn
 						)
+						lua.ReportScriptError( Location )
 					end
 					if not reset and not v.SkipLocation and LoadModule("Config.Exists.lua")(k,Location) then
 						local CurPref = LoadModule("Config.Load.lua")(k,Location)
@@ -87,12 +88,16 @@ return function(Prefs)
 						return
 					end
 					if v.UserPref then 
-						Location = MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none' and CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..pn
+						Location = (
+							( PROFILEMAN:GetProfile(pn):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none') and
+							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+							or "Save/TEMP"..pn
+						)
 					end
 					for i,_ in ipairs(self.Values) do
 							if list[i] == true then
 								LoadModule("Config.Save.lua")( k, tostring(self.Values[i]) ,Location )
-								setenv(k.."Machinetemp"..pn,self.Values[i])
+								setenv(k.."Machinetemp"..pn,tostring(self.Values[i]) )
 							end
 					end
 				end,

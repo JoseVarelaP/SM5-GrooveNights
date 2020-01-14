@@ -49,7 +49,7 @@ function LoadProfileCustom(profile, dir)
 		local data = LoadContents(path)
 		for line in string.gmatch(data.."\n", "(.-)\n") do	
 			for KeyVal, Val in string.gmatch(line, "(.-)=(.+)") do
-				LoadModule("Config.Save.lua")( KeyVal, Val , "Save/TEMP"..pn )
+				LoadModule("Config.Save.lua")( KeyVal, tostring(Val) , "Save/TEMP"..pn )
 			end
 		end
 	end
@@ -65,10 +65,8 @@ function SaveProfileCustom(profile, dir)
 		if profile == PROFILEMAN:GetProfile(player) and FILEMAN:DoesFileExist(path) then
 			local output = {}
 			for k,v in pairs( OptionStrings ) do
-				if LoadModule("Config.Load.lua")( k,"Save/TEMP"..player ) then
-					local res = tostring( LoadModule("Config.Load.lua")( k,"Save/TEMP"..player ) )
-					LoadModule("Config.Save.lua")( k, res , path )
-				end
+				local res = LoadModule("Config.Load.lua")( k,"Save/TEMP"..player )
+				LoadModule("Config.Save.lua")( k, tostring(res) , path )
 			end
 			break
 		end
