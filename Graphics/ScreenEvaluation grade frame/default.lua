@@ -146,12 +146,22 @@ t[#t+1] = Def.ActorFrame{
 		Condition=not isvalidplayer,
 		OnCommand=function(s)
 			s:xy(-70,18):diffuse( color("#1C2C3C") )
-		end
+		end,
+		EvaluationInputChangedMessageCommand=function(s,param)
+			if param.Player == player then
+				s:stoptweening():linear(0.2):diffusealpha( param.Index == 1 and 1 or 0 )
+			end
+		end,
 	},
 	Def.ActorFrame{
 		Condition=isvalidplayer,
 		OnCommand=function(s)
 			s:xy( -100, 6 )
+		end,
+		EvaluationInputChangedMessageCommand=function(s,param)
+			if param.Player == player then
+				s:stoptweening():linear(0.2):diffusealpha( param.Index == 1 and 1 or 0 )
+			end
 		end,
 
 		Def.Sprite{ 
@@ -221,7 +231,7 @@ t[#t+1] = Def.ActorFrame{
 		},
 
 		Def.BitmapText{
-			Font="_futurist metalic", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player), OnCommand=function(self)
+			Font="_futurist metalic", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player,true), OnCommand=function(self)
 				self:xy(-46*side(player),-20-83-50):diffuse(PlayerColor(player))
 				:zoom(0.9):linear(0.3):zoom(1)
 			end
@@ -261,7 +271,12 @@ for _,v in pairs(Achievements) do
         OnCommand=function(s)
 			s:xy( -50, (20 * (_-1))-24 ):zoom(0.8)
 			s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
-        end,
+		end,
+		EvaluationInputChangedMessageCommand=function(s,param)
+			if param.Player == player then
+				s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+			end
+		end,
     }
 end
 
@@ -273,7 +288,12 @@ for i=1,4 do
         Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),
         OnCommand=function(s)
             s:xy( -28, (24*(i-1))-24 ):zoom(0.6)
-        end,
+		end,
+		EvaluationInputChangedMessageCommand=function(s,param)
+			if param.Player == player then
+				s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+			end
+		end,
 	}
 	t[#t+1] = Def.BitmapText{
 		Condition=isvalidplayer,
@@ -281,6 +301,11 @@ for i=1,4 do
 		Text=total,
         OnCommand=function(s)
             s:xy( -11, (24*(i-1))-24 ):zoom(0.5):diffuse( PlayerColor(player) )
+		end,
+		EvaluationInputChangedMessageCommand=function(s,param)
+			if param.Player == player then
+				s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+			end
 		end,
     }
 end
@@ -297,7 +322,7 @@ for index, ValTC in ipairs(JudgmentInfo.Types) do
 		Def.Sprite{ Texture="judgment"..string.format("%04i",index),
 		OnCommand=function(s)
 			s:y(16*index):zoom(0.65):horizalign(left)
-		end;
+		end
 		};
 	};
 end
@@ -377,10 +402,14 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 	local possible = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetRadarPossible():GetValue( "RadarCategory_"..RCType )
 
 	t[#t+1] = Def.ActorFrame{
-		Condition=not GAMESTATE:Env()["WorkoutMode"],
 		OnCommand=function(self)
 			self:xy(128,-36)
 		end;
+		EvaluationInputChangedMessageCommand=function(s,param)
+			if param.Player == player then
+				s:stoptweening():sleep(0.02*index):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+			end
+		end,
 
 		Def.BitmapText{ Font="ScreenEvaluation judge",
 		OnCommand=function(self)
@@ -451,12 +480,17 @@ end
 
 -- Max Combo
 t[#t+1] = Def.ActorFrame{
-	Condition=not GAMESTATE:Env()["WorkoutMode"],
 	OnCommand=function(s)
 		if GAMESTATE:GetPlayMode() == "PlayMode_Rave" then
 			s:xy(-71,-4)
 		end
-	end;
+	end,
+	EvaluationInputChangedMessageCommand=function(s,param)
+		if param.Player == player then
+			s:stoptweening():sleep(0.02*6):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+		end
+	end,
+
 	Def.Sprite{ Texture="judgment0012",
 	OnCommand=function(self)
 		self:xy( 3, 16*4-2 ):zoom(0.65):halign(0)
@@ -480,5 +514,55 @@ t[#t+1] = Def.ActorFrame{
 	};
 
 }
+
+-- Arrow Breakdown / Offset Information
+local offsetTable = GAMESTATE:Env()["OffsetTable"][player]
+local timingWindow = GAMESTATE:Env()["perColJudgeData"][player]
+local ArB = Def.ActorFrame{
+	OnCommand=function(s)
+		s:xy( -70, -20 ):diffusealpha(0)
+		local total = offsetTable.Early + offsetTable.Late
+		s:GetChild("Early"):cropright( 1 - (offsetTable.Early/total) )
+		s:GetChild("Late"):cropleft( 1 - (offsetTable.Late/total) )
+	end,
+	EvaluationInputChangedMessageCommand=function(s,param)
+		if param.Player == player then
+			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 0 or 1 )
+		end
+	end,
+	Def.BitmapText{ Font="_eurostile normal", Text="Arrow Breakdown", OnCommand=function(s) s:zoom(0.5):y(-8) end },
+	Def.BitmapText{ Font="_eurostile normal", Text="Offset Derivative", OnCommand=function(s) s:zoom(0.5):x(140) end },
+	Def.BitmapText{ Font="_eurostile normal", Text="Early", OnCommand=function(s) s:zoom(0.35):xy( 90,12 ) end },
+	Def.BitmapText{ Font="_eurostile normal", Text="Late", OnCommand=function(s) s:zoom(0.35):xy( 185,12 ) end },
+
+	Def.BitmapText{ Font="_eurostile normal", Text=offsetTable.Early, OnCommand=function(s) s:zoom(0.35):xy( 90,24 ) end },
+	Def.BitmapText{ Font="_eurostile normal", Text=offsetTable.Late, OnCommand=function(s) s:zoom(0.35):xy( 185,24 ) end },
+
+	Def.Quad{ Name="Early", OnCommand=function(s) s:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Blue ) end, },
+	Def.Quad{ Name="Late", OnCommand=function(s) s:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Red ) end, },
+}
+
+local Side = {"&LEFT;","&DOWN;","&UP;","&RIGHT;"}
+for i=0,3 do
+	ArB[#ArB+1] = Def.BitmapText{
+		Font="_eurostile normal",
+		Text=Side[i+1],
+		OnCommand=function(s)
+			s:xy( -40 + (26*i), 6 ):zoom(0.6)
+		end
+	}
+
+	for index, ValTC in ipairs(JudgmentInfo.Types) do
+		ArB[#ArB+1] = Def.BitmapText{
+			Font="_eurostile normal",
+			Text=timingWindow[i+1][ValTC],
+			OnCommand=function(s)
+				s:xy( -40 + (26*i), 12*index+10 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
+			end
+		}
+	end
+end
+
+t[#t+1] = ArB
 
 return t;

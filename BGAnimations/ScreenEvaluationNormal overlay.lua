@@ -1,26 +1,36 @@
-PlayerTier = {
-	["PlayerNumber_P1"] = "Grade_Tier17",
-	["PlayerNumber_P2"] = "Grade_Tier17",
+-- Time to insert a mapper.
+-- This is used to track the player's inputs so we can use a lua screen.
+local pageIndex = { ["PlayerNumber_P1"] = 1, ["PlayerNumber_P2"] = 1 }
+local function ChangeOffset(player, index)
+	pageIndex[player] = pageIndex[player] + index
+	local changed = true
+	if pageIndex[player] > 2 then pageIndex[player] = 2 changed = false end
+	if pageIndex[player] < 1 then pageIndex[player] = 1 changed = false end
+	if changed then
+		-- SOUND:PlayOnce()
+		MESSAGEMAN:Broadcast("EvaluationInputChanged",{ Player=player, Index=pageIndex[player] })
+	end
+end
+
+local Actions = {
+	["MenuLeft"] = function(player) ChangeOffset(player, -1) end,
+	["MenuRight"] = function(player) ChangeOffset(player, 1) end,
+}
+local function Mapper(event)
+	if not event.PlayerNumber then return end
+	local ET = ToEnumShortString(event.type)
+	-- Input that occurs at the moment the button is pressed.
+	if ET == "FirstPress" or ET == "Repeat" then
+		if Actions[event.GameButton] then Actions[event.GameButton](event.PlayerNumber) end
+	end
+	return
+end
+
+local t = Def.ActorFrame{
+	OnCommand=function(s)
+		SCREENMAN:GetTopScreen():AddInputCallback(Mapper)
+	end,
 };
-
-local function CalPerNum( pn )
-	if GAMESTATE:IsPlayerEnabled( pn ) then
-		local GPSS = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn);
-		local ScoreToCalculate = GPSS:GetActualDancePoints()/GPSS:GetPossibleDancePoints()
-		return tonumber(ScoreToCalculate)
-	end
-	return 0
-end
-
-for player in ivalues(PlayerNumber) do
-	local PSS = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
-	PlayerTier[player] = PSS:GetGrade()
-	if PSS:GetFailed( player ) then
-		PlayerTier[player] = "Grade_Failed"
-	end
-end
-
-local t = Def.ActorFrame{};
 
 local function side(pn)
 	local s = 1
@@ -157,5 +167,4 @@ t[#t+1] = Def.HelpDisplay {
 	end
 }
 
-collectgarbage();
 return t;

@@ -1,3 +1,5 @@
+-- Default settings.
+-- Used for the TEMP file for regeneration for a new player.
 local OptionStrings = {
 	["DefaultJudgmentSize"] = 1,
 	["DefaultJudgmentOpacity"] = 1,
@@ -5,6 +7,7 @@ local OptionStrings = {
 	["ToggleComboBounce"] = true,
 	["ToggleJudgmentBounce"] = true,
 	["ToggleComboExplosion"] = true,
+	["ScoringFormat"] = 0,
 }
 local filename = "GrooveNights.save"
 -- Hook called during profile load
@@ -41,11 +44,21 @@ function LoadProfileCustom(profile, dir)
 		end
 	end
 
-	if pn and FILEMAN:DoesFileExist(path) then
-		local data = LoadContents(path)
-		for line in string.gmatch(data.."\n", "(.-)\n") do	
-			for KeyVal, Val in string.gmatch(line, "(.-)=(.+)") do
-				LoadModule("Config.Save.lua")( KeyVal, tostring(Val) , "Save/TEMP"..pn )
+	-- Load any possible registered settings into a temporary base file saved on the Machine's save folder.
+	if pn then
+		if FILEMAN:DoesFileExist(path) then
+			local data = LoadContents(path)
+			for line in string.gmatch(data.."\n", "(.-)\n") do	
+				for KeyVal, Val in string.gmatch(line, "(.-)=(.+)") do
+					LoadModule("Config.Save.lua")( KeyVal, tostring(Val) , "Save/TEMP"..pn )
+				end
+			end
+		-- If the file to save contents is not found on the player's Memory card, then generate it before
+		-- continuing, because if we don't generate it, then it won't even try to save data if it doesn't exist.
+		else
+			SCREENMAN:SystemMessage("GrooveNights Save file for ".. PROFILEMAN:GetProfile(pn):GetDisplayName() .." is not generated. Creating...")
+			for k,v in pairs( OptionStrings ) do
+				LoadModule("Config.Save.lua")( k, tostring(v) , path )
 			end
 		end
 	end
@@ -61,6 +74,7 @@ function SaveProfileCustom(profile, dir)
 		if profile == PROFILEMAN:GetProfile(player) and FILEMAN:DoesFileExist(path) then
 			local output = {}
 			for k,v in pairs( OptionStrings ) do
+				-- Use the contents we saved temporarily from ProfileLoad and save
 				local res = LoadModule("Config.Load.lua")( k,"Save/TEMP"..player )
 				LoadModule("Config.Save.lua")( k, tostring(res) , path )
 			end

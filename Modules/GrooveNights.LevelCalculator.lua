@@ -40,39 +40,40 @@ return function( player )
     }
 
     -- We just need a profile check.
+    -- [Cur Level - Ammount]
     local AchievementStats = {
-        SongCount = 0,
-        ExpCount = 0,
-        DeadCount = 0,
-        StarCount = 0,
+        SongCount = {0,0},
+        ExpCount = {0,0},
+        DeadCount = {0,0},
+        StarCount = {0,0},
     }
     -- Song Count Calculation
     for _,var in pairs( Achievements[1] ) do
-        if PROFILEMAN:GetProfile(player):GetNumTotalSongsPlayed() >= var then AchievementStats.SongCount = _ end
+        if PROFILEMAN:GetProfile(player):GetNumTotalSongsPlayed() >= var then AchievementStats.SongCount[1] = _ end
     end
     -- Star Count Calculation
     -- Had to do the Tier calculation again because the data gets lost before
     -- it reaches here.
-    local totalStars = 0
     for i,v in pairs( Difs ) do
         for Ti=1,4 do
-            totalStars = totalStars + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+            AchievementStats.StarCount[2] = AchievementStats.StarCount[2] + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
                 "StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
         end
     end
-    for _,var in pairs( Achievements[4] ) do if totalStars >= var then AchievementStats.StarCount = _ end end
+    for _,var in pairs( Achievements[4] ) do if AchievementStats.StarCount[2] >= var then AchievementStats.StarCount[1] = _ end end
 
     -- Lose Count Calculation
     -- Same with Star Calculation, the data gets lost on the way here, so
     -- we need to recalculate the tier.
-    local TotalDeaths = 0
     for i,v in pairs( Difs ) do
-        TotalDeaths = TotalDeaths + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+        AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
             "StepsType_Dance_Single",v,"Grade_Failed")
+        AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+            "StepsType_Dance_Single",v,"Grade_Tier17")
     end
-    for _,var in pairs( Achievements[3] ) do if TotalDeaths >= var then AchievementStats.DeadCount = _ end end
+    for _,var in pairs( Achievements[3] ) do if AchievementStats.DeadCount[2] >= var then AchievementStats.DeadCount[1] = _ end end
 
-    ExpMultiplier = ExpMultiplier + ( AchievementStats.SongCount/10 ) + ( AchievementStats.StarCount/10 ) + ( AchievementStats.ExpCount/10 )
+    ExpMultiplier = ExpMultiplier + ( AchievementStats.SongCount[1]/10 ) + ( AchievementStats.StarCount[1]/10 ) + ( AchievementStats.ExpCount[1]/10 )
 
     -- Done main calculation, now multiply based on the EXP Mult!
     gnTotalPlayer = gnTotalPlayer * ExpMultiplier
@@ -81,10 +82,10 @@ return function( player )
     local GNExperience = 0
     local GNPercentage = 0
     local curlevcurve = 0
-    for i= 1, 999 do
+    for i= 1, 100 do -- MaxLevel on modern GrooveNights is 100.
         -- Calculate each level before we check.
         local NewCurve = GNExperience
-        GNExperience = GNExperience + ( 75 * math.pow( 1.5, i ))
+        GNExperience = GNExperience + ( 75 * math.pow( 1.2, i ))
 
         if GNExperience <= gnTotalPlayer then
             -- yoy did gud, have another level
@@ -103,19 +104,18 @@ return function( player )
     -- EXP Achievement check
     for _,var in pairs( Achievements[2] ) do if PlayerLevel >= var then AchievementStats.ExpCount = _ end end
     
-    -- Now with everything complete, let's return 4 results. One is a progress bar, the other is the raw
-    -- points of the current level, next is the current level and last one is the achievements.
+    -- Now with everything complete, let's return the results.
     return {
-        GNPercentage,
-        gnTotalPlayer,
-        PlayerLevel,
-        curlevcurve,
-        TierSum,
+        GNPercentage,       -- Current Level percentage
+        gnTotalPlayer,      -- Total EXP obtain by the player so far
+        PlayerLevel,        -- Current Player Level
+        curlevcurve,        -- Current threshold to achieve for advancing to the next level
+        TierSum,            -- Sum of each tier's scores
         Achievements={
-            AchievementStats.SongCount,
-            AchievementStats.ExpCount,
-            AchievementStats.DeadCount,
-            AchievementStats.StarCount
+            AchievementStats.SongCount[1], -- Song count level
+            AchievementStats.ExpCount[1],  -- Experience count level
+            AchievementStats.DeadCount[1], -- Dead count level
+            AchievementStats.StarCount[1]  -- Star count level
         }
     }
 end

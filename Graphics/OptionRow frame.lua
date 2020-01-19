@@ -1,6 +1,5 @@
 local t = Def.ActorFrame{}
 local CurDir = {}
-local RowName = ""
 if not GAMESTATE:Env()["GNSetting"] then
 	GAMESTATE:Env()["GNSetting"] = "nil"
 end
@@ -11,11 +10,10 @@ local set = string.format( "%.2f", GAMESTATE:Env()["OriginalOffset"] )
 local OperatorSet = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 
 t[#t+1] = Def.Actor{
-	InitCommand=function(s)
+	OnCommand=function(s)
 		s:visible(false)
 		local OpRow = s:GetParent():GetParent():GetParent()
 		if OpRow then
-			RowName = OpRow:GetName()
 			if OpRow:GetName() == "Steps" then
 				s:visible(true)
 				for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
@@ -25,7 +23,7 @@ t[#t+1] = Def.Actor{
 			end
 		end
 	end,
-	UpdateCommand=function(s)
+	UpdateCommand=function(s)	
 		local OpRow = s:GetParent():GetParent():GetParent()
 		for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 			if OpRow:GetChoiceInRowWithFocus(pn) ~= CurDir[pn] then
@@ -57,6 +55,9 @@ t[#t+1] = Def.ActorFrame{
 			s:zoom(0.4):xy( 350, 6 ):halign(0)
 		end,
 	},
+
+	Def.BitmapText{ Font="Common Normal", Text="Late", InitCommand=function(s) s:zoom(0.4):xy( 60, -4 ):halign(1) end },
+	Def.BitmapText{ Font="Common Normal", Text="Early", InitCommand=function(s) s:zoom(0.4):xy( 500, -4 ):halign(1) end },
 
 
 	Def.Quad{

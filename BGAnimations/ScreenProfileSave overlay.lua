@@ -2,11 +2,9 @@ return Def.ActorFrame{
     BeginCommand=function(s)
         if SCREENMAN:GetTopScreen():HaveProfileToSave() then
             for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
-                --[[
-		if PROFILEMAN:IsPersistentProfile(pn) then
+		        if PROFILEMAN:IsPersistentProfile(pn) then
                     PROFILEMAN:SaveProfile( pn )
                 end
-		]]
                 GAMESTATE:Env()[pn.."gnCalculation"] = LoadModule("GrooveNights.LevelCalculator.lua")(pn)
             end
         end

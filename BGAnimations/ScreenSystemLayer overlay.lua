@@ -1,5 +1,6 @@
 local function CreditsText( pn )
-	local text = LoadFont(Var "LoadingScreen","credits") .. {
+	local t = Def.ActorFrame{}
+	t[#t+1] = LoadFont(Var "LoadingScreen","credits") .. {
 		InitCommand=function(self)
 			self:name("Credits" .. PlayerNumberToString(pn))
 			ActorUtil.LoadAllCommandsAndSetXY(self,Var "LoadingScreen");
@@ -18,7 +19,7 @@ local function CreditsText( pn )
 			self:visible( bShow );
 		end
 	};
-	return text;
+	return t;
 end;
 
 local t = Def.ActorFrame {}

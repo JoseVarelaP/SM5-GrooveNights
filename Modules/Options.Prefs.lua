@@ -146,4 +146,11 @@ return {
 		Choices = { OptionNameString('Off'), OptionNameString('On') },
 		Values = { false, true }
 	},
+	ScoringFormat = 
+	{
+		Default = 0,
+		UserPref = true,
+		Choices = { "Normal", "Reverse Scoring", "Real Time Scoring", "Flat Scoring" },
+		Values = { 0, 1, 2, 3 }
+	},
 }

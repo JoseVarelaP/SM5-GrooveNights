@@ -43,14 +43,16 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
     local color = GameColor.PlayerColors[pn_to_color_name[player]]
 
+    local PDir = (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..player
+    local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
+    local config = isRealProf and LoadModule("Config.Load.lua")("ScoringFormat", PDir ) or GAMESTATE:Env()["ScoringFormatMachinetemp"..player]
+
     Score[#Score+1] = Def.BitmapText{
-        Condition=GAMESTATE:IsPlayerEnabled(player) and (GAMESTATE:GetPlayMode() ~= "PlayMode_Rave" and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni");
+        Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
         Font="_futurist metalic";
-        Text=" 0.00%";
         OnCommand=function(s)
             s:xy( player == PLAYER_1 and SCREEN_CENTER_X-180 or SCREEN_CENTER_X+180, SCREEN_TOP+56 )
-            -- :visible( Settings.CurrentScreen ~= "ScreenGameplaySyncMachine" )
-            :diffuse( color )
+            :diffuse( color ):playcommand("UpdateScore")
         end;
         JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end;
         UpdateScoreCommand=function(s)
@@ -65,6 +67,31 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             end
         end;
     };
+
+    -- Dedicated true score percentage.
+    -- Only applicable on Flat Scoring
+    if tonumber(config) == 3 then
+        Score[#Score+1] = Def.BitmapText{
+            Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
+            Font="_futurist metalic";
+            OnCommand=function(s)
+                s:xy( player == PLAYER_1 and SCREEN_CENTER_X-156 or SCREEN_CENTER_X+156, SCREEN_TOP+76 ):zoom(0.6)
+                :diffuse( color ):playcommand("UpdateScore")
+            end;
+            JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end;
+            UpdateScoreCommand=function(s)
+                s:settext( LoadModule("Gameplay.CalculatePercentage.lua")(player,true) )
+                -- time to check who's winning
+                if GAMESTATE:GetNumPlayersEnabled() == 2 then
+                    if LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) < LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) then
+                        s:diffusealpha(0.8)
+                    else
+                        s:diffusealpha(1)
+                    end
+                end
+            end;
+        };
+    end
 
     Score[#Score+1] = Def.Sprite{
         Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetNumPlayersEnabled() == 2,
@@ -243,6 +270,7 @@ return Def.ActorFrame{
     ProgressBar,
     BPMDisplay,
     Score,
+    loadfile( THEME:GetPathB("ScreenGameplay","overlay/stepCollector.lua") )(),
     TotalPlayTime,
     Def.Quad{
         InitCommand=function(s) s:diffuse(0,0,0,1) end;

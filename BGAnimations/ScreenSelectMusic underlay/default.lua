@@ -58,8 +58,8 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
                 local Steps = GAMESTATE:GetCurrentSteps( GAMESTATE:GetMasterPlayerNumber() )
                 if GAMESTATE:GetCurrentSong() then
                     local data = {
-                        { GAMESTATE:GetCurrentSong():GetDisplayArtist(), LoadModule("SelectMusic.ObtainBPM.lua")( Steps ), GAMESTATE:GetCurrentSong():GetSongDir() },
-                        { GetOrdinalSongRank(),
+                        { GAMESTATE:GetCurrentSong():GetDisplayArtist(), LoadModule("SelectMusic.ObtainBPM.lua")( Steps ), string.find( GAMESTATE:GetCurrentSong():GetSongDir(), "mem" ) and "Player Memory Card" or GAMESTATE:GetCurrentSong():GetSongDir() },
+                        { string.find( GAMESTATE:GetCurrentSong():GetSongDir(), "mem" ) and "N/A" or GetOrdinalSongRank(),
                         math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) == 105 and "Patched" or  SecondsToMMSS( math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) )
                         },
                         Widths = { 240,240,600,80,80 }
