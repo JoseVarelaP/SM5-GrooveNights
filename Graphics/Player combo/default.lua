@@ -1,6 +1,10 @@
 local c;
 local player = Var "Player";
-local PDir = MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none' and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..player
+local PDir = (
+	(PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none')
+	and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNights.save"
+	or "Save/TEMP"..player
+)
 local ShowComboAt = THEME:GetMetric("Combo", "ShowComboAt")
 local Pulse = function(self)
 	local combo=self:GetZoom()
@@ -15,7 +19,6 @@ local LabelMinZoom = THEME:GetMetric("Combo", "LabelMinZoom")
 local LabelMaxZoom = THEME:GetMetric("Combo", "LabelMaxZoom")
 
 local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
-local PDir = (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..player
 local settings = {"DefaultComboSize","ToggleComboSize","ToggleComboBounce","ToggleComboExplosion"}
 for _,v in pairs(settings) do
 	-- In case the profile is an actual profile or USB

@@ -27,6 +27,7 @@ t[#t+1] = Def.HelpDisplay {
             ["ToggleComboBounce"] = true,
             ["ToggleJudgmentBounce"] = true,
             ["ToggleComboExplosion"] = true,
+            ["ScoringFormat"] = 0,
         }
         for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             for _,v in pairs(OptionStrings) do

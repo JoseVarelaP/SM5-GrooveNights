@@ -34,7 +34,7 @@ return function(Prefs)
 					if v.UserPref then
 						Location = (
 							( PROFILEMAN:GetProfile(pn):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none') and
-							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNights.save"
 							or "Save/TEMP"..pn
 						)
 					end
@@ -89,7 +89,7 @@ return function(Prefs)
 					if v.UserPref then 
 						Location = (
 							( PROFILEMAN:GetProfile(pn):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none') and
-							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini"
+							CheckIfUserOrMachineProfile(string.sub(pn,-1)-1).."/GrooveNights.save"
 							or "Save/TEMP"..pn
 						)
 					end

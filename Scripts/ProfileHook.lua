@@ -57,8 +57,10 @@ function LoadProfileCustom(profile, dir)
 		-- continuing, because if we don't generate it, then it won't even try to save data if it doesn't exist.
 		else
 			SCREENMAN:SystemMessage("GrooveNights Save file for ".. PROFILEMAN:GetProfile(pn):GetDisplayName() .." is not generated. Creating...")
+			local isRealProf = LoadModule("Profile.IsMachine.lua")(pn)
+			local Location = isRealProf and CheckIfUserOrMachineProfile(string.sub(pn,-1)-1) .."/".. filename or path
 			for k,v in pairs( OptionStrings ) do
-				LoadModule("Config.Save.lua")( k, tostring(v) , path )
+				LoadModule("Config.Save.lua")( k, tostring(v) , Location )
 			end
 		end
 	end
