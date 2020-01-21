@@ -31,12 +31,10 @@ t[#t+1] = Def.Actor{
 			end
 			if params.TapNoteOffset and params.TapNoteScore ~= "TapNoteScore_CheckpointHit" and params.TapNoteScore ~= "TapNoteScore_CheckpointMiss" then
 				offsetdata[p].OffTimings[#offsetdata[p].OffTimings+1] = params.TapNoteOffset
-				if params.TapNoteScore ~= "TapNoteScore_W1" then
-					if params.Early then
-						offsetdata[p].Early = offsetdata[p].Early + 1
-					else
-						offsetdata[p].Late = offsetdata[p].Late + 1
-					end
+				if params.Early then
+					offsetdata[p].Early = offsetdata[p].Early + 1
+				else
+					offsetdata[p].Late = offsetdata[p].Late + 1
 				end
 			end
 		end
