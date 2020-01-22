@@ -43,7 +43,11 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
     local color = GameColor.PlayerColors[pn_to_color_name[player]]
 
-    local PDir = (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..player
+    local PDir = (
+        (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none')
+        and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNights.save"
+        or "Save/TEMP"..player
+    )
     local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
     local config = isRealProf and LoadModule("Config.Load.lua")("ScoringFormat", PDir ) or GAMESTATE:Env()["ScoringFormatMachinetemp"..player]
 
