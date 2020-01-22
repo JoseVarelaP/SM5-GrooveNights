@@ -63,54 +63,57 @@ end
 
 t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
 
-t[#t+1] = Def.Sprite{
-	Texture=THEME:GetPathG("Common fallback","banner"),
-	InitCommand=function(s) s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y-114)
-	if GAMESTATE:IsCourseMode() then
-		s:Load( GAMESTATE:GetCurrentCourse():GetBannerPath() )
-	else
-		if GAMESTATE:GetCurrentSong():GetBannerPath() ~= nil then 
-			s:Load( GAMESTATE:GetCurrentSong():GetBannerPath() )
-		end
-		for pn in ivalues(PlayerNumber) do
-			if GAMESTATE:GetCurrentSong():GetGroupName() == PROFILEMAN:GetProfile(pn):GetDisplayName() then
-				s:Load( THEME:GetPathG("Banner","custom") )
+t[#t+1] = Def.ActorFrame{
+	InitCommand=function(s) s:x( DoublesIsOn and SCREEN_CENTER_X+80 or SCREEN_CENTER_X ) end,
+	Def.Sprite{
+		Texture=THEME:GetPathG("Common fallback","banner"),
+		InitCommand=function(s) s:y(SCREEN_CENTER_Y-114)
+		if GAMESTATE:IsCourseMode() then
+			s:Load( GAMESTATE:GetCurrentCourse():GetBannerPath() )
+		else
+			if GAMESTATE:GetCurrentSong():GetBannerPath() ~= nil then 
+				s:Load( GAMESTATE:GetCurrentSong():GetBannerPath() )
+			end
+			for pn in ivalues(PlayerNumber) do
+				if GAMESTATE:GetCurrentSong():GetGroupName() == PROFILEMAN:GetProfile(pn):GetDisplayName() then
+					s:Load( THEME:GetPathG("Banner","custom") )
+				end
 			end
 		end
-	end
-	end,
-	OnCommand=function(s)
-		s:scaletoclipped( 418/2,130/2):ztest(1)
-	end;
-}
+		end,
+		OnCommand=function(s)
+			s:scaletoclipped( 418/2,130/2):ztest(1)
+		end;
+	},
 
-t[#t+1] = Def.BitmapText{
-    Font="_eurostile blue glow",
-    OnCommand=function(s)
-        s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-168-6)
-        :zoom(0.75):maxwidth(450)
-        if GAMESTATE:GetCurrentSong() then
-            s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
-        end
-    end,
-}
+	Def.BitmapText{
+		Font="_eurostile blue glow",
+		OnCommand=function(s)
+			s:y(SCREEN_CENTER_Y-168-6)
+			:zoom(0.75):maxwidth(450)
+			if GAMESTATE:GetCurrentSong() then
+				s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
+			end
+		end,
+	},
 
-t[#t+1] = Def.BitmapText{
-    Font="_eurostile blue glow",
-    OnCommand=function(s)
-        s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-150-8 )
-        :zoom(0.5):maxwidth(450)
-        if GAMESTATE:GetCurrentSong() then
-            s:settext( GAMESTATE:GetCurrentSong():GetDisplayArtist() )
-        end
-    end,
-}
+	Def.BitmapText{
+		Font="_eurostile blue glow",
+		OnCommand=function(s)
+			s:y( SCREEN_CENTER_Y-150-8 )
+			:zoom(0.5):maxwidth(450)
+			if GAMESTATE:GetCurrentSong() then
+				s:settext( GAMESTATE:GetCurrentSong():GetDisplayArtist() )
+			end
+		end,
+	},
 
-t[#t+1] = Def.Sprite{
-	Texture=THEME:GetPathG("ScreenEvaluation Banner","Frame"),
-	OnCommand=function(s)
-		s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-112 )
-	end,
+	Def.Sprite{
+		Texture=THEME:GetPathG("ScreenEvaluation Banner","Frame"),
+		OnCommand=function(s)
+			s:y( SCREEN_CENTER_Y-112 )
+		end,
+	}
 }
 
 t[#t+1] = Def.Sprite{

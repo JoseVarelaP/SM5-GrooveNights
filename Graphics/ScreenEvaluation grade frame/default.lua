@@ -77,29 +77,29 @@ t[#t+1] = Def.ActorFrame{
 
 	Def.Sprite{
 		Texture=THEME:GetPathG("Player","combo/explosion"),
-		OnCommand=function(s) s:xy( -30*side(player), -200 ):spin():diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):linear(0.3):diffusealpha(0):zoom(1.7) end,
+		OnCommand=function(s) s:xy( DoublesIsOn and -100 or -30*side(player), -200 ):spin():diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):linear(0.3):diffusealpha(0):zoom(1.7) end,
 	},
 
 	Def.Sprite{
 		Texture=THEME:GetPathG("Player","combo/minisplode"),
-		OnCommand=function(s) s:xy( -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.5):addrotationz(10) end,
+		OnCommand=function(s) s:xy( DoublesIsOn and -100 or -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.5):addrotationz(10) end,
 	},
 
 	Def.Sprite{
 		Texture=THEME:GetPathG("Player","combo/arrowsplode"),
-		OnCommand=function(s) s:xy( -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.7):addrotationz(10) end,
+		OnCommand=function(s) s:xy( DoublesIsOn and -100 or -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.7):addrotationz(10) end,
 	},
 
 	LoadActor( THEME:GetPathG("", "Grades/".. (
 		ToEnumShortString( PlayerGrade ) ~= "Failed" and (GradeNum > 4 and "TierCommon" or ToEnumShortString( PlayerGrade ))
 		or "Failed"
 		) ..".lua" ), {player,GradeNum} )..{
-		OnCommand=function(s) s:xy( -30*side(player), -200 ) end,
+		OnCommand=function(s) s:xy( (DoublesIsOn and -93 or -30)*side(player), -200 ) end,
 	},
 
 	Def.ActorFrame{
 	OnCommand=function(self)
-		self:xy( ((DoublesIsOn and -170 or (-156))+(-1)*3), (DoublesIsOn and -190 or -113) )
+		self:xy( -156-1*3, -113 )
 	end;
 		Def.Sprite{
 			Texture=THEME:GetPathG('_difficulty pips','B'),
@@ -232,14 +232,13 @@ t[#t+1] = Def.ActorFrame{
 
 		Def.BitmapText{
 			Font="_futurist metalic", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player,true), OnCommand=function(self)
-				self:xy(-46*side(player),-20-83-50):diffuse(PlayerColor(player))
+				self:xy(DoublesIsOn and -110 or -46*side(player),-20-83-50):diffuse(PlayerColor(player))
 				:zoom(0.9):linear(0.3):zoom(1)
 			end
 		},
 		
 		
 		Def.BitmapText{
-			Condition=GAMESTATE:GetPlayMode() ~= "PlayMode_Rave",
 			Font="_eurostile normal", Text=optionslist, OnCommand=function(self)
 				self:xy(-65,-102):zoom(0.44):shadowlength(2):wrapwidthpixels(240):valign(0)
 			end
