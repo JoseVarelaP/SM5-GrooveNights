@@ -62,7 +62,7 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
                         { string.find( GAMESTATE:GetCurrentSong():GetSongDir(), "mem" ) and "N/A" or GetOrdinalSongRank(),
                         math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) == 105 and "Patched" or  SecondsToMMSS( math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) )
                         },
-                        Widths = { 240,240,600,80,80 }
+                        Widths = { 430,430,600,80,80 }
                     }
                     data[1][2] = LoadModule("SelectMusic.ObtainBPM.lua")( Steps )
                     s:settext( " ".. data[_][a] ):maxwidth( data.Widths[ _*a ] )
