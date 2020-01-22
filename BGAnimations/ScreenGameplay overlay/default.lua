@@ -43,6 +43,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
     local color = GameColor.PlayerColors[pn_to_color_name[player]]
 
+    --[[
     local PDir = (
         (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none')
         and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNights.save"
@@ -50,7 +51,8 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     )
     local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
     local config = isRealProf and LoadModule("Config.Load.lua")("ScoringFormat", PDir ) or GAMESTATE:Env()["ScoringFormatMachinetemp"..player]
-
+    ]]
+    local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1]
     Score[#Score+1] = Def.BitmapText{
         Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
         Font="_futurist metalic";
