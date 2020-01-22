@@ -316,17 +316,6 @@ local JudgmentInfo = {
 	RadarVal = { "Jumps", "Holds", "Mines", "Hands", "Rolls" },
 };
 
-for index, ValTC in ipairs(JudgmentInfo.Types) do
-	t[#t+1] = Def.ActorFrame{
-		OnCommand=function(self) self:xy(4,-134) end;
-		Def.Sprite{ Texture="judgment"..string.format("%04i",index),
-		OnCommand=function(s)
-			s:y(16*index):zoom(0.65):horizalign(left)
-		end
-		};
-	};
-end
-
 local PColor = {
 	["PlayerNumber_P1"] = color("#836002"),
 	["PlayerNumber_P2"] = color("#2F8425"),
@@ -345,8 +334,19 @@ local totalnote = 0
 
 for index, ScWin in ipairs(JudgmentInfo.Types) do
 	t[#t+1] = Def.ActorFrame{
-		Condition=not GAMESTATE:Env()["WorkoutMode"],
 		OnCommand=function(self) self:xy(130,-136) end;
+		EvaluationInputChangedMessageCommand=function(s,param)
+			if param.Player == player then
+				s:stoptweening():sleep( 0.02*index ):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+			end
+		end,
+
+		Def.Sprite{ Texture="judgment"..string.format("%04i",index),
+		OnCommand=function(s)
+			s:xy( -126, 16*index+2):zoom(0.65):horizalign(left)
+		end
+		};
+
 		Def.BitmapText{ Font="ScreenEvaluation judge",
 		OnCommand=function(self)
 			self:y(1+16*index):zoom(0.5):halign(1):diffuse( PlayerColor(player) )
@@ -407,7 +407,7 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 		end;
 		EvaluationInputChangedMessageCommand=function(s,param)
 			if param.Player == player then
-				s:stoptweening():sleep(0.02*index):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+				s:stoptweening():sleep( 0.02*6 + (0.02*index)):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
 			end
 		end,
 
@@ -520,7 +520,7 @@ local offsetTable = GAMESTATE:Env()["OffsetTable"][player]
 local timingWindow = GAMESTATE:Env()["perColJudgeData"][player]
 local ArB = Def.ActorFrame{
 	OnCommand=function(s)
-		s:xy( -70, -20 ):diffusealpha(0)
+		s:xy( -70, -116 ):diffusealpha(0)
 		local total = offsetTable.Early + offsetTable.Late
 		s:GetChild("Early"):cropright( 1 - (offsetTable.Early/total) )
 		s:GetChild("Late"):cropleft( 1 - (offsetTable.Late/total) )
@@ -530,7 +530,7 @@ local ArB = Def.ActorFrame{
 			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 0 or 1 )
 		end
 	end,
-	Def.BitmapText{ Font="_eurostile normal", Text="Arrow Breakdown", OnCommand=function(s) s:zoom(0.5):y(-8) end },
+	Def.BitmapText{ Font="_eurostile normal", Text="Arrow Breakdown", OnCommand=function(s) s:zoom(0.5):y(-8+98) end },
 	Def.BitmapText{ Font="_eurostile normal", Text="Offset Derivative", OnCommand=function(s) s:zoom(0.5):x(140) end },
 	Def.BitmapText{ Font="_eurostile normal", Text="Early", OnCommand=function(s) s:zoom(0.35):xy( 90,12 ) end },
 	Def.BitmapText{ Font="_eurostile normal", Text="Late", OnCommand=function(s) s:zoom(0.35):xy( 185,12 ) end },
@@ -548,7 +548,7 @@ for i=0,3 do
 		Font="_eurostile normal",
 		Text=Side[i+1],
 		OnCommand=function(s)
-			s:xy( -40 + (26*i), 6 ):zoom(0.6)
+			s:xy( -40 + (26*i), 106 ):zoom(0.6)
 		end
 	}
 
@@ -557,8 +557,39 @@ for i=0,3 do
 			Font="_eurostile normal",
 			Text=timingWindow[i+1][ValTC],
 			OnCommand=function(s)
-				s:xy( -40 + (26*i), 12*index+10 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
+				s:xy( -40 + (26*i), 12*index+108 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
 			end
+		}
+	end
+end
+
+local machineProfile = PROFILEMAN:GetMachineProfile()
+-- local index = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetMachineHighScoreIndex()
+local SongOrCourse = GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse() or GAMESTATE:GetCurrentSong()
+local StepsOrTrail = GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentTrail(player) or GAMESTATE:GetCurrentSteps(player)
+local highscoreList = (SongOrCourse and StepsOrTrail) and machineProfile:GetHighScoreList(SongOrCourse,StepsOrTrail)
+local highscores = highscoreList and highscoreList:GetHighScores()
+if highscores then
+	for i=1,10 do
+		local name = highscores[i] and highscores[i]:GetName() or "----"
+		local score = highscores[i] and FormatPercentScore( highscores[i]:GetPercentDP() ) or "--.--%"
+		local grade = highscores[i] and THEME:GetPathG("","Grades/GradeTier".. string.format("%04i", tonumber(string.sub( ToEnumShortString( highscores[i]:GetGrade() ), 5 )) ) )
+			or THEME:GetPathG("","_blank")
+		ArB[#ArB+1] = Def.ActorFrame{
+			OnCommand=function(s)
+				s:xy( 120, 37 + ( 16*(i-1) ) ):zoom(0.4)
+				if score == LoadModule("Gameplay.CalculatePercentage.lua")(player,true) then
+					local nm = {"Num","Nam","Scr"}
+					for v in ivalues(nm) do
+						s:GetChild(v..i):diffuseshift():effectcolor1( Color.Yellow )
+					end
+				end
+			end,
+
+			Def.BitmapText{ Name="Num"..i, Font="_eurostile normal", Text="#"..i, OnCommand=function(s) s:x( -90 ) end, },
+			Def.BitmapText{ Name="Nam"..i, Font="_eurostile normal", Text=name },
+			Def.Sprite{ Texture=grade, OnCommand=function(s) s:setsize( 40,40 ):x( 76 ) end, },
+			Def.BitmapText{ Name="Scr"..i, Font="_eurostile normal", Text=score, OnCommand=function(s) s:halign(1):x( 190 ) end, }
 		}
 	end
 end
