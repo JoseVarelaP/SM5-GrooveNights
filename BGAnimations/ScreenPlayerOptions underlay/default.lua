@@ -123,7 +123,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             Def.BitmapText{
                 Font="_eurostile blue glow",
                 OnCommand=function(s)
-                    s:halign(0):zoom(0.55):maxwidth(70)
+                    s:halign(0):zoom(0.55):maxwidth(330)
                     s:xy( -30, -26+( 16*(1) ) )
                 end,
                 InitCommand= function(s)
@@ -192,11 +192,11 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
             end,
             ["ExitSelected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
-                s:decelerate(0.2):zoom(1):diffusealpha(1)
+                s:stoptweening():decelerate(0.2):zoom(1):diffusealpha(1)
                 SOUND:PlayOnce( THEME:GetPathS( 'PlayerReady', 'sound' ) )
             end,
             ["ExitUnselected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
-                s:decelerate(0.2):zoom(0.3):diffusealpha(0)
+                s:stoptweening():decelerate(0.2):zoom(0.3):diffusealpha(0)
                 SOUND:PlayOnce( THEME:GetPathS( 'PlayerNotReady', 'sound' ) )
             end,
             AllReadyMessageCommand=function(s)

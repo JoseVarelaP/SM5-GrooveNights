@@ -10,14 +10,14 @@ return function(pn,param)
 		if not song_bpms[1] then
 			text= "??? - ???"
 		elseif song_bpms[1] == song_bpms[2] then
-			text= format_bpm(song_bpms[1] * param.speed*.01)
+			text= "x".. param.speed*.01 .." (" .. format_bpm(song_bpms[1] * param.speed*.01) .. ")"
 		else
-			text= format_bpm(song_bpms[1] * param.speed*.01) .. "-" ..
-				format_bpm(song_bpms[2] * param.speed*.01)
+			text= "x".. param.speed*.01 .." (".. format_bpm(song_bpms[1] * param.speed*.01) .. "-" ..
+				format_bpm(song_bpms[2] * param.speed*.01) .. ")"
 		end
 		no_change= param.speed == 100
 	elseif param.mode == "C" or param.mode == "m" or param.mode == "a" then
-		text= param.mode .. param.speed
+		text= string.upper(param.mode) .. param.speed
 		no_change= param.speed == song_bpms[2] and song_bpms[1] == song_bpms[2]
 	else
 		no_change= param.speed == song_bpms[2]
