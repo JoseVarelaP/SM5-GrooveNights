@@ -12,7 +12,7 @@ It is planned to backport the theme for 5.0.12 users, but for now, I want to foc
 ## Features
 * Level System
 * Judgment/Combo Sizing
-* ITG Grading weights (ITG timing is not yet there)
+* ITG Grading weights/timings (Currently forced)
 * [Temporary Player Adjustable Offset](https://github.com/JoseVarelaP/SM5-GrooveNights/wiki/AdjustableOffset)
 * [3 new Percentage Displays](https://github.com/JoseVarelaP/SM5-GrooveNights/wiki/Percentage-Displays)
 
