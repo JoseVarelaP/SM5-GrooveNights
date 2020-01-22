@@ -152,6 +152,7 @@ t[#t+1] = Def.HelpDisplay {
 	end,
 	InitCommand=function(s)
 		local str = THEME:GetString("ScreenEvaluation","HelpTextNormal") .. "::" ..
+			THEME:GetString("ScreenEvaluation","PageText") .. "::" ..
 			THEME:GetString("ScreenEvaluation","TakeScreenshotHelpTextAppend")
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
 		s:SetTipsColonSeparated(str)

@@ -11,7 +11,7 @@ It is planned to backport the theme for 5.0.12 users, but for now, I want to foc
 * Judgment/Combo Sizing
 * ITG Grading weights (ITG timing is not yet there)
 * [Temporary Player Adjustable Offset](https://github.com/JoseVarelaP/SM5-GrooveNights/wiki/AdjustableOffset)
-* [3 new Scoring Formats](https://github.com/JoseVarelaP/SM5-GrooveNights/wiki/Scoring-Formats)
+* [3 new Percentage Displays](https://github.com/JoseVarelaP/SM5-GrooveNights/wiki/Percentage-Displays)
 
 ## Considered in the future
 * Implement Judgment skins (using 5.3's Appearance subdirectory)
