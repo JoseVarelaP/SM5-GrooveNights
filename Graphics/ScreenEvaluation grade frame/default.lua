@@ -244,6 +244,18 @@ t[#t+1] = Def.ActorFrame{
 				self:xy(-65,-102):zoom(0.44):shadowlength(2):wrapwidthpixels(240):valign(0)
 			end
 		},
+
+		Def.BitmapText{
+			Condition=GAMESTATE:GetPlayMode() ~= "PlayMode_Rave",
+			Font="_eurostile normal",OnCommand=function(self)
+				self:xy(-65,-56):zoom(0.44):shadowlength(2):wrapwidthpixels(240):valign(0):diffusealpha(0.4)
+			end,
+			EvaluationInputChangedMessageCommand=function(s,param)
+				if param.Player == player then
+					s:finishtweening():diffusealpha(0.4):settext( "Page ".. param.Index .. "/2" ):sleep(0.3):linear(0.2):diffusealpha(0)
+				end
+			end,
+		},
 			
 
 	Def.BitmapText{ Font="Common Normal", Text=THEME:GetString("ScreenEvaluation","Disqualified"),

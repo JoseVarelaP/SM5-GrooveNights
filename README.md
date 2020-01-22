@@ -2,7 +2,10 @@
   <img src="https://raw.githubusercontent.com/wiki/JoseVarelaP/SM5-GrooveNights/NewLogoWiki.png" width="400">
 </p>
 
-## Current Compatibility
+## Current Compatibility / Status
+**THE THEME IS CURRENTLY IN DEVELOPMENT, IT IS NOT RECOMMENDED TO BE INSTALLED ON A PUBLIC MACHINE YET**
+It is recommended to be used on a personal/private machine while the theme is still being developed.
+
 This theme has been made on 5.3, and thus uses Modules, which allow for faster loading of single use scripts.
 It is planned to backport the theme for 5.0.12 users, but for now, I want to focus on finishing layouts and features.
 
