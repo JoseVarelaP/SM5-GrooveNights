@@ -1,7 +1,7 @@
 local function fnrformat(s,e,it,format)
 	local num = {}
 	for i = s,e,it or 1 do
-		num[#num+1] = format or i
+		num[#num+1] = format and string.format( format, i ) or i
 	end
 	return num
 end
@@ -92,7 +92,7 @@ return {
 	gnGlobalOffset =
 	{
 		Default = 0,
-		Choices = fnrformat(-1.5,1.5,0.02,""),
+		Choices = fnrformat(-1.5,1.5,0.02,PREFSMAN:GetPreference("ThreeKeyNavigation") and tostring("%.2f") or ""),
 		Values = fornumrange(-1.5,1.5,0.02),
 		LoadFunc = function(self,list)
 			if not GAMESTATE:Env()["NewOffset"] then GAMESTATE:Env()["NewOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
