@@ -12,6 +12,7 @@ return function( player )
     -- Based on the difficulty, we'll reward with a multiplier.
     -- This multiplier can multiply based on the level that you are.
     local Difs = {"Beginner","Easy","Medium","Hard","Challenge","Edit"}
+    local StepTypes = {"StepsType_Dance_Single","StepsType_Dance_Double"}
     -- Tier multipliers. The higher tier (01, 02), the better the multiplier.
     local TierMult = { 10,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1,1 }
 
@@ -19,15 +20,17 @@ return function( player )
     -- This will get all achieved scores on each tier (01 to 17)
     -- and combine then into a table.
     local TierSum = {}
-    for i,v in pairs( Difs ) do
-        for Ti=1,17 do
-            if not TierSum["Grade_Tier"..string.format("%02i",Ti)] then
-                TierSum["Grade_Tier"..string.format("%02i",Ti)] = 0
+    for st in ivalues(StepTypes) do
+        for i,v in pairs( Difs ) do
+            for Ti=1,17 do
+                if not TierSum["Grade_Tier"..string.format("%02i",Ti)] then
+                    TierSum["Grade_Tier"..string.format("%02i",Ti)] = 0
+                end
+                TierSum["Grade_Tier"..string.format("%02i",Ti)] = TierSum["Grade_Tier"..string.format("%02i",Ti)] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                    st,v,"Grade_Tier"..string.format("%02i",Ti))
+                gnTotalPlayer = gnTotalPlayer + i * TierMult[Ti] * PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                        st,v,"Grade_Tier"..string.format("%02i",Ti))
             end
-            TierSum["Grade_Tier"..string.format("%02i",Ti)] = TierSum["Grade_Tier"..string.format("%02i",Ti)] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-                "StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti))
-            gnTotalPlayer = gnTotalPlayer + i * TierMult[Ti] * PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-                    "StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti))
         end
     end
 
@@ -54,10 +57,12 @@ return function( player )
     -- Star Count Calculation
     -- Had to do the Tier calculation again because the data gets lost before
     -- it reaches here.
-    for i,v in pairs( Difs ) do
-        for Ti=1,4 do
-            AchievementStats.StarCount[2] = AchievementStats.StarCount[2] + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-                "StepsType_Dance_Single",v,"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
+    for st in ivalues(StepTypes) do
+        for i,v in pairs( Difs ) do
+            for Ti=1,4 do
+                AchievementStats.StarCount[2] = AchievementStats.StarCount[2] + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                    st,v,"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
+            end
         end
     end
     for _,var in pairs( Achievements[4] ) do if AchievementStats.StarCount[2] >= var then AchievementStats.StarCount[1] = _ end end
@@ -65,11 +70,13 @@ return function( player )
     -- Lose Count Calculation
     -- Same with Star Calculation, the data gets lost on the way here, so
     -- we need to recalculate the tier.
-    for i,v in pairs( Difs ) do
-        AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-            "StepsType_Dance_Single",v,"Grade_Failed")
-        AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-            "StepsType_Dance_Single",v,"Grade_Tier17")
+    for st in ivalues(StepTypes) do
+        for i,v in pairs( Difs ) do
+            AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                st,v,"Grade_Failed")
+            AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                st,v,"Grade_Tier17")
+        end
     end
     for _,var in pairs( Achievements[3] ) do if AchievementStats.DeadCount[2] >= var then AchievementStats.DeadCount[1] = _ end end
 
