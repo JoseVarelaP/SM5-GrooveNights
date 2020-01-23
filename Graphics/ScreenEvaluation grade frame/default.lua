@@ -354,7 +354,7 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 
 		Def.Sprite{ Texture="judgment"..string.format("%04i",index),
 		OnCommand=function(s)
-			s:xy( -126, 16*index+2):zoom(0.65):horizalign(left)
+			s:xy( -126, 16*index+2):zoom(0.65):halign(0)
 		end
 		};
 
@@ -591,7 +591,7 @@ if highscores then
 				s:xy( 120, 37 + ( 16*(i-1) ) ):zoom(0.4)
 				if score == LoadModule("Gameplay.CalculatePercentage.lua")(player,true) then
 					local nm = {"Num","Nam","Scr"}
-					for v in ivalues(nm) do
+					for _,v in pairs(nm) do
 						s:GetChild(v..i):diffuseshift():effectcolor1( Color.Yellow )
 					end
 				end

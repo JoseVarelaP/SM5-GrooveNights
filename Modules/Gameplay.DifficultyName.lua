@@ -22,7 +22,7 @@ return function( name, pn )
 		local finished
 		finished = name == "Trail" and THEME:GetString("CourseDifficulty", Shorten) or THEME:GetString("Difficulty", Shorten)
 		for _,v in pairs(Diffs.Profiles) do
-			for a in ivalues(v) do
+			for i,a in pairs(v) do
 				if PROFILEMAN:GetProfile(pn):GetDisplayName() == a then
 					finished = Diffs[Shorten][_]
 				end

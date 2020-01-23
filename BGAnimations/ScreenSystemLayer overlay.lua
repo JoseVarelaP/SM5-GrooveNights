@@ -42,14 +42,16 @@ t[#t+1] = Def.ActorFrame {
 			s:zoomtowidth( SCREEN_WIDTH ):diffuse( color("#1C2C3C") ):align(0,0)
 		end,
 		OnCommand=function(s) end,
-	};
+	},
 	Def.BitmapText{
 		Font="Common Normal";
 		Name="Text";
-		InitCommand=cmd(maxwidth,750;horizalign,left;vertalign,top;y,SCREEN_TOP+14;x,SCREEN_LEFT+10;shadowlength,1;diffusealpha,0;);
+		InitCommand=function(s)
+			s:maxwidth(750):halign(0,0):xy(SCREEN_LEFT+10,SCREEN_TOP+14):shadowlength(1):diffusealpha(0)
+		end,
 		OnCommand=function(s) s:diffusealpha(1):zoom(0.6) end,
-		OffCommand=cmd(sleep,3;sleep,0.5;diffusealpha,0;);
-	};
+		OffCommand=function(s) s:sleep(3):sleep(0.5):diffusealpha(0) end,
+	},
 	SystemMessageMessageCommand = function(self, params)
 		self:GetChild("Text"):settext( params.Message );
 		self:playcommand( "On" );

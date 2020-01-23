@@ -17,7 +17,7 @@ return function( player, tier )
     }
     if PROFILEMAN:GetProfile(player) then
         for _,a in pairs(Names) do
-            for v in ivalues(a) do
+            for i,v in pairs(a) do
                 if PROFILEMAN:GetProfile(player):GetDisplayName() == v then return _ end
             end
         end

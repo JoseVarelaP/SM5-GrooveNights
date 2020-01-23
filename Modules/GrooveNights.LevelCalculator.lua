@@ -16,20 +16,22 @@ return function( player )
     -- Tier multipliers. The higher tier (01, 02), the better the multiplier.
     local TierMult = { 10,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1,1 }
 
+    -- Obtain player profile
+    local Profile = PROFILEMAN:GetProfile(player)
+
     -- Time to calculate!
     -- This will get all achieved scores on each tier (01 to 17)
     -- and combine then into a table.
     local TierSum = {}
-    for st in ivalues(StepTypes) do
+    for _,st in pairs(StepTypes) do
         for i,v in pairs( Difs ) do
             for Ti=1,17 do
                 if not TierSum["Grade_Tier"..string.format("%02i",Ti)] then
                     TierSum["Grade_Tier"..string.format("%02i",Ti)] = 0
                 end
-                TierSum["Grade_Tier"..string.format("%02i",Ti)] = TierSum["Grade_Tier"..string.format("%02i",Ti)] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
+                TierSum["Grade_Tier"..string.format("%02i",Ti)] = TierSum["Grade_Tier"..string.format("%02i",Ti)] + Profile:GetTotalStepsWithTopGrade(
                     st,v,"Grade_Tier"..string.format("%02i",Ti))
-                gnTotalPlayer = gnTotalPlayer + i * TierMult[Ti] * PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-                        st,v,"Grade_Tier"..string.format("%02i",Ti))
+                gnTotalPlayer = gnTotalPlayer + i * TierMult[Ti] * Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Tier"..string.format("%02i",Ti))
             end
         end
     end
@@ -52,16 +54,16 @@ return function( player )
     }
     -- Song Count Calculation
     for _,var in pairs( Achievements[1] ) do
-        if PROFILEMAN:GetProfile(player):GetNumTotalSongsPlayed() >= var then AchievementStats.SongCount[1] = _ end
+        if Profile:GetNumTotalSongsPlayed() >= var then AchievementStats.SongCount[1] = _ end
     end
     -- Star Count Calculation
     -- Had to do the Tier calculation again because the data gets lost before
     -- it reaches here.
-    for st in ivalues(StepTypes) do
+    for _,st in pairs(StepTypes) do
         for i,v in pairs( Difs ) do
             for Ti=1,4 do
-                AchievementStats.StarCount[2] = AchievementStats.StarCount[2] + ( PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-                    st,v,"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
+                AchievementStats.StarCount[2] = AchievementStats.StarCount[2] + ( Profile:GetTotalStepsWithTopGrade(st,v,
+                "Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
             end
         end
     end
@@ -70,12 +72,10 @@ return function( player )
     -- Lose Count Calculation
     -- Same with Star Calculation, the data gets lost on the way here, so
     -- we need to recalculate the tier.
-    for st in ivalues(StepTypes) do
+    for _,st in pairs(StepTypes) do
         for i,v in pairs( Difs ) do
-            AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-                st,v,"Grade_Failed")
-            AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + PROFILEMAN:GetProfile(player):GetTotalStepsWithTopGrade(
-                st,v,"Grade_Tier17")
+            AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Failed")
+            AchievementStats.DeadCount[2] = AchievementStats.DeadCount[2] + Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Tier17")
         end
     end
     for _,var in pairs( Achievements[3] ) do if AchievementStats.DeadCount[2] >= var then AchievementStats.DeadCount[1] = _ end end
@@ -114,7 +114,7 @@ return function( player )
     -- Now with everything complete, let's return the results.
     return {
         GNPercentage,       -- Current Level percentage
-        gnTotalPlayer,      -- Total EXP obtain by the player so far
+        gnTotalPlayer,      -- Total EXP obtained by the player so far
         PlayerLevel,        -- Current Player Level
         curlevcurve,        -- Current threshold to achieve for advancing to the next level
         TierSum,            -- Sum of each tier's scores
