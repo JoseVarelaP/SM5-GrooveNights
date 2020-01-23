@@ -198,14 +198,14 @@ local t = Def.ActorFrame {
 		c.Number:settext( string.format("%i", iCombo) )
 		-- FullCombo Rewards
 		if param.FullComboW1 then
-			c.Number:diffuseshift():effectcolor1(color("#FFFFFF")):effectcolor2(color("#94EBFE")):effectperiod(0.5)
-			c.Label:diffuseshift():effectcolor1(color("#FFFFFF")):effectcolor2(color("#94EBFE")):effectperiod(0.5)
+			c.Number:diffuseshift():effectcolor1(color("#9BD8EC")):effectcolor2(color("#6ECDEC")):effectperiod(0.5)
+			c.Label:diffuseshift():effectcolor1(color("#9BD8EC")):effectcolor2(color("#6ECDEC")):effectperiod(0.5)
 		elseif param.FullComboW2 then
-			c.Number:diffuseshift():effectcolor1(color("#FFFFFF")):effectcolor2(color("#FDD599")):effectperiod(0.5)
-			c.Label:diffuseshift():effectcolor1(color("#FFFFFF")):effectcolor2(color("#FDD599")):effectperiod(0.5)
+			c.Number:diffuseshift():effectcolor1(color("#FFDD77")):effectcolor2(color("#FFCC33")):effectperiod(0.5)
+			c.Label:diffuseshift():effectcolor1(color("#FFDD77")):effectcolor2(color("#FFCC33")):effectperiod(0.5)
 		elseif param.FullComboW3 then
-			c.Number:stopeffect()
-			c.Label:stopeffect()
+			c.Number:diffuseshift():effectcolor1(color("#9BE999")):effectcolor2(color("#42E93D")):effectperiod(0.5)
+			c.Label:diffuseshift():effectcolor1(color("#9BE999")):effectcolor2(color("#42E93D")):effectperiod(0.5)
 		elseif param.Combo then
 			c.Number:diffuse(Color("White"))
 			c.Number:stopeffect()
