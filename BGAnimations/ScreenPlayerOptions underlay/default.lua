@@ -46,7 +46,6 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
     local DCS = PDir and LoadModule("Config.Load.lua")("DefaultComboSize",PDir) or GAMESTATE:Env()["DefaultComboSizeMachinetemp"..pn]
     -- Profile picture?
         t[#t+1] = Def.ActorFrame{
-            Condition=GAMESTATE:Env()["ToGame"],
             OnCommand=function(s)
                 s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
             end,
@@ -263,10 +262,11 @@ t[#t+1] = Def.BitmapText{
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):playcommand("Update")
     end,
     UpdateCommand=function(s)
-        local pn = GAMESTATE:GetMasterPlayerNumber()
-        local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
-        local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
-        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local Comtp = SecondsToHHMMSS(
+            STATSMAN:GetAccumPlayedStageStats(GAMESTATE:GetMasterPlayerNumber()):GetGameplaySeconds()
+            +
+            STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
+        )
         local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
         s:finishtweening()
         s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
@@ -278,36 +278,3 @@ t[#t+1] = Def.BitmapText{
 }
 
 return t;
---[[
-[Layer1]
-File=ScreenOptions frame
-InitCommand=x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;
-
-
-[Layer2]
-Condition=GAMESTATE:IsHumanPlayer(PLAYER_1)
-File=ScreenOptions playerframe
-InitCommand=x,SCREEN_CENTER_X-269;y,SCREEN_CENTER_Y-112;
-
-[Layer3]
-Condition=GAMESTATE:IsHumanPlayer(PLAYER_1)
-Text=@ScreenEndingGetDisplayName(PLAYER_1)
-File=_eurostile normal
-OnCommand=@'maxwidth,108;x,SCREEN_CENTER_X-269;y,SCREEN_CENTER_Y-154;horizalign,center;shadowlength,0;zoom,0.65;Diffuse,'..PlayerColor(PLAYER_1);
-
-[Layer4]
-Condition=GAMESTATE:IsHumanPlayer(PLAYER_2)
-File=ScreenOptions playerframe
-InitCommand=x,SCREEN_CENTER_X+269;y,SCREEN_CENTER_Y-112;rotationy,180;
-
-[Layer5]
-Condition=GAMESTATE:IsHumanPlayer(PLAYER_2)
-Text=@ScreenEndingGetDisplayName(PLAYER_2)
-File=_eurostile normal
-OnCommand=@'maxwidth,108;x,SCREEN_CENTER_X+270;y,SCREEN_CENTER_Y-154;horizalign,center;shadowlength,0;zoom,0.65;Diffuse,'..PlayerColor(PLAYER_2);
-
-	
-[Layer6]
-File=../ScreenLogo background/BGVid.avi
-OnCommand=x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;blend,add;zoom,2;rotationy,180;diffusealpha,0.15;
-]]

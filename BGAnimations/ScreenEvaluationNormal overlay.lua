@@ -134,10 +134,11 @@ t[#t+1] = Def.BitmapText{
 		:playcommand("Update")
     end,
     UpdateCommand=function(s)
-        local pn = GAMESTATE:GetMasterPlayerNumber()
-        local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
-        local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
-        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local Comtp = SecondsToHHMMSS(
+            STATSMAN:GetAccumPlayedStageStats(GAMESTATE:GetMasterPlayerNumber()):GetGameplaySeconds()
+            +
+            STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
+        )
         local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
         s:finishtweening()
         s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
@@ -154,21 +155,12 @@ t[#t+1] = Def.HelpDisplay {
 		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
 	end,
 	InitCommand=function(s)
-		local str = THEME:GetString("ScreenEvaluation","HelpTextNormal") .. "::" ..
-			THEME:GetString("ScreenEvaluation","PageText") .. "::" ..
-			THEME:GetString("ScreenEvaluation","TakeScreenshotHelpTextAppend")
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
-		s:SetTipsColonSeparated(str)
+		s:SetTipsColonSeparated( LoadModule("Text.GenerateHelpText.lua")( {"HelpTextNormal","PageText","TakeScreenshotHelpTextAppend"} ) )
 	end,
-	SetHelpTextCommand=function(s, params)
-		s:SetTipsColonSeparated( params.Text )
-	end,
-	SelectMenuOpenedMessageCommand=function(s)
-		s:stoptweening():decelerate(0.2):zoomy(0)
-	end,
-	SelectMenuClosedMessageCommand=function(s)
-		s:stoptweening():bouncebegin(0.2):zoomy(0.75)
-	end
+	SetHelpTextCommand=function(s, params) s:SetTipsColonSeparated( params.Text ) end,
+	SelectMenuOpenedMessageCommand=function(s) s:stoptweening():decelerate(0.2):zoomy(0) end,
+	SelectMenuClosedMessageCommand=function(s) s:stoptweening():bouncebegin(0.2):zoomy(0.75) end
 }
 
 return t;

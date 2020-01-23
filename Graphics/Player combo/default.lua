@@ -128,7 +128,7 @@ local t = Def.ActorFrame {
 				if PDir and settings[3] then
 					s:finishtweening():zoom( (1.05*zoomed)*staticzoom ):linear(0.05):zoom( zoomed*staticzoom )
 				else
-					s:finishtweening():zoom( 1*staticzoom )
+					s:finishtweening():zoom( staticzoom and 1*staticzoom or 1 )
 				end
 			end
 		end,
@@ -141,7 +141,7 @@ local t = Def.ActorFrame {
 				if PDir and settings[3] then
 					s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
 				else
-					s:finishtweening():zoom( 1*staticzoom )
+					s:finishtweening():zoom( staticzoom and 1*staticzoom or 1 )
 				end
 		end,
 	};

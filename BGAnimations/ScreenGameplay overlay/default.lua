@@ -194,7 +194,9 @@ local Update2PBPM = function(self)
     end
 end
 
-local BPMDisplay = Def.ActorFrame{}
+local BPMDisplay = Def.ActorFrame{
+    OnCommand=function(s) if GAMESTATE:IsDemonstration() then s:addy(20) end end,
+}
 
 local function DoubleBPMActor()
     return Def.ActorFrame{
@@ -232,16 +234,17 @@ end
 
 local TotalPlayTime = Def.BitmapText{
     Font="_eurostile normal",
-    Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini"),
+    Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini") and not GAMESTATE:IsDemonstration(),
     OnCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6)
         :playcommand("Update")
     end,
     UpdateCommand=function(s)
-        local pn = GAMESTATE:GetMasterPlayerNumber()
-        local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
-        local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
-        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local Comtp = SecondsToHHMMSS(
+            STATSMAN:GetAccumPlayedStageStats(GAMESTATE:GetMasterPlayerNumber()):GetGameplaySeconds()
+            +
+            STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
+        )
         local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
         s:finishtweening()
         s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
@@ -260,6 +263,13 @@ for v in ivalues(EnvCh) do
         Special[#Special+1] = loadfile( THEME:GetPathB("ScreenGameplay","Overlay/"..v) )()
     end
 end
+
+local Demo = Def.ActorFrame{
+    Condition=GAMESTATE:IsDemonstration(),
+    Def.Sprite{ Texture="demonstration gradient", OnCommand=function(s) s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):stretchto(SCREEN_WIDTH,SCREEN_HEIGHT,0,0)
+    :diffusealpha(0.8) end },
+    Def.Sprite{ Texture="demonstration logo", OnCommand=function(s) s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y-184):pulse():effectmagnitude(1,.9,0):effectclock("bgm"):effectperiod(1) end },
+}
 
 return Def.ActorFrame{
     OnCommand=function(s)
@@ -282,11 +292,9 @@ return Def.ActorFrame{
         InitCommand=function(s) s:diffuse(0,0,0,1) end;
         OnCommand=function(s) s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):stretchto(SCREEN_WIDTH,SCREEN_HEIGHT,0,0):linear(0.3):diffusealpha(0) end,
     },
-    LoadActor("../_song credit display")..{
-        OnCommand=function(s)
-            s:diffusealpha(1):sleep(2):linear(0.2):diffusealpha(0)
-        end;
-    };
     CurrentStage,
     Special,
+    Demo,
+    LoadActor("../_song credit display")..{ Condition=GAMESTATE:IsDemonstration() };
+    loadfile( THEME:GetPathB("ScreenAttract","overlay.lua") )()..{ Condition=GAMESTATE:IsDemonstration() },
 }

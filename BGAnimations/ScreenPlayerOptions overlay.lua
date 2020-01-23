@@ -39,10 +39,8 @@ t[#t+1] = Def.HelpDisplay {
 		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
 	end,
 	InitCommand=function(s)
-        local str = (THEME:GetString("ScreenPlayerOptions","HelpTextNormal") .. "::"
-        .. THEME:GetString("ScreenPlayerOptions","SelectAvailableHelpTextAppend"))
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
-		s:SetTipsColonSeparated(str)
+		:SetTipsColonSeparated( LoadModule("Text.GenerateHelpText.lua")( {"HelpTextNormal","SelectAvailableHelpTextAppend"} ) )
 	end,
 	SelectMenuOpenedMessageCommand=function(s)
 		s:stoptweening():decelerate(0.2):zoomy(0)

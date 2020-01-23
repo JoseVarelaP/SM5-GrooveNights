@@ -3,6 +3,7 @@ return function( pn , useRealScore )
 	local PDir = (PROFILEMAN:GetProfile(pn):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..pn
     local isRealProf = LoadModule("Profile.IsMachine.lua")(pn)
 	local config = isRealProf and LoadModule("Config.Load.lua")("ScoringFormat", PDir ) or GAMESTATE:Env()["ScoringFormatMachinetemp"..pn]
+	if GAMESTATE:IsDemonstration() then config = 0 end
 	local res
 	local ScoreToCalculate = GPSS:GetActualDancePoints()/GPSS:GetPossibleDancePoints()
 	local scoreModes = {

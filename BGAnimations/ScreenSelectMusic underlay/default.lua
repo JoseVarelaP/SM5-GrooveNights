@@ -79,10 +79,11 @@ t[#t+1] = Def.BitmapText{
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):playcommand("Update")
     end,
     UpdateCommand=function(s)
-        local pn = GAMESTATE:GetMasterPlayerNumber()
-        local TotalTime = STATSMAN:GetAccumPlayedStageStats(pn):GetGameplaySeconds()
-        local TimeRightNow = STATSMAN:GetCurStageStats(pn):GetPlayerStageStats(pn):GetAliveSeconds()
-        local Comtp = SecondsToHHMMSS(TotalTime+TimeRightNow)
+        local Comtp = SecondsToHHMMSS(
+            STATSMAN:GetAccumPlayedStageStats(GAMESTATE:GetMasterPlayerNumber()):GetGameplaySeconds()
+            +
+            STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
+        )
         local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
         s:finishtweening()
         s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )

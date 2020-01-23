@@ -4,7 +4,7 @@ t[#t+1] = Def.BitmapText{
     Font="Common Normal",
     Condition=LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini"),
     OnCommand=function(s)
-        s:align(.5,1):xy( SCREEN_CENTER_X, SCREENMAN:GetTopScreen():GetName() == "ScreenGameplay" and SCREEN_BOTTOM-17 or 26  ):zoom(0.5):diffusealpha( 0.8 ):vertspacing( -10 )
+        s:align(.5,1):xy( SCREEN_CENTER_X, (SCREENMAN:GetTopScreen():GetName() == "ScreenGameplay" or GAMESTATE:IsDemonstration()) and SCREEN_BOTTOM-17 or 26  ):zoom(0.5):diffusealpha( 0.8 ):vertspacing( -10 )
         :playcommand("Update")
     end,
     UpdateCommand=function(s)

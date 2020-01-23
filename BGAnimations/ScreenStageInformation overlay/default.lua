@@ -12,11 +12,6 @@ local t = Def.ActorFrame{
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
 PREFSMAN:SetPreference( "GlobalOffsetSeconds", GAMESTATE:Env()["NewOffset"] )
 if not GAMESTATE:IsCourseMode() then
-t[#t+1] = LoadActor("../_song credit display")..{
-	OnCommand=function(self)
-		self:diffusealpha(0):linear(0.2):diffusealpha(1)
-	end;
-};
 t[#t+1] = Def.ActorFrame{
 		InitCommand=function(s) s:hibernate(0.199):xy( SCREEN_CENTER_X,SCREEN_BOTTOM+100 ):bounceend(0.5):y( SCREEN_CENTER_Y ) end,
 		Def.Sprite{ Texture=THEME:GetPathG("Stages/ScreenGameplay","stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage())) },

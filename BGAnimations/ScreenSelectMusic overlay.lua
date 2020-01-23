@@ -35,22 +35,13 @@ t[#t+1] = Def.HelpDisplay {
             end
         end
 	end,
-	InitCommand=function(s)
-		local str = THEME:GetString("ScreenSelectMusic","HelpTextNormal") .. "::" ..
-			THEME:GetString("ScreenSelectMusic","DifficultyChangingAvailableHelpTextAppend") .. "::" ..
-			THEME:GetString("ScreenSelectMusic","SelectButtonAvailableHelpTextAppend")
+    InitCommand=function(s)
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
-		s:SetTipsColonSeparated(str)
+		:SetTipsColonSeparated( LoadModule("Text.GenerateHelpText.lua")( {"HelpTextNormal","DifficultyChangingAvailableHelpTextAppend","SelectButtonAvailableHelpTextAppend"} ) )
 	end,
-	SetHelpTextCommand=function(s, params)
-		s:SetTipsColonSeparated( params.Text )
-	end,
-	SelectMenuOpenedMessageCommand=function(s)
-		s:stoptweening():decelerate(0.2):zoomy(0)
-	end,
-	SelectMenuClosedMessageCommand=function(s)
-		s:stoptweening():bouncebegin(0.2):zoomy(0.75)
-	end
+	SetHelpTextCommand=function(s, params) s:SetTipsColonSeparated( params.Text ) end,
+	SelectMenuOpenedMessageCommand=function(s) s:stoptweening():decelerate(0.2):zoomy(0) end,
+	SelectMenuClosedMessageCommand=function(s) s:stoptweening():bouncebegin(0.2):zoomy(0.75) end
 }
 
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
