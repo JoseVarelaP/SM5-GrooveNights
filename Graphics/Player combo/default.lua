@@ -35,80 +35,84 @@ local t = Def.ActorFrame {
 		self:vertalign(bottom)
 	end,
 	
-	-- These are behind the combo and label for obvious reasons.
-	-- 100 Combo milestone
-	LoadActor("explosion")..{
-	InitCommand=function(self)
-		self:diffusealpha(0):blend("BlendMode_Add")
-	end,
-	HundredMilestoneCommand=function(self)
-		self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
-	end,
-	},
-
-	LoadActor("explosion")..{
-	InitCommand=function(self)
-		self:diffusealpha(0):blend("BlendMode_Add")
-	end,
-	HundredMilestoneCommand=function(self)
-		self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
-	end,
-	},
-
-	Def.Sprite{
-		Texture="arrowsplode",
+		-- These are behind the combo and label for obvious reasons.
+		-- 100 Combo milestone
+	Def.ActorFrame{
+		Condition=tobool(settings[4]),
+		
+		LoadActor("explosion")..{
 		InitCommand=function(self)
-			self:diffusealpha(0)
+			self:diffusealpha(0):blend("BlendMode_Add")
 		end,
 		HundredMilestoneCommand=function(self)
-			self:rotationz(10):zoom(.25):diffusealpha(1):decelerate(0.5):rotationz(0):zoom(1.3):diffusealpha(0)
+			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
 		end,
-	},
+		},
 
-	Def.Sprite{
-		Texture="minisplode",
+		LoadActor("explosion")..{
 		InitCommand=function(self)
-			self:diffusealpha(0)
+			self:diffusealpha(0):blend("BlendMode_Add")
 		end,
 		HundredMilestoneCommand=function(self)
-			self:rotationz(10):zoom(.25):diffusealpha(1):linear(0.5):rotationz(0):zoom(1.3):diffusealpha(0)
+			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
 		end,
-	},
+		},
 
-	-- 1000 Combo milestone
-	LoadActor("explosion")..{
-	InitCommand=function(self)
-		self:diffusealpha(0):blend("BlendMode_Add")
-	end,
-	ThousandMilestoneCommand=function(self)
-		self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
-	end,
-	},
+		Def.Sprite{
+			Texture="arrowsplode",
+			InitCommand=function(self)
+				self:diffusealpha(0)
+			end,
+			HundredMilestoneCommand=function(self)
+				self:rotationz(10):zoom(.25):diffusealpha(1):decelerate(0.5):rotationz(0):zoom(1.3):diffusealpha(0)
+			end,
+		},
 
-	LoadActor("explosion")..{
-	InitCommand=function(self)
-		self:diffusealpha(0):blend("BlendMode_Add")
-	end,
-	ThousandMilestoneCommand=function(self)
-		self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
-	end,
-	},
+		Def.Sprite{
+			Texture="minisplode",
+			InitCommand=function(self)
+				self:diffusealpha(0)
+			end,
+			HundredMilestoneCommand=function(self)
+				self:rotationz(10):zoom(.25):diffusealpha(1):linear(0.5):rotationz(0):zoom(1.3):diffusealpha(0)
+			end,
+		},
 
-	LoadActor("shot")..{
-	InitCommand=function(self)
-		self:diffusealpha(0):blend("BlendMode_Add")
-	end,
-	ThousandMilestoneCommand=function(self)
-		self:zoomx(-2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(-150)
-	end,
-	},
-	LoadActor("shot")..{
-	InitCommand=function(self)
-		self:diffusealpha(0):blend("BlendMode_Add")
-	end,
-	ThousandMilestoneCommand=function(self)
-		self:zoomx(2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(150)
-	end,
+		-- 1000 Combo milestone
+		LoadActor("explosion")..{
+		InitCommand=function(self)
+			self:diffusealpha(0):blend("BlendMode_Add")
+		end,
+		ThousandMilestoneCommand=function(self)
+			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
+		end,
+		},
+
+		LoadActor("explosion")..{
+		InitCommand=function(self)
+			self:diffusealpha(0):blend("BlendMode_Add")
+		end,
+		ThousandMilestoneCommand=function(self)
+			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
+		end,
+		},
+
+		LoadActor("shot")..{
+		InitCommand=function(self)
+			self:diffusealpha(0):blend("BlendMode_Add")
+		end,
+		ThousandMilestoneCommand=function(self)
+			self:zoomx(-2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(-150)
+		end,
+		},
+		LoadActor("shot")..{
+		InitCommand=function(self)
+			self:diffusealpha(0):blend("BlendMode_Add")
+		end,
+		ThousandMilestoneCommand=function(self)
+			self:zoomx(2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(150)
+		end,
+		},
 	},
 
 	LoadFont( "_xenotron", "metal" ) .. {
