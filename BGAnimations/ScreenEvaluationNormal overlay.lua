@@ -116,8 +116,10 @@ t[#t+1] = Def.ActorFrame{
 	}
 }
 
+local prefix = {"st","nd","rd"}
+local num = GAMESTATE:GetCurrentStageIndex() < 4 and GAMESTATE:GetCurrentStageIndex() .. prefix[GAMESTATE:GetCurrentStageIndex()] or GAMESTATE:GetCurrentStageIndex().."th"
 t[#t+1] = Def.Sprite{
-    Texture=THEME:GetPathG( "Stages/SWME/ScreenWithMenuElements","stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage()) ),
+    Texture=THEME:GetPathG( "Stages/SWME/ScreenWithMenuElements","stage ".. (GAMESTATE:IsEventMode() and ToEnumShortString(GAMESTATE:GetCurrentStage()) or num) ),
     OnCommand=function(s)
         if GAMESTATE:GetCurrentStage() == "Stage_Final" then
             s:Load( THEME:GetPathG("Stages/SWME/ScreenWithMenuElements stage","final") )

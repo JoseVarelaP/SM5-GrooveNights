@@ -47,7 +47,7 @@ t[#t+1] = Def.ActorFrame {
 		Font="Common Normal";
 		Name="Text";
 		InitCommand=function(s)
-			s:maxwidth(750):halign(0,0):xy(SCREEN_LEFT+10,SCREEN_TOP+14):shadowlength(1):diffusealpha(0)
+			s:maxwidth(750):align(0,0):xy(SCREEN_LEFT+10,SCREEN_TOP+14):shadowlength(1):diffusealpha(0)
 		end,
 		OnCommand=function(s) s:diffusealpha(1):zoom(0.6) end,
 		OffCommand=function(s) s:sleep(3):sleep(0.5):diffusealpha(0) end,

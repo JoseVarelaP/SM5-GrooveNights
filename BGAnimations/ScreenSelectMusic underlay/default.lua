@@ -33,8 +33,16 @@ local function GetOrdinalSongRank()
 	end
 end
 
+local data = {
+    function() return GAMESTATE:GetCurrentSong():GetDisplayArtist() end,
+    function(Steps) return LoadModule("SelectMusic.ObtainBPM.lua")( Steps ) end,
+    function() return string.find( GAMESTATE:GetCurrentSong():GetSongDir(), "mem" ) and "Player Memory Card" or GAMESTATE:GetCurrentSong():GetSongDir() end,
+    function() return string.find( GAMESTATE:GetCurrentSong():GetSongDir(), "mem" ) and "N/A" or GetOrdinalSongRank() end,
+    function() return math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) == 105 and "Patched" or  SecondsToMMSS( math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds())) end,
+    Widths = { 430,430,600,80,80 }
+}
 for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.Normal ) do
-    for a,e in ipairs(v) do
+    for a,e in pairs(v) do
         t[#t+1] = Def.BitmapText{
             Font="_eurostile normal",
             Text=e..":",
@@ -55,17 +63,10 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
             CurrentStepsP2ChangedMessageCommand=function(s) s:playcommand("Update") end,
             UpdateCommand=function(s)
                 s:settext("")
+                local index = a+(3*(_-1))
                 local Steps = GAMESTATE:GetCurrentSteps( GAMESTATE:GetMasterPlayerNumber() )
                 if GAMESTATE:GetCurrentSong() then
-                    local data = {
-                        { GAMESTATE:GetCurrentSong():GetDisplayArtist(), LoadModule("SelectMusic.ObtainBPM.lua")( Steps ), string.find( GAMESTATE:GetCurrentSong():GetSongDir(), "mem" ) and "Player Memory Card" or GAMESTATE:GetCurrentSong():GetSongDir() },
-                        { string.find( GAMESTATE:GetCurrentSong():GetSongDir(), "mem" ) and "N/A" or GetOrdinalSongRank(),
-                        math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) == 105 and "Patched" or  SecondsToMMSS( math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) )
-                        },
-                        Widths = { 430,430,600,80,80 }
-                    }
-                    data[1][2] = LoadModule("SelectMusic.ObtainBPM.lua")( Steps )
-                    s:settext( " ".. data[_][a] ):maxwidth( data.Widths[ _*a ] )
+                    s:settext( " ".. data[index](Steps) ):maxwidth( data.Widths[ _*a ] )
                 end
             end,
         }

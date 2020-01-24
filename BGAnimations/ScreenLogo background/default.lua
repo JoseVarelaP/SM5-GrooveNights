@@ -9,7 +9,12 @@ t[#t+1] = Def.Sprite{
 }
 
 t[#t+1] = Def.ActorFrame{
-	Condition=GAMESTATE:GetCoinMode() == "CoinMode_Home",
+	InitCommand=function(s)
+		s:vibrate():effectmagnitude(0.5,0.5,0.1)
+		if GAMESTATE:GetCoinMode() ~= "CoinMode_Home" then
+			s:y(60)
+		end
+	end,
 	Def.Sprite{ Texture="TitleScreen0002", OnCommand=function(s)
 		s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):addy(460):diffusealpha(1):sleep(1.7):zoom(1.7):
 		diffusealpha(1):accelerate(0.5):addy(-510):zoom(0.8):decelerate(2):diffusealpha(1):addy(10)

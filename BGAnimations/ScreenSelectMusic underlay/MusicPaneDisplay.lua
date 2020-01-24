@@ -290,6 +290,6 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
             )
 		end
 	end
-};
+	};
 
 return t;
