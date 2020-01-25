@@ -35,13 +35,13 @@ local CurrentStage = Def.Sprite{
         CourseIndx = CourseIndx + 1
         s:Load( THEME:GetPathG("Stages/ScreenGameplay course song",CourseIndx) )
         :finishtweening():linear(0.3):Center():zoom(1):sleep(0.5)
-        :zoom(0.25):y(SCREEN_BOTTOM-40)
+        :zoom( (IsEvent and not GAMESTATE:IsCourseMode()) and 0.25 or 0.4 ):y(SCREEN_BOTTOM-40)
     end,
     OnCommand=function(self)
         if GAMESTATE:GetCurrentStage() == "Stage_Final" then
             self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
         end
-        self:Center():draworder(105):zoom(1):linear(0.3):zoom( IsEvent and 0.25 or 0.4)
+        self:Center():draworder(105):zoom(1):linear(0.3):zoom( (IsEvent and not GAMESTATE:IsCourseMode()) and 0.25 or 0.4)
         :y( LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini") and ( IsEvent and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-66) or SCREEN_BOTTOM-40)
     end;
 }
