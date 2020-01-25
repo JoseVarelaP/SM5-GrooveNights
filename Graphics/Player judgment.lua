@@ -77,7 +77,7 @@ t[#t+1] = Def.ActorFrame {
 		c.Judgment:diffusealpha( settings[2] or 1 )
 		c.Judgment:setstate( iFrame )
 		c.Judgment:rotationz( RotTween[param.TapNoteScore][math.random(1,2)] );
-		c.Judgment:zoom( settings[3] and ( settings[1] and 0.8*settings[1] or 0.75*settings[1]) or 0.8*1 )
+		c.Judgment:zoom( settings[3] and ( settings[1] and 0.8*settings[1] or 0.8) or (settings[1] and 0.75*settings[1] or 0.75) )
 		c.Judgment:decelerate( 0.1 )
 		c.Judgment:zoom( settings[1] and 0.75*settings[1] or 0.75 )
 	end;

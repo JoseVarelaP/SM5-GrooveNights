@@ -21,14 +21,22 @@ local ProgressBar = Def.ActorFrame{
         CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
 		UpdateCommand=function(s)
 			local song = GAMESTATE:GetCurrentSong()
-			s:settext( song and song:GetDisplayFullTitle() or "" )
+			s:settext( song and ( GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDisplayFullTitle().." - "..song:GetDisplayFullTitle() or song:GetDisplayFullTitle()) or "" )
 		end
     }
 }
 
 local IsEvent = GAMESTATE:IsEventMode()
+local CourseIndx = 1
+local StageStart = GAMESTATE:IsCourseMode() and "course song "..CourseIndx or "stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage())
 local CurrentStage = Def.Sprite{
-    Texture=THEME:GetPathG( "Stages/ScreenGameplay","stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage()) ),
+    Texture=THEME:GetPathG( "Stages/ScreenGameplay",StageStart ),
+    BeforeLoadingNextCourseSongMessageCommand=function(s)
+        CourseIndx = CourseIndx + 1
+        s:Load( THEME:GetPathG("Stages/ScreenGameplay course song",CourseIndx) )
+        :finishtweening():linear(0.3):Center():zoom(1):sleep(0.5)
+        :zoom(0.25):y(SCREEN_BOTTOM-40)
+    end,
     OnCommand=function(self)
         if GAMESTATE:GetCurrentStage() == "Stage_Final" then
             self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
@@ -217,7 +225,7 @@ end
 for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     -- First we need to check if both players are on the same BPM course.
     -- Add each player's BPM to verify.
-    if GAMESTATE:IsPlayerEnabled(player) then
+    if GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetCurrentSteps(player) then
         StepsData[player] = GAMESTATE:GetCurrentSteps(player):GetTimingData()
     end
 end
