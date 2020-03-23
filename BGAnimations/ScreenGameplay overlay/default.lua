@@ -47,20 +47,39 @@ local CurrentStage = Def.Sprite{
 }
 
 local Score = Def.ActorFrame{}
+local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
+
+local scoreModes = {
+    -- Method 1: Normal Scoring
+    function( GPSS , ScoreToCalculate )
+        return ScoreToCalculate > 0 and string.format( "%.2f%%", ScoreToCalculate*100) or " 0.00%"
+    end,
+    -- Method 2: Reverse Scoring
+    function( GPSS , ScoreToCalculate )
+        local reverseScore = GPSS:GetCurrentPossibleDancePoints() - GPSS:GetActualDancePoints()
+        reverseScore = (( GPSS:GetPossibleDancePoints() - reverseScore ) / GPSS:GetPossibleDancePoints())
+        return ScoreToCalculate > 0 and FormatPercentScore( reverseScore ) or "100.00%"
+    end,
+    -- Method 3: Real Time Scoring
+    function( GPSS , ScoreToCalculate )
+        local realTimeScore = GPSS:GetActualDancePoints() / GPSS:GetCurrentPossibleDancePoints()
+        return realTimeScore > 0 and FormatPercentScore(realTimeScore) or " 0.00%" 
+    end,
+    -- Method 4: Flat Scoring
+    function( GPSS , ScoreToCalculate, totalNotes )
+        local notesHit = 0
+        for i=1,5 do
+            notesHit = notesHit + GPSS:GetTapNoteScores( "TapNoteScore_W"..i )
+        end
+        return notesHit > 0 and FormatPercentScore( notesHit / totalNotes ) or " 0.00%"
+    end,
+}
 
 for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
-    local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
     local color = GameColor.PlayerColors[pn_to_color_name[player]]
-
-    --[[
-    local PDir = (
-        (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none')
-        and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNights.save"
-        or "Save/TEMP"..player
-    )
+	local PDir = (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..player
     local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
-    local config = isRealProf and LoadModule("Config.Load.lua")("ScoringFormat", PDir ) or GAMESTATE:Env()["ScoringFormatMachinetemp"..player]
-    ]]
+    local totalNotes = LoadModule("Pane.RadarValue.lua")(player,6)
     local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1]
     Score[#Score+1] = Def.BitmapText{
         Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
@@ -71,15 +90,9 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
         end;
         JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end;
         UpdateScoreCommand=function(s)
-            s:settext( LoadModule("Gameplay.CalculatePercentage.lua")(player) )
-            -- time to check who's winning
-            if GAMESTATE:GetNumPlayersEnabled() == 2 then
-                if LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) < LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) then
-                    s:diffusealpha(0.8)
-                else
-                    s:diffusealpha(1)
-                end
-            end
+            local GPSS = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+            local ScoreToCalculate = GPSS:GetPercentDancePoints()
+            s:settext( scoreModes[config+1]( GPSS, ScoreToCalculate, totalNotes ) )
         end;
     };
 
@@ -87,15 +100,17 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     -- Only applicable on Flat Scoring
     if tonumber(config) == 3 then
         Score[#Score+1] = Def.BitmapText{
-            Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
-            Font="_futurist metalic";
+            Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni",
+            Font="_futurist metalic",
             OnCommand=function(s)
                 s:xy( player == PLAYER_1 and SCREEN_CENTER_X-156 or SCREEN_CENTER_X+156, SCREEN_TOP+76 ):zoom(0.6)
                 :diffuse( color ):playcommand("UpdateScore")
-            end;
-            JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end;
+            end,
+            JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end,
             UpdateScoreCommand=function(s)
-                s:settext( LoadModule("Gameplay.CalculatePercentage.lua")(player,true) )
+                local GPSS = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+                local ScoreToCalculate = GPSS:GetPercentDancePoints()
+                s:settext( scoreModes[1]( GPSS, ScoreToCalculate, totalNotes ) )
                 -- time to check who's winning
                 if GAMESTATE:GetNumPlayersEnabled() == 2 then
                     if LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) < LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) then
@@ -104,35 +119,34 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
                         s:diffusealpha(1)
                     end
                 end
-            end;
-        };
+            end
+        }
     end
 
-    Score[#Score+1] = Def.Sprite{
-        Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetNumPlayersEnabled() == 2,
-        Texture="winning.png",
-        OnCommand=function(s)
-            local margin = 40
-            s:xy( player == PLAYER_1 and margin or SCREEN_RIGHT-margin, SCREEN_CENTER_Y-110 )
-            :zoom(0.6):rotationz( player == PLAYER_1 and 30 or -30 )
-        end;
-        JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end;
-        UpdateScoreCommand=function(s)
-            -- time to check who's winning
-            if GAMESTATE:GetNumPlayersEnabled() == 2 then
+    if GAMESTATE:GetNumPlayersEnabled() == 2 then
+        Score[#Score+1] = Def.Sprite{
+            Condition=GAMESTATE:IsPlayerEnabled(player),
+            Texture="winning.png",
+            OnCommand=function(s)
+                local margin = 40
+                s:xy( player == PLAYER_1 and margin or SCREEN_RIGHT-margin, SCREEN_CENTER_Y-110 )
+                :zoom(0.6):rotationz( player == PLAYER_1 and 30 or -30 )
+            end,
+            JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end,
+            UpdateScoreCommand=function(s)
+                -- time to check who's winning
                 if LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) < LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) then
                     s:diffusealpha(0)
                 else
                     s:diffusealpha(1)
                 end
             end
-        end;
-    };
+        }
+    end
 
     Score[#Score+1] = Def.ActorFrame{
         OnCommand=function(s)
-            local margin = 56
-            s:xy( player == PLAYER_1 and margin or SCREEN_RIGHT-margin, 25 )
+            s:xy( player == PLAYER_1 and 56 or SCREEN_RIGHT-56, 25 )
         end,
         Def.Sprite{
             Condition=GAMESTATE:IsPlayerEnabled(player),
@@ -169,11 +183,10 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             end;
             UpdateCommand=function(s)
                 if GAMESTATE:GetCurrentSteps(player) then
-                    local steps = GAMESTATE:GetCurrentSteps(player)
-                    s:settext( steps:GetMeter() )
+                    s:settext( GAMESTATE:GetCurrentSteps(player):GetMeter() )
                 end
             end,
-            },
+        },
     }
 end
 
@@ -187,9 +200,9 @@ local Update2PBPM = function(self)
 	MusicRate = GAMESTATE:GetSongOptionsObject("ModsLevel_Song"):MusicRate()
 	-- need current bpm for p1 and p2
     if GAMESTATE:GetNumPlayersEnabled() == 2 and TimingDiverged then
+    	local dispP1 = self:GetChild("DisplayP1")
+        local dispP2 = self:GetChild("DisplayP2")
         for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
-            local dispP1 = self:GetChild("DisplayP1")
-            local dispP2 = self:GetChild("DisplayP2")
             bpmDisplay = (player == PLAYER_1) and dispP1 or dispP2
             SongPosition = GAMESTATE:GetPlayerState(player):GetSongPosition()
             if bpmDisplay then

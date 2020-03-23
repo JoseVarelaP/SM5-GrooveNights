@@ -16,17 +16,6 @@ local t = Def.ActorFrame{
         s:xy( SCREEN_CENTER_X-160*side(player)-8, SCREEN_CENTER_Y+154 )
         :diffusealpha( GAMESTATE:IsPlayerEnabled(player) and 1 or 0 )
     end,
-	PlayerJoinedMessageCommand=function(s,param)
-		if param.Player == player then
-			s:linear(0.2):diffusealpha( GAMESTATE:IsPlayerEnabled(player) and 1 or 0 )
-			s:sleep(0.1):queuecommand("BeginLoad")
-		end
-	end,
-	-- Perform Load
-	BeginLoadCommand=function(s,param)
-		ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
-		MESSAGEMAN:Broadcast("UpdateInfoPlayer",{pn=player})
-	end,
 	SelectMenuOpenedMessageCommand=function(s,param) if param.Player == player then s:playcommand("LVBarOn") end end,
 	SelectMenuClosedMessageCommand=function(s,param) if param.Player == player then s:playcommand("LVBarOff") end end,
 }
@@ -34,9 +23,6 @@ local t = Def.ActorFrame{
 local BI = Def.ActorFrame{
 	OnCommand=function(s)
 		s:y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
-	end,
-	UpdateInfoPlayerMessageCommand=function(s)
-		s:sleep(1.8):decelerate(0.3):y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
 	end,
 }
 
@@ -59,12 +45,6 @@ local BI = Def.ActorFrame{
 			end,
 			LVBarOnCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
 			LVBarOffCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
-			UpdateInfoPlayerMessageCommand=function(s,param)
-				if param.pn == player then
-					s:Load( THEME:GetPathG("",ach.Achievements[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+ach.Achievements[_]) or "achievements/achievement".. string.format("%04i",(v)) ) )
-					s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
-				end
-			end,
 		}
 	end
 
@@ -81,12 +61,6 @@ local BI = Def.ActorFrame{
 				OnCommand=function(s) s:x( -26 ):zoom(0.6) end,
 			},
 			Def.BitmapText{ Font="_eurostile normal", Text=total, OnCommand=function(s) s:x(-8):zoom(0.5) end,
-			UpdateInfoPlayerMessageCommand=function(s,param)
-				if param.pn == player then
-					local total = ach[5]["Grade_Tier0"..i]
-					s:settext( total )
-				end
-			end,
 		}
 	}
 	end
@@ -103,11 +77,6 @@ local BI = Def.ActorFrame{
 				s:halign(0):xy( -38, -11 ):zoom(0.4)
 				s:settext( "Level ".. ach[3] )
 			end,
-			UpdateInfoPlayerMessageCommand=function(s,param)
-				if param.pn == player then
-					s:settext( "Level ".. ach[3] )
-				end
-			end,
 		},
 		Def.BitmapText{
 			Condition=LoadModule("Config.Load.lua")("ToggleEXPCounter","Save/GrooveNightsPrefs.ini"),
@@ -116,20 +85,9 @@ local BI = Def.ActorFrame{
 				s:halign(1):xy( 48, -11 ):zoom(0.3)
 				s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
 			end,
-			UpdateInfoPlayerMessageCommand=function(s,param)
-				if param.pn == player then
-					s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
-				end
-			end,
 		},
 		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.1,0.1,0.1,1") ):zoomto(90,4):xy(4,-2) end, },
-		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2)
-			:cropright( (100-ach[1])/100 ) end,
-			UpdateInfoPlayerMessageCommand=function(s,param)
-				if param.pn == player then
-					s:cropright( (100-ach[1])/100 )
-				end
-			end,
+		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2):cropright( (100-ach[1])/100 ) end,
 		},
 		Def.Sprite{ Texture=THEME:GetPathG("","EXP/expBar") },
 	}
@@ -152,18 +110,6 @@ t[#t+1] = Def.Sprite {
 			s:diffuse( PlayerColor(player) )
 		end
 	end,
-	UpdateInfoPlayerMessageCommand=function(s,param)
-		if param.pn == player then
-			s:sleep(1.3):linear(0.3):diffusealpha(0):sleep(0.01):queuecommand("UpdateIcon")
-		end
-	end,
-	UpdateIconCommand=function(s)
-		s:Load( LoadModule("Options.GetProfileData.lua")(player)["Image"] )
-		:setsize(64,64)
-		if LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card" then
-			s:linear(0.3):diffuse(Color.White)
-		end
-	end,
 };
 if PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" then
 	t[#t+1] = Def.Quad {
@@ -182,13 +128,23 @@ t[#t+1] = Def.BitmapText {
     OnCommand=function(s)
         s:xy(-114,22):zoom(0.5):diffuse( PlayerColor(player) )
 	end,
-	PlayerJoinedMessageCommand=function(s,param)
-		if param.Player == player then s:settext("Loading...") end
-	end,
-	UpdateInfoPlayerMessageCommand=function(s)
-		s:settext( PROFILEMAN:GetProfile(player):GetDisplayName() )
-	end,
 };
+
+local function RadarValue(pn,n)
+	local SongOrCourse, StepsOrTrail;
+	if GAMESTATE:IsCourseMode() then
+		SongOrCourse = GAMESTATE:GetCurrentCourse();
+		StepsOrTrail = GAMESTATE:GetCurrentTrail(pn);
+	else
+		SongOrCourse = GAMESTATE:GetCurrentSong();
+		StepsOrTrail = GAMESTATE:GetCurrentSteps(pn);
+	end;
+
+	if GAMESTATE:IsPlayerEnabled(pn) and (SongOrCourse and StepsOrTrail) then
+		return StepsOrTrail:GetRadarValues(pn):GetValue(n)
+	end
+	return 0
+end
 
 t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( color("#1C2C3C") ) end }
 
@@ -197,22 +153,23 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 	local ObtainData = {
 		--LEFT SIDE
 		{
-			{"Steps", function() return StepsOrCourse() and LoadModule("Pane.RadarValue.lua")(player, 5) or 0 end, {1,200,350,550} },
-			{"Holds", function() return StepsOrCourse() and LoadModule("Pane.RadarValue.lua")(player, 8) or 0 end, {1,75,150,300} },
+			{"Steps", function() return StepsOrCourse() and RadarValue(player, 5) or 0 end, {1,200,350,550} },
+			{"Holds", function() return StepsOrCourse() and RadarValue(player, 8) or 0 end, {1,75,150,300} },
 			{function() return LoadModule("Pane.PercentScore.lua")(player)[2] end, function() return LoadModule("Pane.PercentScore.lua")(player)[1] end },
 			{"Card", function() return LoadModule("Pane.PercentScore.lua")(player)[1] end },
 			xpos = {-75,0},
 		},
 		--RIGHT SIDE
 		{
-			{"Jumps", function() return StepsOrCourse() and LoadModule("Pane.RadarValue.lua")(player, 7) or 0 end, {1,25,50,75} },
-			{"Mines", function() return StepsOrCourse() and LoadModule("Pane.RadarValue.lua")(player, 9) or 0 end, {1,50,100,150} },
-			{"Hands", function() return StepsOrCourse() and LoadModule("Pane.RadarValue.lua")(player, 10) or 0 end, {1,10,35,75} },
-			{"Rolls", function() return StepsOrCourse() and LoadModule("Pane.RadarValue.lua")(player, 11) or 0 end, {1,10,35,75} },
+			{"Jumps", function() return StepsOrCourse() and RadarValue(player, 7) or 0 end, {1,25,50,75} },
+			{"Mines", function() return StepsOrCourse() and RadarValue(player, 9) or 0 end, {1,50,100,150} },
+			{"Hands", function() return StepsOrCourse() and RadarValue(player, 10) or 0 end, {1,10,35,75} },
+			{"Rolls", function() return StepsOrCourse() and RadarValue(player, 11) or 0 end, {1,10,35,75} },
 			xpos = {10,80},
 		},
 		DiffPlacement = 120
 	}
+	
 	for ind,content in ipairs(ObtainData) do
 		for vind,val in ipairs( ObtainData[ind] ) do
 			t[#t+1] = Def.BitmapText{
@@ -244,7 +201,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
                     if not GAMESTATE:GetCurrentSong() then
                         s:settext("?")
                     end
-                end,
+				end,
 				["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
 					if GAMESTATE:GetCurrentSteps(player) and val[2] then
 						s:settext( val[2]() )
@@ -252,6 +209,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 							for _,vae in pairs( val[3] ) do
 								if val[2]() > vae then
 									s:diffuse( ColorGradients[_] )
+									break
 								end
 							end
 						end
