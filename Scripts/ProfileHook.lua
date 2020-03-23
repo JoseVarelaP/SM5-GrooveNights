@@ -73,7 +73,8 @@ function SaveProfileCustom(profile, dir)
 	local path = dir .. filename
 
 	for player in ivalues( GAMESTATE:GetHumanPlayers() ) do
-		if profile == PROFILEMAN:GetProfile(player) and FILEMAN:DoesFileExist(path) then
+		-- Only do this process IF the player has a memorycard.
+		if profile == PROFILEMAN:GetProfile(player) and MEMCARDMAN:GetCardState(player) ~= 'MemoryCardState_none' and FILEMAN:DoesFileExist(path) then
 			local output = {}
 			for k,v in pairs( OptionStrings ) do
 				-- Use the contents we saved temporarily from ProfileLoad and save

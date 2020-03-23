@@ -5,11 +5,11 @@ return function( pn , useRealScore )
 	local config = isRealProf and LoadModule("Config.Load.lua")("ScoringFormat", PDir ) or GAMESTATE:Env()["ScoringFormatMachinetemp"..pn]
 	if GAMESTATE:IsDemonstration() then config = 0 end
 	local res
-	local ScoreToCalculate = GPSS:GetActualDancePoints()/GPSS:GetPossibleDancePoints()
+	local ScoreToCalculate = GPSS:GetPercentDancePoints()
 	local scoreModes = {
 		-- Method 1: Normal Scoring
 		function()
-			res = ScoreToCalculate > 0 and FormatPercentScore( ScoreToCalculate ) or " 0.00%"
+			res = ScoreToCalculate > 0 and string.format( "%.2f%%", ScoreToCalculate*100) or " 0.00%"
 		end,
 		-- Method 2: Reverse Scoring
 		function()
