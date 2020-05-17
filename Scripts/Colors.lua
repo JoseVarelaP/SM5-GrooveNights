@@ -18,7 +18,7 @@ end
 LoadModule("Row.Prefs.lua")(LoadModule("Options.Prefs.lua"))
 
 function ScreenPlayerOptions_Choices()
-	local Main = "1,2,3A,3B,4,5,6,R1,R2,7,8,9,10,11,12,13,14,16,17"
+	local Main = "SPM,SPV,2,3A,3B,4,5,6,R1,R2,7,8,9,10,11,12,13,14,16,17"
 	local gnOptions = "DefaultJudgmentSize,DefaultJudgmentOpacity,ToggleJudgmentBounce,DefaultComboSize,ToggleComboSizeIncrease,ToggleComboBounce,ToggleComboExplosion,ScoringFormat,gnGlobalOffset"
 	return (GAMESTATE:Env()["gnNextScreen"] ~= "gnPlayerSettings" and Main or gnOptions) .. ",NextScreenOption"
 end

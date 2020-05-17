@@ -75,7 +75,7 @@ return function(Prefs)
 						MESSAGEMAN:Broadcast(v.GenForOther[1], {pn=pn,choice=choice})
 						setenv(v.GenForOther[1].."env"..pn,Reset[tonumber(string.sub(pn,-1))]) -- need to double this because bug.
 					end
-					MESSAGEMAN:Broadcast(k.."Change", {pn=pn,choice=choice,TextChoice=self.Choices[choice]})
+					MESSAGEMAN:Broadcast(k.."Change", {pn=pn,choice=choice,choicename=self.Values[choice],TextChoice=self.Choices[choice]})
 				end,
 				SaveSelections = function(self, list, pn)
 					local Location = "Save/GrooveNightsPrefs.ini"
