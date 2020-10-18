@@ -7,7 +7,7 @@ t[#t+1] = Def.Quad{
 }
 
 t[#t+1] = Def.Sprite{
-    Texture="BGVid.avi",
+    Texture="BGVid.mkv",
     OnCommand=function(s)
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):zoom( 1.1*(SCREEN_WIDTH/640) )
         :diffuse( color("#1C2C3C") ):rate(0.5)
@@ -15,7 +15,7 @@ t[#t+1] = Def.Sprite{
 }
 
 t[#t+1] = Def.Sprite{
-    Texture="BGVid.avi",
+    Texture="BGVid.mkv",
     OnCommand=function(s)
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):zoom( 1.1*(SCREEN_WIDTH/640) )
         :diffuse( color("#1C2C3C") ):rate(0.5):blend("BlendMode_Add")

@@ -2,7 +2,7 @@ local t = Def.ActorFrame{}
 local gnZoomRatio = (SCREEN_WIDTH/640)
 
 t[#t+1] = Def.Sprite{
-	Texture="BGVid.avi",
+	Texture="BGVid.mkv",
 	OnCommand=function(s)
 		s:diffusealpha(0.3):blend("BlendMode_Add"):xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):zoom(1.1*gnZoomRatio)
 	end,
@@ -38,7 +38,7 @@ t[#t+1] = Def.ActorFrame{
 }
 
 t[#t+1] = Def.Sprite{
-	Texture="BGVid.avi",
+	Texture="BGVid.mkv",
 	OnCommand=function(s)
 		s:diffusealpha(0.4):blend("BlendMode_Add"):xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):zoom(1.1*gnZoomRatio)
 	end,

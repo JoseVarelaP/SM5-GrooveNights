@@ -80,7 +80,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 	local PDir = (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..player
     local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
     local totalNotes = LoadModule("Pane.RadarValue.lua")(player,6)
-    local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1]
+    local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1] or 0
     Score[#Score+1] = Def.BitmapText{
         Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
         Font="_futurist metalic";
