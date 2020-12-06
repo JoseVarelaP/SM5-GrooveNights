@@ -1,0 +1,52 @@
+﻿The FontStruction “XLMonoAlt”
+(http://fontstruct.com/fontstructions/show/190745) by “fontcollector” is
+licensed under a Creative Commons Attribution Non-commercial No Derivatives
+license (http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“XLMonoAlt” was originally cloned (copied) from the FontStruction
+“XLMono” (http://fontstruct.com/fontstructions/show/179281) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“XLMono” was in turn cloned (copied) from the FontStruction
+“XLProportional” (http://fontstruct.com/fontstructions/show/178986) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“XLProportional” was in turn cloned (copied) from the FontStruction
+“OctagonoPropC” (http://fontstruct.com/fontstructions/show/152932) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“OctagonoPropC” was in turn cloned (copied) from the FontStruction
+“OctagonoMonoC” (http://fontstruct.com/fontstructions/show/149804) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“OctagonoMonoC” was in turn cloned (copied) from the FontStruction
+“OctagonoMonoA” (http://fontstruct.com/fontstructions/show/71451) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“OctagonoMonoA” was in turn cloned (copied) from the FontStruction
+“SkinnyVinnieMono” (http://fontstruct.com/fontstructions/show/70722) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“SkinnyVinnieMono” was in turn cloned (copied) from the FontStruction
+“SkinnyMinnieMono” (http://fontstruct.com/fontstructions/show/55702) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“SkinnyMinnieMono” was in turn cloned (copied) from the FontStruction
+“EZMonoG” (http://fontstruct.com/fontstructions/show/55401) by
+“fontcollector”, which is licensed under a Creative Commons Attribution
+Non-commercial No Derivatives license
+(http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“EZMonoG” was in turn cloned (copied) from the FontStruction “EZMonoF”
+(http://fontstruct.com/fontstructions/show/54967) by “fontcollector”, which
+is licensed under a Creative Commons Attribution Non-commercial No Derivatives
+license (http://creativecommons.org/licenses/by-nc-nd/3.0/).
+“EZMonoF” was in turn cloned (copied) from the FontStruction “EZMonoA”
+(http://fontstruct.com/fontstructions/show/23573) by “fontcollector”, which
+is licensed under a Creative Commons Attribution Non-commercial No Derivatives
+license (http://creativecommons.org/licenses/by-nc-nd/3.0/).
