@@ -44,7 +44,7 @@ local data = {
 for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.Normal ) do
     for a,e in pairs(v) do
         t[#t+1] = Def.BitmapText{
-            Font="_eurostile normal",
+            Font="novamono/36/_novamono 36px",
             Text=e..":",
             OnCommand=function(s)
                 s:halign(1):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-56+(16*a) ):diffuse(color("#FFA314"))
@@ -53,7 +53,7 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
         }
 
         t[#t+1] = Def.BitmapText{
-            Font="_eurostile normal",
+            Font="novamono/36/_novamono 36px",
             OnCommand=function(s)
                 s:halign(0):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-56+(16*a) )
                 :zoom(0.6):playcommand("Update")
@@ -74,7 +74,7 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
 end
 
 t[#t+1] = Def.BitmapText{
-    Font="_eurostile normal",
+    Font="novamono/36/_novamono 36px",
     Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini"),
     InitCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):playcommand("Update")

@@ -239,14 +239,14 @@ t[#t+1] = Def.ActorFrame{
 		
 		
 		Def.BitmapText{
-			Font="_eurostile normal", Text=optionslist, OnCommand=function(self)
+			Font="novamono/36/_novamono 36px", Text=optionslist, OnCommand=function(self)
 				self:xy(-65,-102):zoom(0.44):shadowlength(2):wrapwidthpixels(240):valign(0)
 			end
 		},
 
 		Def.BitmapText{
 			Condition=GAMESTATE:GetPlayMode() ~= "PlayMode_Rave",
-			Font="_eurostile normal",OnCommand=function(self)
+			Font="novamono/36/_novamono 36px",OnCommand=function(self)
 				self:xy(-65,-56):zoom(0.44):shadowlength(2):wrapwidthpixels(240):valign(0):diffusealpha(0.4)
 			end,
 			EvaluationInputChangedMessageCommand=function(s,param)
@@ -308,7 +308,7 @@ for i=1,4 do
 	}
 	t[#t+1] = Def.BitmapText{
 		Condition=isvalidplayer,
-		Font="_eurostile normal",
+		Font="novamono/36/_novamono 36px",
 		Text=total,
         OnCommand=function(s)
             s:xy( -11, (24*(i-1))-24 ):zoom(0.5):diffuse( PlayerColor(player) )
@@ -541,13 +541,13 @@ local ArB = Def.ActorFrame{
 			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 0 or 1 )
 		end
 	end,
-	Def.BitmapText{ Font="_eurostile normal", Text="Arrow Breakdown", OnCommand=function(s) s:zoom(0.5):y(-8+98) end },
-	Def.BitmapText{ Font="_eurostile normal", Text="Offset Derivative", OnCommand=function(s) s:zoom(0.5):x(140) end },
-	Def.BitmapText{ Font="_eurostile normal", Text="Early", OnCommand=function(s) s:zoom(0.35):xy( 90,12 ) end },
-	Def.BitmapText{ Font="_eurostile normal", Text="Late", OnCommand=function(s) s:zoom(0.35):xy( 185,12 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Arrow Breakdown", OnCommand=function(s) s:zoom(0.5):y(-8+98) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Offset Derivative", OnCommand=function(s) s:zoom(0.5):x(140) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Early", OnCommand=function(s) s:zoom(0.35):xy( 90,12 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Late", OnCommand=function(s) s:zoom(0.35):xy( 185,12 ) end },
 
-	Def.BitmapText{ Font="_eurostile normal", Text=offsetTable.Early, OnCommand=function(s) s:zoom(0.35):xy( 90,24 ) end },
-	Def.BitmapText{ Font="_eurostile normal", Text=offsetTable.Late, OnCommand=function(s) s:zoom(0.35):xy( 185,24 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Early, OnCommand=function(s) s:zoom(0.35):xy( 90,24 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Late, OnCommand=function(s) s:zoom(0.35):xy( 185,24 ) end },
 
 	Def.Quad{ Name="Early", OnCommand=function(s) s:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Blue ) end, },
 	Def.Quad{ Name="Late", OnCommand=function(s) s:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Red ) end, },
@@ -556,7 +556,7 @@ local ArB = Def.ActorFrame{
 local Side = {"&LEFT;","&DOWN;","&UP;","&RIGHT;"}
 for i=0,3 do
 	ArB[#ArB+1] = Def.BitmapText{
-		Font="_eurostile normal",
+		Font="novamono/36/_novamono 36px",
 		Text=Side[i+1],
 		OnCommand=function(s)
 			s:xy( -40 + (26*i), 106 ):zoom(0.6)
@@ -565,7 +565,7 @@ for i=0,3 do
 
 	for index, ValTC in ipairs(JudgmentInfo.Types) do
 		ArB[#ArB+1] = Def.BitmapText{
-			Font="_eurostile normal",
+			Font="novamono/36/_novamono 36px",
 			Text=timingWindow[i+1][ValTC],
 			OnCommand=function(s)
 				s:xy( -40 + (26*i), 12*index+108 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
@@ -597,10 +597,10 @@ if highscores then
 				end
 			end,
 
-			Def.BitmapText{ Name="Num"..i, Font="_eurostile normal", Text="#"..i, OnCommand=function(s) s:x( -90 ) end, },
-			Def.BitmapText{ Name="Nam"..i, Font="_eurostile normal", Text=name },
+			Def.BitmapText{ Name="Num"..i, Font="novamono/36/_novamono 36px", Text="#"..i, OnCommand=function(s) s:x( -90 ) end, },
+			Def.BitmapText{ Name="Nam"..i, Font="novamono/36/_novamono 36px", Text=name },
 			Def.Sprite{ Texture=grade, OnCommand=function(s) s:setsize( 40,40 ):x( 76 ) end, },
-			Def.BitmapText{ Name="Scr"..i, Font="_eurostile normal", Text=score, OnCommand=function(s) s:halign(1):x( 190 ) end, }
+			Def.BitmapText{ Name="Scr"..i, Font="novamono/36/_novamono 36px", Text=score, OnCommand=function(s) s:halign(1):x( 190 ) end, }
 		}
 	end
 end

@@ -58,7 +58,7 @@ if numPlayers == 1 or GAMESTATE:IsCourseMode() then
 	t[#t+1] = Def.ActorFrame{
 		InitCommand=function(self) self:SetUpdateFunction(UpdateSingleBPM) end;
 		Def.BitmapText {
-			Font="_eurostile normal";
+			Font="novamono/36/_novamono 36px";
 			Name="BPMDisplay",
 			InitCommand=function(self) self:zoom(1) end;
 			OnCommand=function(self)
@@ -87,7 +87,7 @@ else
 			InitCommand=function(self) self:SetUpdateFunction(UpdateSingleBPM) end;
 	
 			Def.BitmapText {
-				Font="_eurostile normal";
+				Font="novamono/36/_novamono 36px";
 				Name="BPMDisplay",
 				OnCommand=function(self)
 					self:diffuse(color("#FFFFFF")):diffusetopedge(color("#DCE7FB")):strokecolor(color("#101E4B")):shadowlength(1)
@@ -124,7 +124,7 @@ else
 		InitCommand=function(self) self:SetUpdateFunction(Update2PBPM) end;		
 		-- manual bpm displays
 		Def.BitmapText {
-			Font="_eurostile normal",
+			Font="novamono/36/_novamono 36px",
 			Name="DisplayP1",
 			InitCommand=function(self) self:x(-60):zoom(1):shadowlength(1) end;
 			OnCommand=function(self)
@@ -132,7 +132,7 @@ else
 			end;			
 		},
 		Def.BitmapText {
-			Font="_eurostile normal",
+			Font="novamono/36/_novamono 36px",
 			Name="DisplayP2",
 			InitCommand=function(self) self:x(60):zoom(1):shadowlength(1) end;
 			OnCommand=function(self)

@@ -1,6 +1,6 @@
 return Def.ActorFrame{
 	Def.BitmapText{
-	Font="_eurostile normal",
+	Font="novamono/36/_novamono 36px",
 	Text=THEME:GetString("ScreenEvaluation","Barely!"),
 	OnCommand=function(self)
 		self:zoom(0.5):shadowlength(2):y(-12):diffusealpha(0):addy(-20):sleep(4.25):accelerate(.2):diffusealpha(1):addy(20)

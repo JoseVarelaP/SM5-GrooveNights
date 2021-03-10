@@ -1,7 +1,7 @@
 local t = Def.ActorFrame{}
 
 t[#t+1] = Def.ActorFrame{
-	Def.BitmapText{ Font="_eurostile normal",
+	Def.BitmapText{ Font="novamono/36/_novamono 36px",
 	InitCommand=function(self)
 	local FinalText = ""
 	local StepCharters = ""

@@ -15,7 +15,7 @@ local ProgressBar = Def.ActorFrame{
     LoadActor( "./WideScreen Progressbar.lua" ),
 
     Def.BitmapText{
-        Font="_eurostile normal",
+        Font="novamono/36/_novamono 36px",
         OnCommand=function(s) s:zoom(0.6):maxwidth( SCREEN_WIDTH/1.02 ) end,
         InitCommand=function(s) s:shadowlength(0):playcommand("Update") end,
         CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
@@ -223,15 +223,15 @@ local BPMDisplay = Def.ActorFrame{
 local function DoubleBPMActor()
     return Def.ActorFrame{
         OnCommand=function(s) s:xy( SCREEN_CENTER_X,60 ):SetUpdateFunction(Update2PBPM) end,
-        Def.BitmapText{ Name="DisplayP1", Font="_eurostile normal", OnCommand=function(s) s:x( -30 ) end, },
-        Def.BitmapText{ Name="DisplayP2", Font="_eurostile normal", OnCommand=function(s) s:x( 30 ) end, },
+        Def.BitmapText{ Name="DisplayP1", Font="novamono/36/_novamono 36px", OnCommand=function(s) s:x( -30 ) end, },
+        Def.BitmapText{ Name="DisplayP2", Font="novamono/36/_novamono 36px", OnCommand=function(s) s:x( 30 ) end, },
     }
 end
 
 local function SingleBPMActor()
     return Def.ActorFrame{
         OnCommand=function(s) s:xy( SCREEN_CENTER_X,60 ):SetUpdateFunction(Update2PBPM) end,
-        Def.BitmapText{ Name="Display", Font="_eurostile normal" },
+        Def.BitmapText{ Name="Display", Font="novamono/36/_novamono 36px" },
     }
 end
 
@@ -255,7 +255,7 @@ else
 end
 
 local TotalPlayTime = Def.BitmapText{
-    Font="_eurostile normal",
+    Font="novamono/36/_novamono 36px",
     Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini") and not GAMESTATE:IsDemonstration(),
     OnCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):strokecolor(Color.Black)

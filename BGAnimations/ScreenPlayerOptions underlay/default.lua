@@ -77,7 +77,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 end,
             },
             Def.BitmapText {
-                Font="_eurostile normal",
+                Font="novamono/36/_novamono 36px",
                 Text=PROFILEMAN:GetProfile(pn):GetDisplayName(),
                 OnCommand=function(s)
                     s:xy(-114,22):zoom(0.5):diffuse( PlayerColor(pn) )
@@ -258,7 +258,7 @@ t[#t+1] = Def.Sprite{
 }
 
 t[#t+1] = Def.BitmapText{
-    Font="_eurostile normal",
+    Font="novamono/36/_novamono 36px",
     InitCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):playcommand("Update")
     end,

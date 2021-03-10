@@ -60,7 +60,7 @@ local BI = Def.ActorFrame{
 				Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),
 				OnCommand=function(s) s:x( -26 ):zoom(0.6) end,
 			},
-			Def.BitmapText{ Font="_eurostile normal", Text=total, OnCommand=function(s) s:x(-8):zoom(0.5) end,
+			Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=total, OnCommand=function(s) s:x(-8):zoom(0.5) end,
 		}
 	}
 	end
@@ -123,7 +123,7 @@ t[#t+1] = Def.Sprite {
 	end,
 };
 t[#t+1] = Def.BitmapText {
-	Font="_eurostile normal",
+	Font="novamono/36/_novamono 36px",
 	Text=PROFILEMAN:GetProfile(player):GetDisplayName(),
     OnCommand=function(s)
         s:xy(-114,22):zoom(0.5):diffuse( PlayerColor(player) )
@@ -173,7 +173,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 	for ind,content in ipairs(ObtainData) do
 		for vind,val in ipairs( ObtainData[ind] ) do
 			t[#t+1] = Def.BitmapText{
-				Font="_eurostile normal",
+				Font="novamono/36/_novamono 36px",
 				Text=val[1],
 				InitCommand=function(s)
 					s:zoom(0.5):xy(
@@ -188,7 +188,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 				end;
 			};
 			t[#t+1] = Def.BitmapText{
-				Font="_eurostile normal",
+				Font="novamono/36/_novamono 36px",
 				Text=val[2],
 				InitCommand=function(s)
 					s:zoom(0.5):xy(
@@ -219,7 +219,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 		end
     end
     t[#t+1] = Def.BitmapText{
-		Font="_eurostile normal",
+		Font="novamono/36/_novamono 36px",
 		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(12):maxwidth(90):zoom(0.6) end;
 		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
 		if StepsOrCourse() then
@@ -232,13 +232,13 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
     };
 
     t[#t+1] = Def.BitmapText{
-        Font="_eurostile normal",
+        Font="novamono/36/_novamono 36px",
         Text="Step Artist",
 		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-24):maxwidth(120):zoom(0.53):diffuse( color("#FFA314") ) end;
 	};
     
     t[#t+1] = Def.BitmapText{
-		Font="_eurostile normal",
+		Font="novamono/36/_novamono 36px",
 		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-9):maxwidth(110):zoom(0.56) end;
 		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
         if StepsOrCourse() then

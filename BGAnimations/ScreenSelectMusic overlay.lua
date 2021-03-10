@@ -16,7 +16,7 @@ t[#t+1] = loadfile( THEME:GetPathG('ScreenSelectMusic','StepsDisplayList') )()..
 }
 
 t[#t+1] = Def.HelpDisplay {
-	File="_eurostile normal",
+	File="novamono/36/_novamono 36px",
 	OnCommand=function(s)
         s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
         
