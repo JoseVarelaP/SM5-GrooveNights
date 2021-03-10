@@ -44,18 +44,11 @@ function TextBannerAfterSet(self,param)
 	local Subtitle=self:GetChild("Subtitle") 
 
 	if Subtitle:GetText() == "" then 
-		Title:y(2)
-		Title:zoom(0.75)
-
+		Title:y(-5):zoom(0.75)
 		Subtitle:visible(false)
 	else
-		Title:y(-4)
-		Title:zoom(1)
-		Title:zoom(0.75)
-
+		Title:y(-8):zoom(0.75)
 		-- subtitle below title
-		Subtitle:visible(true)
-		Subtitle:y(8)
-		Subtitle:zoom(0.55)
+		Subtitle:visible(true):y(4):zoom(0.55)
     end
 end

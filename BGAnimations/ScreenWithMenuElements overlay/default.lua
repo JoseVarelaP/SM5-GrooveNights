@@ -29,16 +29,16 @@ for var in ivalues(pos) do
 	}
 end
 t[#t+1] = Def.BitmapText{
-	Font="_eurostile blue glow",
+	Font="novamono/36/_novamono 36px",
 	InitCommand=function(s)
 		local sClass = Var "LoadingScreen"
 		local string = Screen.String("HeaderText")
 		if GAMESTATE:Env()["AngryGrandpa"] and THEME:HasString( sClass, "GrandpaHeader" ) then
 			string = Screen.String("GrandpaHeader")
 		end
-		s:settext( string )
+		s:settext( string ):strokecolor(Color.Black)
 	end,
-	OnCommand=function(s) s:xy( s:GetWidth()/2+20, 41 ) end,
+	OnCommand=function(s) s:xy( s:GetWidth()/2+20, 33 ) end,
 }
 
 return t;

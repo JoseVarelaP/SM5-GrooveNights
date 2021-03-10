@@ -36,7 +36,7 @@ t[#t+1] = Def.Sprite{
 t[#t+1] = Def.HelpDisplay {
 	File="novamono/36/_novamono 36px",
 	OnCommand=function(s)
-		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
+		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+198):zoom(0.75):diffuseblink()
 	end,
 	InitCommand=function(s)
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))

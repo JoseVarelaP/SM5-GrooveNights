@@ -128,33 +128,12 @@ t[#t+1] = Def.Sprite{
     end;
 }
 
-t[#t+1] = Def.BitmapText{
-	Font="novamono/36/_novamono 36px",
-	Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini"),
-    InitCommand=function(s)
-        s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6)
-		:playcommand("Update")
-    end,
-    UpdateCommand=function(s)
-        local Comtp = SecondsToHHMMSS(
-            STATSMAN:GetAccumPlayedStageStats(GAMESTATE:GetMasterPlayerNumber()):GetGameplaySeconds()
-            +
-            STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
-        )
-        local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
-        s:finishtweening()
-        s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
-        s:AddAttribute(0, {
-            Length=string.len(s:GetText())-(string.len(Comtp)+string.len(SongsCount));
-			Diffuse=color("#FFA314") }
-		)
-    end,
-}
+t[#t+1] = LoadActor("TotalPlaytime.lua")
 
 t[#t+1] = Def.HelpDisplay {
 	File="Common Normal",
 	OnCommand=function(s)
-		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):strokecolor(Color.Black):diffuseblink()
+		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+198):zoom(0.75):strokecolor(Color.Black):diffuseblink()
 	end,
 	InitCommand=function(s)
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))

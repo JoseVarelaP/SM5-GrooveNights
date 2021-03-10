@@ -16,7 +16,7 @@ local ProgressBar = Def.ActorFrame{
 
     Def.BitmapText{
         Font="novamono/36/_novamono 36px",
-        OnCommand=function(s) s:zoom(0.6):maxwidth( SCREEN_WIDTH/1.02 ) end,
+        OnCommand=function(s) s:zoom(0.6):y(-5):strokecolor(Color.Black):maxwidth( SCREEN_WIDTH/1.02 ) end,
         InitCommand=function(s) s:shadowlength(0):playcommand("Update") end,
         CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
 		UpdateCommand=function(s)
@@ -161,7 +161,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 
         Def.BitmapText{
             Font="novamono/36/_novamono 36",
-            OnCommand=function(s) s:zoom(0.6):xy( player == PLAYER_1 and -12 or 12, -1 ):strokecolor(Color.Black) end,
+            OnCommand=function(s) s:zoom(0.6):xy( player == PLAYER_1 and -12 or 12, -5 ):strokecolor(Color.Black) end,
             ["CurrentSteps".. ToEnumShortString(player) .."ChangedMessageCommand"]=function(s)
                 s:playcommand("Update")
             end;
@@ -176,7 +176,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
         Def.BitmapText{
             Font="novamono/36/_novamono 36",
             OnCommand=function(s)
-                s:zoom(0.6):xy(player == PLAYER_1 and 33 or -32,-1):strokecolor(Color.Black):playcommand("Update")
+                s:zoom(0.6):xy(player == PLAYER_1 and 33 or -32,-5):strokecolor(Color.Black):playcommand("Update")
             end;
             ["CurrentSteps".. ToEnumShortString(player) .."ChangedMessageCommand"]=function(s)
                 s:playcommand("Update")
@@ -222,16 +222,16 @@ local BPMDisplay = Def.ActorFrame{
 
 local function DoubleBPMActor()
     return Def.ActorFrame{
-        OnCommand=function(s) s:xy( SCREEN_CENTER_X,60 ):SetUpdateFunction(Update2PBPM) end,
-        Def.BitmapText{ Name="DisplayP1", Font="novamono/36/_novamono 36px", OnCommand=function(s) s:x( -30 ) end, },
-        Def.BitmapText{ Name="DisplayP2", Font="novamono/36/_novamono 36px", OnCommand=function(s) s:x( 30 ) end, },
+        OnCommand=function(s) s:xy( SCREEN_CENTER_X,50 ):SetUpdateFunction(Update2PBPM) end,
+        Def.BitmapText{ Name="DisplayP1", Font="novamono/36/_novamono 36px", OnCommand=function(s) s:strokecolor(Color.Black):x( -30 ) end, },
+        Def.BitmapText{ Name="DisplayP2", Font="novamono/36/_novamono 36px", OnCommand=function(s) s:strokecolor(Color.Black):x( 30 ) end, },
     }
 end
 
 local function SingleBPMActor()
     return Def.ActorFrame{
-        OnCommand=function(s) s:xy( SCREEN_CENTER_X,60 ):SetUpdateFunction(Update2PBPM) end,
-        Def.BitmapText{ Name="Display", Font="novamono/36/_novamono 36px" },
+        OnCommand=function(s) s:xy( SCREEN_CENTER_X,50 ):SetUpdateFunction(Update2PBPM) end,
+        Def.BitmapText{ Name="Display", Font="novamono/36/_novamono 36px", OnCommand=function(s) s:strokecolor(Color.Black) end },
     }
 end
 
@@ -253,30 +253,6 @@ else
     TimingDiverged = true
     BPMDisplay[#BPMDisplay+1] = DoubleBPMActor()
 end
-
-local TotalPlayTime = Def.BitmapText{
-    Font="novamono/36/_novamono 36px",
-    Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini") and not GAMESTATE:IsDemonstration(),
-    OnCommand=function(s)
-        s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):strokecolor(Color.Black)
-        :playcommand("Update")
-    end,
-    UpdateCommand=function(s)
-        local Comtp = SecondsToHHMMSS(
-            STATSMAN:GetAccumPlayedStageStats(GAMESTATE:GetMasterPlayerNumber()):GetGameplaySeconds()
-            +
-            STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
-        )
-        local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
-        s:finishtweening()
-        s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
-        s:AddAttribute(0, {
-            Length=string.len(s:GetText())-(string.len(Comtp)+string.len(SongsCount));
-			Diffuse=color("#FFA314") }
-		)
-        s:sleep(1):queuecommand("Update")
-    end,
-}
 
 local Special = Def.ActorFrame{}
 local EnvCh = {"Rain","Blizzard","Frost","Santa"}
@@ -309,7 +285,7 @@ return Def.ActorFrame{
     BPMDisplay,
     Score,
     loadfile( THEME:GetPathB("ScreenGameplay","overlay/stepCollector.lua") )(),
-    TotalPlayTime,
+    LoadActor("../TotalPlaytime.lua", true),
     Def.Quad{
         InitCommand=function(s) s:diffuse(0,0,0,1) end;
         OnCommand=function(s) s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):stretchto(SCREEN_WIDTH,SCREEN_HEIGHT,0,0):linear(0.3):diffusealpha(0) end,
