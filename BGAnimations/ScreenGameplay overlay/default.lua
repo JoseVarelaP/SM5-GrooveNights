@@ -160,8 +160,8 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
         },
 
         Def.BitmapText{
-            Font="_eurostile normal",
-            OnCommand=function(s) s:zoom(0.6):xy( player == PLAYER_1 and -12 or 12, -1 ) end,
+            Font="novamono/36/_novamono 36",
+            OnCommand=function(s) s:zoom(0.6):xy( player == PLAYER_1 and -12 or 12, -1 ):strokecolor(Color.Black) end,
             ["CurrentSteps".. ToEnumShortString(player) .."ChangedMessageCommand"]=function(s)
                 s:playcommand("Update")
             end;
@@ -174,9 +174,9 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
         },
 
         Def.BitmapText{
-            Font="_eurostile normal",
+            Font="novamono/36/_novamono 36",
             OnCommand=function(s)
-                s:zoom(0.6):xy(player == PLAYER_1 and 33 or -32,-1):playcommand("Update")
+                s:zoom(0.6):xy(player == PLAYER_1 and 33 or -32,-1):strokecolor(Color.Black):playcommand("Update")
             end;
             ["CurrentSteps".. ToEnumShortString(player) .."ChangedMessageCommand"]=function(s)
                 s:playcommand("Update")
@@ -258,7 +258,7 @@ local TotalPlayTime = Def.BitmapText{
     Font="_eurostile normal",
     Condition=LoadModule("Config.Load.lua")("ToggleTotalPlayTime","Save/GrooveNightsPrefs.ini") and not GAMESTATE:IsDemonstration(),
     OnCommand=function(s)
-        s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6)
+        s:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-10 ):zoom(0.6):strokecolor(Color.Black)
         :playcommand("Update")
     end,
     UpdateCommand=function(s)

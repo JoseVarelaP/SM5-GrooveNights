@@ -87,7 +87,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font="_eurostile blue glow",
+		Font="Common Normal",
 		OnCommand=function(s)
 			s:y(SCREEN_CENTER_Y-168-6)
 			:zoom(0.75):maxwidth(450)
@@ -152,9 +152,9 @@ t[#t+1] = Def.BitmapText{
 }
 
 t[#t+1] = Def.HelpDisplay {
-	File="_eurostile normal",
+	File="Common Normal",
 	OnCommand=function(s)
-		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):diffuseblink()
+		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+204):zoom(0.75):strokecolor(Color.Black):diffuseblink()
 	end,
 	InitCommand=function(s)
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
