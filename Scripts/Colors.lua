@@ -11,6 +11,10 @@ function DifficultyColor( dc )
 	return Color.White
 end
 
+Branch.AfterTitleMenu = function()
+	return "ScreenSelectProfile"
+end
+
 function OptionNameString(str)
 	return THEME:GetString('OptionNames',str)
 end

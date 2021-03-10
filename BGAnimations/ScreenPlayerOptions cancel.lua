@@ -14,7 +14,7 @@ return Def.ActorFrame{
         Texture=THEME:GetPathG("","TransitionArrow"),
         OnCommand=function(s)
             s:xy(SCREEN_RIGHT+200,SCREEN_CENTER_Y):rotationz(-90):decelerate(0.2):x( SCREEN_CENTER_X )
-            :linear(0.2):rotationz(0)
+            :tween(0.25,"easeinoutquint"):rotationz(0)
         end,
         StartTransitioningCommand=function(s)
             SOUND:PlayOnce( THEME:GetPathS("gnScreenTransition whoosh", "short") )
