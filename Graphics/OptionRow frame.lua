@@ -79,7 +79,7 @@ t[#t+1] = Def.ActorFrame{
 	Def.Quad{
 		InitCommand=function(s)
 			s:xy(
-				scale( GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set, -1, 1, -190, 160 )
+				scale( GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set, -0.1, 0.1, -190, 160 )
 				, -4
 			):zoom(4):rotationz(45):diffuse( Color.Green )
 		end,

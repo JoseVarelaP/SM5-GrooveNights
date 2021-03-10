@@ -92,8 +92,8 @@ return {
 	gnGlobalOffset =
 	{
 		Default = 0,
-		Choices = fnrformat(-0.1,0.1,0.002,PREFSMAN:GetPreference("ThreeKeyNavigation") and tostring("%.3f") or ""),
-		Values = fornumrange(-0.1,0.1,0.002),
+		Choices = fnrformat(-0.1,0.102,0.002,PREFSMAN:GetPreference("ThreeKeyNavigation") and tostring("%.3f") or ""),
+		Values = fornumrange(-0.1,0.102,0.002),
 		LoadFunc = function(self,list)
 			if not GAMESTATE:Env()["NewOffset"] then GAMESTATE:Env()["NewOffset"] = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
 			local envset = string.format("%.3f",GAMESTATE:Env()["NewOffset"])
@@ -123,12 +123,12 @@ return {
 	OPERATORGlobalOffset =
 	{
 		Default = 0,
-		Choices = fnrformat(-1.5,1.5,0.02,""),
-		Values = fornumrange(-1.5,1.5,0.02),
+		Choices = fnrformat(-0.1,0.102,0.002,""),
+		Values = fornumrange(-0.1,0.102,0.002),
 		LoadFunc = function(self,list)
-			local set = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
+			local set = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 			for i,_ in ipairs(self.Values) do
-				if string.format("%.2f",_) == set then
+				if string.format("%.3f",_) == set then
 					list[i] = true
 					MESSAGEMAN:Broadcast("OPERATORGlobalOffsetChange",{choice=i})
 					return
@@ -139,7 +139,8 @@ return {
 		SaveFunc = function(self,list,player)
 			for i,_ in ipairs(self.Values) do
 				if list[i] == true then
-					PREFSMAN:SetPreference("GlobalOffsetSeconds", _)
+					PREFSMAN:SetPreference("GlobalOffsetSeconds", string.format("%.3f",_))
+					LoadModule("Config.Save.lua")("MachineOffset",string.format("%.3f",_),"Save/GrooveNightsPrefs.ini")
 				end
 			end
 		end,
