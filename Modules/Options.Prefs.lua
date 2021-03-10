@@ -92,14 +92,14 @@ return {
 	gnGlobalOffset =
 	{
 		Default = 0,
-		Choices = fnrformat(-1.5,1.5,0.02,PREFSMAN:GetPreference("ThreeKeyNavigation") and tostring("%.2f") or ""),
-		Values = fornumrange(-1.5,1.5,0.02),
+		Choices = fnrformat(-0.1,0.1,0.002,PREFSMAN:GetPreference("ThreeKeyNavigation") and tostring("%.3f") or ""),
+		Values = fornumrange(-0.1,0.1,0.002),
 		LoadFunc = function(self,list)
-			if not GAMESTATE:Env()["NewOffset"] then GAMESTATE:Env()["NewOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
-			local envset = string.format("%.2f",GAMESTATE:Env()["NewOffset"])
-			local set = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
+			if not GAMESTATE:Env()["NewOffset"] then GAMESTATE:Env()["NewOffset"] = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
+			local envset = string.format("%.3f",GAMESTATE:Env()["NewOffset"])
+			local set = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 			for i,_ in ipairs(self.Values) do
-				if string.format("%.2f",_) == envset then
+				if string.format("%.3f",_) == envset then
 					list[i] = true
 					MESSAGEMAN:Broadcast("gnGlobalOffsetChange",{choice=i})
 					return
@@ -108,10 +108,14 @@ return {
 			list[16] = true
 		end,
 		SaveFunc = function(self,list,player)
-			if not GAMESTATE:Env()["OriginalOffset"] then GAMESTATE:Env()["OriginalOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
+			if not GAMESTATE:Env()["OriginalOffset"] then GAMESTATE:Env()["OriginalOffset"] = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) ) end
 			for i,_ in ipairs(self.Values) do
 				if list[i] == true then
-					GAMESTATE:Env()["NewOffset"] = _
+					GAMESTATE:Env()["NewOffset"] = string.format("%.3f",_)
+					if not GAMESTATE:Env()["HasOriginalOffset"] then
+						LoadModule("Config.Save.lua")("MachineOffset",string.format("%.3f",_),"Save/GrooveNightsPrefs.ini")
+						GAMESTATE:Env()["HasOriginalOffset"] = true
+					end
 				end
 			end
 		end,
@@ -162,7 +166,7 @@ return {
 		LoadFunction = function(self,list,pn)
 			if GAMESTATE:IsHumanPlayer(pn) then
 				local po = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred")
-				if po:AvarageScrollBPM() > 0 then list[2] = true return
+				if po:AverageScrollBPM() > 0 then list[2] = true return
 					elseif po:MaxScrollBPM() > 0 then list[3] = true return 
 					elseif po:TimeSpacing() > 0 then list[4] = true return 
 					else list[1] = true return 
