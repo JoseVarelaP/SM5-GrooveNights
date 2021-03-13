@@ -47,7 +47,7 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
             Font="novamono/36/_novamono 36px",
             Text=e..":",
             OnCommand=function(s)
-                s:halign(1):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-56+(16*a) ):diffuse(color("#FFA314"))
+                s:halign(1):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-61+(16*a) ):diffuse(color("#FFA314"))
                 :zoom(0.6)
             end,
         }
@@ -55,7 +55,7 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
         t[#t+1] = Def.BitmapText{
             Font="novamono/36/_novamono 36px",
             OnCommand=function(s)
-                s:halign(0):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-56+(16*a) )
+                s:halign(0):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-61+(16*a) )
                 :zoom(0.6):playcommand("Update")
             end,
             CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,

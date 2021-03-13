@@ -4,7 +4,7 @@ t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
 t[#t+1] = Def.BitmapText{
     Font="_eurostile blue glow",
     OnCommand=function(s)
-        s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-174 )
+        s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-178 )
         :zoom(0.75):maxwidth(450)
         if GAMESTATE:GetCurrentSong() then
             s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
@@ -15,7 +15,7 @@ t[#t+1] = Def.BitmapText{
 t[#t+1] = Def.BitmapText{
     Font="_eurostile blue glow",
     OnCommand=function(s)
-        s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-158 )
+        s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-162 )
         :zoom(0.5):maxwidth(450)    
         if GAMESTATE:GetCurrentSong() then
             s:settext( GAMESTATE:GetCurrentSong():GetDisplayArtist() )

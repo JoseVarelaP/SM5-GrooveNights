@@ -48,7 +48,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
     -- Profile picture?
         t[#t+1] = Def.ActorFrame{
             OnCommand=function(s)
-                s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
+                s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+150 )
             end,
 
             Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay under.png", OnCommand=function(s) s:diffuse( color("#060A0E") ) end },
@@ -73,14 +73,14 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             Def.Sprite {
                 Texture=THEME:GetPathG("","AvatarFrame");
                 OnCommand=function(s)
-                    s:xy(-114,-2):diffuse( color("#1C2C3C") )
+                    s:xy(-114,0):diffuse( color("#1C2C3C") )
                 end,
             },
             Def.BitmapText {
                 Font="novamono/36/_novamono 36px",
                 Text=PROFILEMAN:GetProfile(pn):GetDisplayName(),
                 OnCommand=function(s)
-                    s:xy(-114,22):zoom(0.5):diffuse( PlayerColor(pn) )
+                    s:xy(-114,20):zoom(0.5):diffuse( PlayerColor(pn) )
                 end,
             },
 
@@ -177,7 +177,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 Font="_eurostile blue glow", Text=v..":",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.5):diffuse( color("#FFA314") )
-                    s:xy( SCREEN_CENTER_X-160*side(pn)-78, SCREEN_CENTER_Y+154-26+( 16*(_-1) ) )
+                    s:xy( SCREEN_CENTER_X-160*side(pn)-78, SCREEN_CENTER_Y+154-30+( 16*(_-1) ) )
                 end
             }
         end

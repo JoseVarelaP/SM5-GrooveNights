@@ -60,7 +60,7 @@ local BI = Def.ActorFrame{
 				Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),
 				OnCommand=function(s) s:x( -26 ):zoom(0.6) end,
 			},
-			Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=total, OnCommand=function(s) s:x(-8):zoom(0.5) end,
+			Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=total, OnCommand=function(s) s:xy(-8,-4):zoom(0.5) end,
 		}
 	}
 	end
@@ -74,7 +74,7 @@ local BI = Def.ActorFrame{
 		Def.BitmapText{
 			Font="Common Normal",
 			OnCommand=function(s)
-				s:halign(0):xy( -38, -11 ):zoom(0.4)
+				s:halign(0):xy( -38, -13 ):zoom(0.4)
 				s:settext( "Level ".. ach[3] )
 			end,
 		},
@@ -82,7 +82,7 @@ local BI = Def.ActorFrame{
 			Condition=LoadModule("Config.Load.lua")("ToggleEXPCounter","Save/GrooveNightsPrefs.ini"),
 			Font="Common Normal",
 			OnCommand=function(s)
-				s:halign(1):xy( 48, -11 ):zoom(0.3)
+				s:halign(1):xy( 48, -13 ):zoom(0.3)
 				s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
 			end,
 		},
@@ -126,7 +126,7 @@ t[#t+1] = Def.BitmapText {
 	Font="novamono/36/_novamono 36px",
 	Text=PROFILEMAN:GetProfile(player):GetDisplayName(),
     OnCommand=function(s)
-        s:xy(-114,22):zoom(0.5):diffuse( PlayerColor(player) )
+        s:xy(-114,20):zoom(0.5):diffuse( PlayerColor(player) )
 	end,
 };
 
@@ -178,7 +178,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 				InitCommand=function(s)
 					s:zoom(0.5):xy(
 						ObtainData[ind].xpos[1] + 0
-						,-24+14*(vind-1)):halign(0)
+						,-28+14*(vind-1)):halign(0)
 				end;
 				["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
                     -- replace
@@ -193,7 +193,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 				InitCommand=function(s)
 					s:zoom(0.5):xy(
 						ObtainData[ind].xpos[2] + 0
-                        ,-24+14*(vind-1)
+                        ,-28+14*(vind-1)
                     ):halign(1)
                 end,
 				CurrentSongChangedMessageCommand=function(s)
@@ -220,7 +220,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
     end
     t[#t+1] = Def.BitmapText{
 		Font="novamono/36/_novamono 36px",
-		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(12):maxwidth(90):zoom(0.6) end;
+		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(8):strokecolor(Color.Black):maxwidth(90):zoom(0.6) end;
 		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
 		if StepsOrCourse() then
 			s:settext(
@@ -234,12 +234,12 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
     t[#t+1] = Def.BitmapText{
         Font="novamono/36/_novamono 36px",
         Text="Step Artist",
-		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-24):maxwidth(120):zoom(0.53):diffuse( color("#FFA314") ) end;
+		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-28):maxwidth(120):zoom(0.53):diffuse( color("#FFA314") ) end;
 	};
     
     t[#t+1] = Def.BitmapText{
 		Font="novamono/36/_novamono 36px",
-		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-9):maxwidth(110):zoom(0.56) end;
+		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-14):maxwidth(110):zoom(0.56) end;
 		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
         if StepsOrCourse() then
             s:settext(

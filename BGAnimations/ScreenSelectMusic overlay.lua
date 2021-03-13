@@ -47,11 +47,15 @@ t[#t+1] = Def.HelpDisplay {
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
 t[#t+1] = Def.ActorFrame{
     OnCommand=function(s)
-        s:y( SCREEN_BOTTOM-17-18 )
+        s:y( SCREEN_BOTTOM-17-24 )
     end,
-    SelectMenuOpenedMessageCommand=function(s)
-        SOUND:PlayOnce( THEME:GetPathS("ScreenSelectMusic select","down") )
-    end,
+
+	Def.Sound{
+		File=THEME:GetPathS("ScreenSelectMusic select","down"),
+		SelectMenuOpenedMessageCommand=function(self)
+			self:play()
+		end,
+	},
 
     Def.ActorFrame{
     OnCommand=function(s)

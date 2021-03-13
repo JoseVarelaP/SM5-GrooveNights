@@ -121,7 +121,7 @@ t[#t+1] = Def.ActorFrame{
 		Def.BitmapText{
 			Font="Common Normal",
 			OnCommand=function(self)
-				self:zoom(0.5):xy(33,-2):playcommand("Update")
+				self:zoom(0.5):xy(33,-6):strokecolor(Color.Black):playcommand("Update")
 			end;
 			UpdateCommand=function(self)
 					self:settext( TrailOrSteps(player):GetMeter() )
@@ -131,7 +131,7 @@ t[#t+1] = Def.ActorFrame{
 		Def.BitmapText{
 			Font="Common Normal",
 			OnCommand=function(s)
-				s:zoom(0.5):xy(102,-2):maxwidth(200)
+				s:zoom(0.5):xy(102,-6):maxwidth(200)
 				s:settext(
 					GAMESTATE:GetCurrentSteps(player):GetAuthorCredit() and GAMESTATE:GetCurrentSteps(player):GetAuthorCredit()
 					or GAMESTATE:GetCurrentSteps(player):GetDescription()
@@ -311,7 +311,7 @@ for i=1,4 do
 		Font="novamono/36/_novamono 36px",
 		Text=total,
         OnCommand=function(s)
-            s:xy( -11, (24*(i-1))-24 ):zoom(0.5):diffuse( PlayerColor(player) )
+            s:xy( -11, (24*(i-1))-28 ):zoom(0.5):diffuse( PlayerColor(player) )
 		end,
 		EvaluationInputChangedMessageCommand=function(s,param)
 			if param.Player == player then
@@ -542,9 +542,9 @@ local ArB = Def.ActorFrame{
 		end
 	end,
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Arrow Breakdown", OnCommand=function(s) s:zoom(0.5):y(-8+98) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Offset Derivative", OnCommand=function(s) s:zoom(0.5):x(140) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Early", OnCommand=function(s) s:zoom(0.35):xy( 90,12 ) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Late", OnCommand=function(s) s:zoom(0.35):xy( 185,12 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Offset Derivative", OnCommand=function(s) s:zoom(0.5):xy(140,-4) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Early", OnCommand=function(s) s:zoom(0.35):xy( 90,10 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Late", OnCommand=function(s) s:zoom(0.35):xy( 185,10 ) end },
 
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Early, OnCommand=function(s) s:zoom(0.35):xy( 90,24 ) end },
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Late, OnCommand=function(s) s:zoom(0.35):xy( 185,24 ) end },
@@ -588,7 +588,7 @@ if highscores then
 			or THEME:GetPathG("","_blank")
 		ArB[#ArB+1] = Def.ActorFrame{
 			OnCommand=function(s)
-				s:xy( 120, 37 + ( 16*(i-1) ) ):zoom(0.4)
+				s:xy( 120, 35 + ( 16*(i-1) ) ):zoom(0.4)
 				if score == LoadModule("Gameplay.CalculatePercentage.lua")(player,1) then
 					local nm = {"Num","Nam","Scr"}
 					for _,v in pairs(nm) do
