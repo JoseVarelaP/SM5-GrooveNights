@@ -41,7 +41,10 @@ local CurrentStage = Def.Sprite{
         if GAMESTATE:GetCurrentStage() == "Stage_Final" then
             self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
         end
-        self:Center():draworder(105):zoom(1):linear(0.3):zoom( (IsEvent and not GAMESTATE:IsCourseMode()) and 0.25 or 0.4)
+        self:Center():draworder(105):zoom(1)
+        --:linear(0.3)
+        :tween(0.5,"easeoutexpo")
+        :zoom( (IsEvent and not GAMESTATE:IsCourseMode()) and 0.25 or 0.4)
         :y( LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini") and ( IsEvent and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-66) or SCREEN_BOTTOM-40)
     end;
 }

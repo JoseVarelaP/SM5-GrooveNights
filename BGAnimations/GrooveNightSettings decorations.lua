@@ -5,9 +5,11 @@ t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("Judgment","label"),
     Condition=GAMESTATE:Env()["GNSetting"] == "Judgment",
     OnCommand=function(s)
+        local judgsize = LoadModule("Config.Load.lua")("DefaultJudgmentSize","Save/GrooveNightsPrefs.ini")
+        local judgopac = LoadModule("Config.Load.lua")("DefaultJudgmentOpacity","Save/GrooveNightsPrefs.ini")
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+170):animate(0)
-        :zoom( 0.75*LoadModule("Config.Load.lua")("DefaultJudgmentSize","Save/GrooveNightsPrefs.ini") )
-        :diffusealpha( LoadModule("Config.Load.lua")("DefaultJudgmentOpacity","Save/GrooveNightsPrefs.ini") )
+        :zoom( 0.75*(judgsize or 1) )
+        :diffusealpha( judgopac or 1 )
     end,
     JudgmentTweenMessageCommand=function(s,param)
         local DJS = curzoom
@@ -46,16 +48,16 @@ t[#t+1] = Def.ActorFrame{
             s:zoom(0.6):rotationz(30):xy(10,-40)
             :diffusealpha( LoadModule("Config.Load.lua")("TournamentCrownEnabled","Save/GrooveNightsPrefs.ini") and 1 or 0 )
         end,
-        TournamentCrownEnabledChangeMessageCommand=function(s,param)
-            MESSAGEMAN:Broadcast("CrownTween",{EnableBounce=param.choice})
+        TournamentCrownEnabledChangeMessageCommand=function(self,param)
+            self:playcommand("CrownTween",{EnableBounce=param.choice})
         end,
-        CrownTweenMessageCommand=function(s,param)
-            s:finishtweening()
-            s:rotationz( 30 )
-            s:bouncebegin( 0.2 )
-            s:rotationz( 15 )
-            s:bounceend( 0.2 )
-            s:rotationz( 30 )
+        CrownTweenCommand=function(self,param)
+            local hasdiffusing = param.EnableBounce == 2
+            self:stoptweening()
+            :rotationz( 30 )
+            :tween(0.5,"easeoutelastic")
+            :zoom( hasdiffusing and 0.6 or 0 )
+            :rotationz( 30 )
         end,
     }
 }
@@ -65,8 +67,9 @@ t[#t+1] = Def.BitmapText{
     Condition=GAMESTATE:Env()["GNSetting"] == "Judgment",
     Text=math.random(1,100),
     OnCommand=function(s)
+        local defaultsize = LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini")
         s:xy(SCREEN_CENTER_X+150,SCREEN_CENTER_Y+170):animate(0)
-        :zoom( LoadModule("Config.Load.lua")("DefaultComboSize","Save/GrooveNightsPrefs.ini") )
+        :zoom( defaultsize or 1 )
     end,
     ComboTweenMessageCommand=function(s,param)
         local setzoom = s:GetZoom()

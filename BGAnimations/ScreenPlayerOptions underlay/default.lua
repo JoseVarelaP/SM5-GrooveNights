@@ -244,7 +244,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 end
 
 t[#t+1] = Def.Sprite{
-	Texture=THEME:GetPathB("ScreenLogo","background/BGVid.avi"),
+	Texture=THEME:GetPathB("ScreenLogo","background/BGVid.mkv"),
 	OnCommand=function(s)
 		s:diffusealpha(0.15):rotationy(180):blend("BlendMode_Add"):xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):zoom(1.1*(SCREEN_WIDTH/640))
 	end,

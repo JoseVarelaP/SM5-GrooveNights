@@ -34,14 +34,13 @@ t[#t+1] = Def.ActorFrame {
 -- Text
 t[#t+1] = Def.ActorFrame {
 	InitCommand=function(s) s:y(-40) end,
-	OnCommand=function(s) s:finishtweening():y(-40):decelerate(0.2):y(-10) SOUND:PlayOnce( THEME:GetPathS( 'gnSystemMessage', 'sound' ) ) end,
-	OffCommand=function(s) s:sleep(2):bouncebegin(0.2):y(-40) end,
+	OnCommand=function(s) s:finishtweening():y(-40):tween(0.5,"easeoutelastic"):y(-10) SOUND:PlayOnce( THEME:GetPathS( 'gnSystemMessage', 'sound' ) ) end,
+	OffCommand=function(s) s:sleep(1.5):bouncebegin(0.2):y(-40) end,
 	Def.Sprite {
 		Texture=THEME:GetPathG("ScreenSystemLayer","MessageFrame"),
 		InitCommand=function(s)
 			s:zoomtowidth( SCREEN_WIDTH ):diffuse( color("#1C2C3C") ):align(0,0)
 		end,
-		OnCommand=function(s) end,
 	},
 	Def.BitmapText{
 		Font="Common Normal";

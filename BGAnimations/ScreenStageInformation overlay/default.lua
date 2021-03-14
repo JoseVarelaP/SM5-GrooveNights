@@ -11,15 +11,24 @@ local t = Def.ActorFrame{
 
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
 PREFSMAN:SetPreference( "GlobalOffsetSeconds", GAMESTATE:Env()["NewOffset"] )
+
+local function LoadStageOrCourse()
+	local sides = { "Stages/ScreenGameplay","stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage()) }
+	if GAMESTATE:IsCourseMode() then
+		sides[1] = "Stages/ScreenGameplay course"
+		sides[2] = "song 1"
+	end
+
+	return sides[1],sides[2]
+end
+
 t[#t+1] = Def.ActorFrame{
-		Condition=not GAMESTATE:IsCourseMode(),
-		InitCommand=function(s) s:hibernate(0.199):xy( SCREEN_CENTER_X,SCREEN_BOTTOM+100 ):bounceend(0.5):y( SCREEN_CENTER_Y ) end,
-		Def.Sprite{ Texture=THEME:GetPathG("Stages/ScreenGameplay","stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage())) },
-};
-t[#t+1] = Def.ActorFrame{
-	Condition=GAMESTATE:IsCourseMode(),
-	InitCommand=function(s) s:hibernate(0.199):xy( SCREEN_CENTER_X,SCREEN_BOTTOM+100 ):bounceend(0.5):y( SCREEN_CENTER_Y ) end,
-	Def.Sprite{ Texture=THEME:GetPathG("Stages/ScreenGameplay course","song 1") },
+	InitCommand=function(s)
+		s:xy( SCREEN_CENTER_X,SCREEN_BOTTOM+50 ):sleep(0.333):tween(0.5,"easeoutback"):y( SCREEN_CENTER_Y )
+	end,
+	Def.Sprite{
+		Texture=THEME:GetPathG(LoadStageOrCourse())
+	},
 };
 
 t[#t+1] = Def.Sprite{

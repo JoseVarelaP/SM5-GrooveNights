@@ -17,5 +17,13 @@ return Def.ActorFrame{
             s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):accelerate(0.2):addy( -SCREEN_HEIGHT/1.6 )
             SOUND:PlayOnce( THEME:GetPathS("gnScreenTransition whoosh", "in") )
         end,
+    },
+
+    Def.Sprite{
+        Texture=THEME:GetPathG("ScreenSelectMusic","Options Message"),
+        OnCommand=function(self)
+            self:Center():pause():setstate(1)
+            :linear(0.1):diffusealpha(0)
+        end;
     }
 }

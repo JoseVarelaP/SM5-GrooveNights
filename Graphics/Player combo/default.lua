@@ -149,11 +149,11 @@ local t = Def.ActorFrame {
 		Name="Misses";
 		InitCommand = THEME:GetMetric("Combo", "LabelOnCommand"),
 		ComboCommand=function(s)
-			local staticzoom = PDir and LoadModule("Config.Load.lua")("DefaultComboSize",PDir) or GAMESTATE:Env()["DefaultComboSizeMachinetemp"..player]
-			if PDir and LoadModule("Config.Load.lua")("ToggleComboBounce",PDir) or GAMESTATE:Env()["ToggleComboBounceMachinetemp"..player] then
+			local staticzoom = settings[1]
+			if PDir and settings[3] then
 				s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
 			else
-				s:finishtweening():zoom( 1*staticzoom )
+				s:finishtweening():zoom( staticzoom and 1*staticzoom or 1 )
 			end
 		end,
 	};

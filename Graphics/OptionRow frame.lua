@@ -4,10 +4,10 @@ if not GAMESTATE:Env()["GNSetting"] then
 	GAMESTATE:Env()["GNSetting"] = "nil"
 end
 if not GAMESTATE:Env()["OriginalOffset"] then
-	GAMESTATE:Env()["OriginalOffset"] = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
+	GAMESTATE:Env()["OriginalOffset"] = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 end
-local set = string.format( "%.2f", GAMESTATE:Env()["OriginalOffset"] )
-local OperatorSet = string.format( "%.2f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
+local set = string.format( "%.3f", GAMESTATE:Env()["OriginalOffset"] )
+local OperatorSet = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 
 t[#t+1] = Def.Actor{
 	OnCommand=function(s)
@@ -37,6 +37,9 @@ t[#t+1] = Def.Actor{
 
 local TKN = PREFSMAN:GetPreference("ThreeKeyNavigation")
 local widths = { TKN and 300 or 360, TKN and 3.6 or 4, TKN and 200 or 216 }
+local ammount = LoadModule("Options.Prefs.lua").gnGlobalOffset.Values
+
+local valmargin = 0.1
 t[#t+1] = Def.ActorFrame{
 	OnCommand=function(s)
 		local name = s:GetParent():GetParent():GetParent():GetName()
@@ -76,7 +79,7 @@ t[#t+1] = Def.ActorFrame{
 	Def.Quad{
 		InitCommand=function(s)
 			s:xy(
-				scale( GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set, -1.5, 1.5, -190, 160 )
+				scale( GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set, -0.1, 0.1, -190, 160 )
 				, -4
 			):zoom(4):rotationz(45):diffuse( Color.Green )
 		end,
@@ -88,12 +91,12 @@ t[#t+1] = Def.ActorFrame{
 			s:zoom(0.4):y( -16 )
 		end,
 		gnGlobalOffsetChangeMessageCommand=function(s,param)
-			s:x( scale( param.choice, 0, 150, -190, 160 ) )
-			s:settext( -1.5 + (0.02*(param.choice-1)) )
+			s:x( scale( param.choice, 0, #ammount, -190, 160 ) )
+			s:settext( string.format( "%.3f",-valmargin + (0.002*(param.choice-1)) ) )
 		end,
 		OPERATORGlobalOffsetChangeMessageCommand=function(s,param)
-			s:x( scale( param.choice, 0, 150, -190, 160 ) )
-			s:settext( -1.5 + (0.02*(param.choice-1)) )
+			s:x( scale( param.choice, 0, #ammount, -190, 160 ) )
+			s:settext( string.format( "%.3f",-valmargin + (0.002*(param.choice-1)) ) )
 		end,
 	},
 	Def.Quad{
@@ -101,12 +104,15 @@ t[#t+1] = Def.ActorFrame{
 			s:xy( 70, -4 ):zoom(8):rotationz(45)
 		end,
 		gnGlobalOffsetChangeMessageCommand=function(s,param)
-			local spot = string.format( "%.2f", (-1.5 + (0.02*(param.choice-1))))
-			s:x( scale( param.choice, 0, 150, -190, 160 ) )
+			local spot = string.format( "%.3f", (-valmargin + (0.002*(param.choice-1))))
+
+			--lua.ReportScriptError( ("%f - %f"):format( spot,set ) )
+
+			s:x( scale( param.choice, 0, #ammount, -190, 160 ) )
 			s:diffuse( spot == set and Color.Green or Color.White )
 		end,
 		OPERATORGlobalOffsetChangeMessageCommand=function(s,param)
-			s:x( scale( param.choice, 0, 150, -190, 160 ) )
+			s:x( scale( param.choice, 0, #ammount, -190, 160 ) )
 			s:diffuse( Color.Green )
 		end,
 	},
