@@ -353,24 +353,24 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 		end,
 
 		Def.Sprite{ Texture="judgment"..string.format("%04i",index),
-		OnCommand=function(s)
-			s:xy( -126, 16*index+2):zoom(0.65):halign(0)
-		end
-		};
+			OnCommand=function(s)
+				s:xy( -126, 16*index+2):zoom(0.65):halign(0)
+			end
+		},
 
 		Def.BitmapText{ Font="ScreenEvaluation judge",
-		OnCommand=function(self)
-			self:y(1+16*index):zoom(0.5):halign(1):diffuse( PlayerColor(player) )
-			local sco = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)
-			totalnote = totalnote + sco
-			self:settext(("%4.0f"):format( sco )):diffuse( PlayerColor(player) )
-			local leadingZeroAttr = { Length=4-tonumber(tostring(sco):len()); Diffuse=PColor[player] }
-			self:AddAttribute(0, leadingZeroAttr )
-			if GAMESTATE:GetPlayMode() == "PlayMode_Rave" then
-				self:xy(84,-96+16*index)
+			OnCommand=function(self)
+				self:y(1+16*index):zoom(0.5):halign(1):diffuse( PlayerColor(player) )
+				local sco = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)
+				totalnote = totalnote + sco
+				self:settext(("%4.0f"):format( sco )):diffuse( PlayerColor(player) )
+				local leadingZeroAttr = { Length=4-tonumber(tostring(sco):len()); Diffuse=PColor[player] }
+				self:AddAttribute(0, leadingZeroAttr )
+				if GAMESTATE:GetPlayMode() == "PlayMode_Rave" then
+					self:xy(84,-96+16*index)
+				end
 			end
-		end;
-		};
+		},
 
 		Def.Quad{
 			OnCommand=function(s)
@@ -379,21 +379,27 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 				:accelerate((index/10)/2):zoomx(0):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
 				:zoomx(121):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
 			end;
-		};
+		},
+
+		Def.Sound{
+			Name="Sound",
+			File=THEME:GetPathS("gnJudgeBar", index..".ogg"),
+			SFXCommand=function(s) s:play() end
+		},
 		
 		Def.Quad{
-		OnCommand=function(s)
-			s:xy(-120,16*index+8):diffuse( Colors[index] )
-			:halign(0):diffusealpha(1):zoomx(0):zoomy(1):queuecommand("Calculate")
-		end;
-		CalculateCommand=function(s)
-			local JudgeText = math.ceil(tonumber(STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)) / totalnote * 121);
-			if JudgeText >= 121 then JudgeText = 121 end
-			s:sleep( ((index-1)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
-		end,
-		SFXCommand=function(s)
-			SOUND:PlayOnce( THEME:GetPathS("gnJudgeBar", index..".ogg") )
-		end,
+			OnCommand=function(s)
+				s:xy(-120,16*index+8):diffuse( Colors[index] )
+				:halign(0):diffusealpha(1):zoomx(0):zoomy(1):queuecommand("Calculate")
+			end;
+			CalculateCommand=function(s)
+				local JudgeText = math.ceil(tonumber(STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)) / totalnote * 121);
+				if JudgeText >= 121 then JudgeText = 121 end
+				s:sleep( ((index-1)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
+			end,
+			SFXCommand=function(self)
+				self:GetParent():GetChild("Sound"):playcommand("SFX")
+			end	
 		};
 
 		Def.Sprite{
@@ -413,9 +419,7 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 	local possible = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetRadarPossible():GetValue( "RadarCategory_"..RCType )
 
 	t[#t+1] = Def.ActorFrame{
-		OnCommand=function(self)
-			self:xy(128,-36)
-		end;
+		OnCommand=function(self) self:xy(128,-36) end,
 		EvaluationInputChangedMessageCommand=function(s,param)
 			if param.Player == player then
 				s:stoptweening():sleep( 0.02*6 + (0.02*index)):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
@@ -424,33 +428,25 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 
 		Def.BitmapText{ Font="ScreenEvaluation judge",
 		OnCommand=function(self)
-			self:xy( -40, 16*index ):zoom(0.5):halign(1)
-			self:settext(("%3i"):format(performance)):diffuse( PlayerColor(player) )
-			local leadingZeroAttr = { Length=3-tonumber(tostring(performance):len()); Diffuse=PColor[player] }
-			self:AddAttribute(0, leadingZeroAttr )
-		end;
-		};
-		
-		Def.BitmapText{ Font="ScreenEvaluation judge",
-		OnCommand=function(self)
-			self:y( 16*index ):zoom(0.5):halign(1)
-			self:settext(("%3i"):format(possible)):diffuse( PlayerColor(player) )
-			local leadingZeroAttr = { Length=3-tonumber(tostring(possible):len()); Diffuse=PColor[player] }
-			self:AddAttribute(0, leadingZeroAttr )
-		end;
-		};
+			self:xy( 0, 16*index ):zoom(0.5):halign(1)
+			self:settext( ("%3i/%3i"):format(performance,possible) ):diffuse( PlayerColor(player) )
+
+			local numper = tonumber(tostring(performance):len())
+			
+			local leadingPerfAttr = { Length=3-numper, Diffuse=PColor[player] }
+			local leadingPossAttr = { Length=3-tonumber(tostring(possible):len()), Diffuse=PColor[player] }
+
+
+			--lua.ReportScriptError( RCType..": " ..  )
+			self:AddAttribute(0, leadingPerfAttr ):AddAttribute( (3-numper)+(numper+1), leadingPossAttr )
+		end
+		},
 
 		Def.Sprite{ Texture="judgment"..string.format("%04i",index+6),
-		OnCommand=function(self)
-			self:xy( -125, 16*index ):zoom(0.65):halign(0)
-		end;
-		};
-
-		Def.BitmapText{ Font="ScreenEvaluation judge", Text="/",
-		OnCommand=function(self)
-			self:xy( -40, 16*index -1 ):zoom(0.5):halign(0):diffuse( PlayerColor(player) )
-		end;
-		};
+			OnCommand=function(self)
+				self:xy( -125, 16*index ):zoom(0.65):halign(0)
+			end
+		},
 
 		Def.Quad{
 			OnCommand=function(s)
@@ -458,31 +454,37 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 				:halign(0):diffusealpha(0):zoomx(0):zoomy(1)
 				:accelerate(((index+6)/10)/2):zoomx(0):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
 				:zoomx(121):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
-			end;
-		};
+			end
+		},
+
+		Def.Sound{
+			Name="Sound",
+			File=THEME:GetPathS("gnJudgeBar", (index+6)..".ogg"),
+			SFXCommand=function(s) s:play() end
+		},
 		
 		Def.Quad{
-		OnCommand=function(s)
-			s:xy(-120,16*index+7)
-			:halign(0):diffusealpha(1):zoomx(0):zoomy(1):queuecommand("Calculate")
-		end;
-		CalculateCommand=function(s)
-			local JudgeText = math.ceil(performance / possible * 121);
-			if JudgeText >= 121 then JudgeText = 121 end
-			-- lua.ReportScriptError( JudgeText .."/" .. totalnote )
-			s:sleep( ((index+5)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
-		end,
-		SFXCommand=function(s)
-			SOUND:PlayOnce( THEME:GetPathS("gnJudgeBar", (index+6)..".ogg") )
-		end,
-		};
+			OnCommand=function(s)
+				s:xy(-120,16*index+7)
+				:halign(0):diffusealpha(1):zoomx(0):zoomy(1):queuecommand("Calculate")
+			end;
+			CalculateCommand=function(s)
+				local JudgeText = math.ceil(performance / possible * 121);
+				if JudgeText >= 121 then JudgeText = 121 end
+				-- lua.ReportScriptError( JudgeText .."/" .. totalnote )
+				s:sleep( ((index+5)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
+			end,
+			SFXCommand=function(self)
+				self:GetParent():GetChild("Sound"):playcommand("SFX")
+			end
+		},
 
 		Def.Sprite{
 			Texture=THEME:GetPathG("Player","combo/arrowswoosh"),
 			OnCommand=function(s) s:xy( -9, 16*(index) ):zoom(0):diffusealpha(0):playcommand("Bling") end,
 			BlingCommand=function(s)
-			s:sleep( (((index+6)/10)/2) +0.4):diffusealpha(1):zoom(0):addy(6):decelerate( 0.049*3 )
-			:addx( 12 ):zoom( 0.2 ):diffusealpha(0.4):linear( 0.049*3 ):diffusealpha(0)
+				s:sleep( (((index+6)/10)/2) +0.4):diffusealpha(1):zoom(0):addy(6):decelerate( 0.049*3 )
+				:addx( 12 ):zoom( 0.2 ):diffusealpha(0.4):linear( 0.049*3 ):diffusealpha(0)
 			end,
 		},
 
@@ -505,25 +507,24 @@ t[#t+1] = Def.ActorFrame{
 	Def.Sprite{ Texture="judgment0012",
 	OnCommand=function(self)
 		self:xy( 3, 16*4-2 ):zoom(0.65):halign(0)
-	end;
+	end,
 	};
 
 	Def.BitmapText{ Font="ScreenEvaluation judge";
-	OnCommand=function(self)
-		self:xy( 128, 16*4-3 ):zoom(0.5):halign(1)
-		local combo = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):MaxCombo()
-		self:settext( ("%5.0f"):format( combo ) )
+		OnCommand=function(self)
+			self:xy( 128, 16*4-3 ):zoom(0.5):halign(1)
+			local combo = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):MaxCombo()
+			self:settext( ("%5.0f"):format( combo ) )
 
-		local leadingZeroAttr = { Length=5-tonumber(tostring(combo):len()); Diffuse=PColor[player] }
-		self:AddAttribute(0, leadingZeroAttr )
+			local leadingZeroAttr = { Length=5-tonumber(tostring(combo):len()); Diffuse=PColor[player] }
+			self:AddAttribute(0, leadingZeroAttr )
 
-		:diffuse( PlayerColor(player) )
-		if GAMESTATE:GetPlayMode() == "PlayMode_Rave" then
-			self:x(137)
+			:diffuse( PlayerColor(player) )
+			if GAMESTATE:GetPlayMode() == "PlayMode_Rave" then
+				self:x(137)
+			end
 		end
-	end;
-	};
-
+	}
 }
 
 -- Arrow Breakdown / Offset Information
