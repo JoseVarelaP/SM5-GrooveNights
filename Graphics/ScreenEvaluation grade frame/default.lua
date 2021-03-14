@@ -231,7 +231,7 @@ t[#t+1] = Def.ActorFrame{
 		},
 
 		Def.BitmapText{
-			Font="_futurist metalic", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player,1), OnCommand=function(self)
+			Font="_futurist metalic", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player) << 0, OnCommand=function(self)
 				self:xy(DoublesIsOn and -110 or -46*side(player),-20-83-50):diffuse(PlayerColor(player))
 				:zoom(0.9):linear(0.3):zoom(1)
 			end
@@ -589,7 +589,7 @@ if highscores then
 		ArB[#ArB+1] = Def.ActorFrame{
 			OnCommand=function(s)
 				s:xy( 120, 35 + ( 16*(i-1) ) ):zoom(0.4)
-				if score == LoadModule("Gameplay.CalculatePercentage.lua")(player,1) then
+				if score == LoadModule("Gameplay.CalculatePercentage.lua")(player) << 0 then
 					local nm = {"Num","Nam","Scr"}
 					for _,v in pairs(nm) do
 						s:GetChild(v..i):diffuseshift():effectcolor1( Color.Yellow )

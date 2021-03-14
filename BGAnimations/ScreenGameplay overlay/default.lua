@@ -52,38 +52,14 @@ local CurrentStage = Def.Sprite{
 local Score = Def.ActorFrame{}
 local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
 
-local scoreModes = {
-    -- Method 1: Normal Scoring
-    function( GPSS , ScoreToCalculate )
-        return ScoreToCalculate > 0 and string.format( "%.2f%%", ScoreToCalculate*100) or " 0.00%"
-    end,
-    -- Method 2: Reverse Scoring
-    function( GPSS , ScoreToCalculate )
-        local reverseScore = GPSS:GetCurrentPossibleDancePoints() - GPSS:GetActualDancePoints()
-        reverseScore = (( GPSS:GetPossibleDancePoints() - reverseScore ) / GPSS:GetPossibleDancePoints())
-        return ScoreToCalculate > 0 and FormatPercentScore( reverseScore ) or "100.00%"
-    end,
-    -- Method 3: Real Time Scoring
-    function( GPSS , ScoreToCalculate )
-        local realTimeScore = GPSS:GetActualDancePoints() / GPSS:GetCurrentPossibleDancePoints()
-        return realTimeScore > 0 and FormatPercentScore(realTimeScore) or " 0.00%" 
-    end,
-    -- Method 4: Flat Scoring
-    function( GPSS , ScoreToCalculate, totalNotes )
-        local notesHit = 0
-        for i=1,5 do
-            notesHit = notesHit + GPSS:GetTapNoteScores( "TapNoteScore_W"..i )
-        end
-        return notesHit > 0 and FormatPercentScore( notesHit / totalNotes ) or " 0.00%"
-    end,
-}
-
 for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     local color = GameColor.PlayerColors[pn_to_color_name[player]]
 	local PDir = (PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none') and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNightsPrefs.ini" or "Save/TEMP"..player
     local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
     local totalNotes = LoadModule("Pane.RadarValue.lua")(player,6)
     local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1] or 0
+	
+	local ScoringMethodology = LoadModule("Gameplay.CalculatePercentage.lua")( player )
     Score[#Score+1] = Def.BitmapText{
         Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
         Font="_futurist metalic";
@@ -92,12 +68,9 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             :diffuse( color ):playcommand("UpdateScore")
         end;
         JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end;
-        UpdateScoreCommand=function(s)
-            local GPSS = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
-            local ScoreToCalculate = GPSS:GetPercentDancePoints()
-            s:settext( scoreModes[config+1]( GPSS, ScoreToCalculate, totalNotes ) )
-        end;
-    };
+        UpdateScoreCommand=function(s) s:settext( ScoringMethodology << nil ) end
+    }
+
 
     -- Dedicated true score percentage.
     -- Only applicable on Flat Scoring
@@ -113,7 +86,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             UpdateScoreCommand=function(s)
                 local GPSS = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
                 local ScoreToCalculate = GPSS:GetPercentDancePoints()
-                s:settext( scoreModes[1]( GPSS, ScoreToCalculate, totalNotes ) )
+                s:settext( ScoringMethodology << 0 )
                 -- time to check who's winning
                 if GAMESTATE:GetNumPlayersEnabled() == 2 then
                     if LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) < LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) then

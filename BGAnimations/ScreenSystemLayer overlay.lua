@@ -34,7 +34,7 @@ t[#t+1] = Def.ActorFrame {
 -- Text
 t[#t+1] = Def.ActorFrame {
 	InitCommand=function(s) s:y(-40) end,
-	OnCommand=function(s) s:finishtweening():y(-40):tween(0.5,"easeoutelastic"):y(-10) SOUND:PlayOnce( THEME:GetPathS( 'gnSystemMessage', 'sound' ) ) end,
+	OnCommand=function(s) s:finishtweening():y(-40):tween(0.5,"easeoutelastic"):y(-10) end,
 	OffCommand=function(s) s:sleep(1.5):bouncebegin(0.2):y(-40) end,
 	Def.Sprite {
 		Texture=THEME:GetPathG("ScreenSystemLayer","MessageFrame"),
@@ -42,6 +42,7 @@ t[#t+1] = Def.ActorFrame {
 			s:zoomtowidth( SCREEN_WIDTH ):diffuse( color("#1C2C3C") ):align(0,0)
 		end,
 	},
+	Def.Sound{ Name="Notification", File=THEME:GetPathS( 'gnSystemMessage', 'sound' ) },
 	Def.BitmapText{
 		Font="Common Normal";
 		Name="Text";
@@ -53,6 +54,7 @@ t[#t+1] = Def.ActorFrame {
 	},
 	SystemMessageMessageCommand = function(self, params)
 		self:GetChild("Text"):settext( params.Message );
+		self:GetChild("Notification"):play()
 		self:playcommand( "On" );
 		if params.NoAnimate then
 			self:finishtweening();
