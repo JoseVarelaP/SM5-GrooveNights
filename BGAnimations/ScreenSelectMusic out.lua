@@ -5,6 +5,43 @@ t[#t+1] = Def.Quad{
     ShowPressStartForOptionsCommand=function(s) s:fadeleft(0.1):linear(0.1):cropleft(0) end,
 }
 
+local enteroptions = Screen.String("EnteringOptions")
+t[#t+1] = Def.BitmapText{
+	Font="journey/40/_journey 40",
+	Text=Screen.String("PressStartOptions"),
+	InitCommand=function(self)
+		self:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y+78 ):strokecolor(Color.Black):zoom(1.4)
+	end,
+	ShowEnteringOptionsCommand=function(self)
+		self:settext( enteroptions )
+	end
+}
+
+t[#t+1] = Def.BitmapText{
+	Font="journey/40/_journey 40",
+	Text="&START;",
+	InitCommand=function(self)
+		self:xy( SCREEN_CENTER_X-60, SCREEN_CENTER_Y+70 ):zoom(1.5)
+	end,
+	ShowEnteringOptionsCommand=function(self)
+		self:visible(false)
+	end
+}
+
+t[#t+1] = Def.Quad{
+	InitCommand=function(self)
+		self:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y+84 )
+		:zoomto( 500, 40 ):diffuse(Color.Black)
+	end,
+	ShowPressStartForOptionsCommand=function(self)
+        self:diffusealpha(1):faderight(.3):fadeleft(.3):cropright(-0.3):cropleft(-0.3):linear(0.3):cropleft(1.3)
+    end;
+    ShowEnteringOptionsCommand=function(self)
+        self:hurrytweening(0.5)
+    end;
+}
+
+--[[
 t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("ScreenSelectMusic","Options Message"),
     InitCommand=function(self)
@@ -20,6 +57,7 @@ t[#t+1] = Def.Sprite{
         self:linear(0.3):cropleft(1.3)
     end;
 }
+]]
 
 t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("","TransitionArrow"),

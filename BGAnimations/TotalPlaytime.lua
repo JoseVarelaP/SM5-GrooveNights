@@ -14,7 +14,8 @@ return Def.BitmapText{
 			 	or 0
 			)
         )
-        local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
+		local count = STATSMAN:GetStagesPlayed()
+        local SongsCount = " ("..count.." ".. ( count == 1 and "song" or "songs" ) ..")"
         s:finishtweening()
         s:settext( "Total PlayTime: ".. Comtp ..  SongsCount  )
         s:AddAttribute(0, {

@@ -9,11 +9,16 @@ local PDir = (
 local settings = {"DefaultJudgmentSize","DefaultJudgmentOpacity","ToggleJudgmentBounce"}
 for _,v in pairs(settings) do
 	-- In case the profile is an actual profile or USB
-	if isRealProf then
-		settings[_] = LoadModule("Config.Load.lua")(v,PDir)
-	-- If not, then we'll use the temporary set for regular players.
+	if not GAMESTATE:IsDemonstration() then
+		if isRealProf then
+			settings[_] = LoadModule("Config.Load.lua")(v,PDir)
+		-- If not, then we'll use the temporary set for regular players.
+		else
+			settings[_] = GAMESTATE:Env()[v.."Machinetemp"..player]
+		end
 	else
-		settings[_] = GAMESTATE:Env()[v.."Machinetemp"..player]
+		-- Set defaults
+		settings = {1,1,true}
 	end
 end
 

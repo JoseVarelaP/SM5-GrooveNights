@@ -19,11 +19,21 @@ return Def.ActorFrame{
         end,
     },
 
-    Def.Sprite{
+	Def.BitmapText{
+		Font="journey/40/_journey 40",
+		Text=THEME:GetString("ScreenSelectMusic","EnteringOptions"),
+		OnCommand=function(self)
+			self:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y+78 ):strokecolor(Color.Black):zoom(1.4)
+			:linear(0.1):diffusealpha(0)
+		end,
+	}
+	--[[
+	Def.Sprite{
         Texture=THEME:GetPathG("ScreenSelectMusic","Options Message"),
         OnCommand=function(self)
             self:Center():pause():setstate(1)
             :linear(0.1):diffusealpha(0)
         end;
     }
+	]]
 }

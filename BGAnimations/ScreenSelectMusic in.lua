@@ -11,10 +11,20 @@ return Def.ActorFrame{
         end
     },
 
+	--[[
     Def.Sprite{
         Texture=THEME:GetPathG("","Loading"),
         OnCommand=function(s)
             s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+70):accelerate(0.2):diffusealpha(0)
+        end,
+    },
+	]]
+
+	Def.BitmapText{
+		Font="journey/40/_journey 40",
+        Text="Loading",
+        OnCommand=function(s)
+            s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+65):strokecolor(Color.Black):zoom(0.85):accelerate(0.2):diffusealpha(0)
         end,
     },
 

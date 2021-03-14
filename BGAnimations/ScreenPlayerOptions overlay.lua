@@ -9,7 +9,7 @@ t[#t+1] = Def.BitmapText{
         if GAMESTATE:GetCurrentSong() then
             s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
         end
-    end,
+    end
 }
 
 t[#t+1] = Def.BitmapText{
@@ -20,7 +20,7 @@ t[#t+1] = Def.BitmapText{
         if GAMESTATE:GetCurrentSong() then
             s:settext( GAMESTATE:GetCurrentSong():GetDisplayArtist() )
         end
-    end,
+    end
 }
 
 t[#t+1] = Def.HelpDisplay {
