@@ -23,8 +23,13 @@ return Def.ActorFrame{
 		Font="journey/40/_journey 40",
 		Text=THEME:GetString("ScreenSelectMusic","EnteringOptions"),
 		OnCommand=function(self)
+			self:visible( not GAMESTATE:Env()["gnAlreadyAtMenu"] )
 			self:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y+78 ):strokecolor(Color.Black):zoom(1.4)
 			:linear(0.1):diffusealpha(0)
+
+			if not GAMESTATE:Env()["gnAlreadyAtMenu"] then
+				GAMESTATE:Env()["gnAlreadyAtMenu"] = true
+			end
 		end,
 	}
 	--[[

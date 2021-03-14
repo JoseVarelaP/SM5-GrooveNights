@@ -2,7 +2,6 @@ local t = Def.ActorFrame{}
 
 t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
 
-
 t[#t+1] = loadfile( THEME:GetPathG('ScreenSelectMusic','StepsDisplayList') )()..{
     OnCommand=function(s) s:xy( SCREEN_CENTER_X+136, SCREEN_CENTER_Y+14 ) end
 }
@@ -37,6 +36,7 @@ t[#t+1] = Def.HelpDisplay {
 }
 
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
+GAMESTATE:Env()["gnAlreadyAtMenu"] = false
 t[#t+1] = Def.ActorFrame{
     OnCommand=function(s)
         s:y( SCREEN_BOTTOM-17-24 )
