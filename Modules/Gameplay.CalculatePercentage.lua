@@ -3,6 +3,7 @@ local t = {
 	FixedVal = nil,
 	Player = nil,
 	ScoreToCalculate = nil,
+	TotalNotesInChart = 0,
 	ScoreModes = {
 		function( this )
 			return FormatPercentScore( this.ScoreToCalculate:GetPercentDancePoints() )
@@ -20,12 +21,11 @@ local t = {
 		end,
 		-- Method 4: Flat Scoring
 		function( this )
-			local totalNotes = LoadModule("Pane.RadarValue.lua")(this.Player,6)
 			local notesHit = 0
 			for i=1,5 do
 				notesHit = notesHit + this.ScoreToCalculate:GetTapNoteScores( "TapNoteScore_W"..i )
 			end
-			return notesHit > 0 and FormatPercentScore( notesHit / totalNotes ) or " 0.00%"
+			return notesHit > 0 and FormatPercentScore( notesHit / this.TotalNotesInChart ) or " 0.00%"
 		end,
 	},
 	__call = function( this, pn, fixedvalue )
@@ -35,6 +35,7 @@ local t = {
 		this.Config = LoadModule("Config.gnLoad.lua")(this.Player, "ScoringFormat")[1] or 0
 		if GAMESTATE:IsDemonstration() then this.Config = 0 end
 
+		this.TotalNotesInChart = LoadModule("Pane.RadarValue.lua")(this.Player,6)
 		return this
 	end,
 	__shl = function( this, Forced )

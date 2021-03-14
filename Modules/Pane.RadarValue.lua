@@ -13,14 +13,14 @@ return function(pn,n)
 	-- 'RadarCategory_Rolls'			11
 	-- 'RadarCategory_Fakes'			13
 	-- 'RadarCategory_Lifts'			12
-	local SongOrCourse, StepsOrTrail;
+	local SongOrCourse, StepsOrTrail
 	if GAMESTATE:IsCourseMode() then
-		SongOrCourse = GAMESTATE:GetCurrentCourse();
-		StepsOrTrail = GAMESTATE:GetCurrentTrail(pn);
+		SongOrCourse = GAMESTATE:GetCurrentCourse()
+		StepsOrTrail = GAMESTATE:GetCurrentTrail(pn)
 	else
-		SongOrCourse = GAMESTATE:GetCurrentSong();
-		StepsOrTrail = GAMESTATE:GetCurrentSteps(pn);
-	end;
+		SongOrCourse = GAMESTATE:GetCurrentSong()
+		StepsOrTrail = GAMESTATE:GetCurrentSteps(pn)
+	end
 
 	if GAMESTATE:IsPlayerEnabled(pn) and (SongOrCourse and StepsOrTrail) then
 		return StepsOrTrail:GetRadarValues(pn):GetValue(n)

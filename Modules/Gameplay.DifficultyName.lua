@@ -1,7 +1,7 @@
 return function( name, pn )
 	local ToGet = {
-	["Steps"] = GAMESTATE:GetCurrentSteps(pn),
-	["Trail"] = GAMESTATE:GetCurrentTrail(pn),
+		["Steps"] = GAMESTATE:GetCurrentSteps(pn),
+		["Trail"] = GAMESTATE:GetCurrentTrail(pn),
 	}
 
 	local Diffs = {
