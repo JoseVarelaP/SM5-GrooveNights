@@ -9,7 +9,10 @@ return Def.BitmapText{
         local Comtp = SecondsToHHMMSS(
             STATSMAN:GetAccumPlayedStageStats(GAMESTATE:GetMasterPlayerNumber()):GetGameplaySeconds()
             +
-            STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
+            (
+				requirescount and STATSMAN:GetCurStageStats(GAMESTATE:GetMasterPlayerNumber()):GetPlayerStageStats(GAMESTATE:GetMasterPlayerNumber()):GetAliveSeconds()
+			 	or 0
+			)
         )
         local SongsCount = " ("..STATSMAN:GetStagesPlayed().." songs)"
         s:finishtweening()
