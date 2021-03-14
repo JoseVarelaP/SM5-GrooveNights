@@ -2,7 +2,7 @@ local t = Def.ActorFrame{}
 t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
 
 t[#t+1] = Def.BitmapText{
-    Font="_eurostile blue glow",
+    Font="novamono/36/_novamono 36px",
     OnCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-178 )
         :zoom(0.75):maxwidth(450)
@@ -13,7 +13,7 @@ t[#t+1] = Def.BitmapText{
 }
 
 t[#t+1] = Def.BitmapText{
-    Font="_eurostile blue glow",
+    Font="novamono/36/_novamono 36px",
     OnCommand=function(s)
         s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-162 )
         :zoom(0.5):maxwidth(450)    

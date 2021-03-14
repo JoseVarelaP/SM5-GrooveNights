@@ -89,7 +89,7 @@ t[#t+1] = Def.ActorFrame{
 	Def.BitmapText{
 		Font="Common Normal",
 		OnCommand=function(s)
-			s:y(SCREEN_CENTER_Y-168-6)
+			s:y(SCREEN_CENTER_Y-178)
 			:zoom(0.75):maxwidth(450)
 			if GAMESTATE:GetCurrentSong() then
 				s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
@@ -98,9 +98,9 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font="_eurostile blue glow",
+		Font="novamono/36/_novamono 36px",
 		OnCommand=function(s)
-			s:y( SCREEN_CENTER_Y-150-8 )
+			s:y( SCREEN_CENTER_Y-162 )
 			:zoom(0.5):maxwidth(450)
 			if GAMESTATE:GetCurrentSong() then
 				s:settext( GAMESTATE:GetCurrentSong():GetDisplayArtist() )

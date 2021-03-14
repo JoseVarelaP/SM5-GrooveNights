@@ -98,7 +98,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             -- BPM Display
             Def.BitmapText{
                 Condition=GAMESTATE:GetCurrentSong(),
-                Font="_eurostile blue glow",
+                Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(70)
                     s:xy( -30, -26+( 16*(0) ) )
@@ -121,7 +121,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             -- SPEED
             -- Formula: math.ceil((setModP1+addModP1)*highBPM*curRate)
             Def.BitmapText{
-                Font="_eurostile blue glow",
+                Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(330)
                     s:xy( -30, -26+( 16*(1) ) )
@@ -139,7 +139,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 
             -- STEPS
             Def.BitmapText{
-                Font="_eurostile blue glow",
+                Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(330)
                     s:xy( -30, -26+( 16*(2) ) )
@@ -158,7 +158,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 
             -- LENGTH
             Def.BitmapText{
-                Font="_eurostile blue glow",
+                Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(70)
                     :xy( -30, -26+( 16*(3) ) )
@@ -174,7 +174,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
         for _,v in pairs(Labels) do
             t[#t+1] = Def.BitmapText{
                 Condition=GAMESTATE:GetCurrentSong(),
-                Font="_eurostile blue glow", Text=v..":",
+                Font="novamono/36/_novamono 36px", Text=v..":",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.5):diffuse( color("#FFA314") )
                     s:xy( SCREEN_CENTER_X-160*side(pn)-78, SCREEN_CENTER_Y+154-30+( 16*(_-1) ) )

@@ -183,7 +183,7 @@ t[#t+1] = Def.ActorFrame{
 			Def.BitmapText{
 				Font="Common Normal",
 				OnCommand=function(s)
-					s:halign(0):xy( -38, -12 ):zoom(0.5)
+					s:halign(0):xy( -38, -14 ):zoom(0.5)
 					s:settext( "Level ".. ach[3] )
 				end,
 			},
@@ -191,7 +191,7 @@ t[#t+1] = Def.ActorFrame{
 				Condition=LoadModule("Config.Load.lua")("ToggleEXPCounter","Save/GrooveNightsPrefs.ini"),
 				Font="Common Normal",
 				OnCommand=function(s)
-					s:halign(1):xy( 48, -11 ):zoom(0.35)
+					s:halign(1):xy( 48, -12 ):zoom(0.35)
 					s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
 				end,
 			},
