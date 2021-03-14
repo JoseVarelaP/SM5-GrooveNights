@@ -1,6 +1,8 @@
 local player = ...
 assert(player)
 
+if not GAMESTATE:IsPlayerEnabled(player) then return Def.Actor{} end
+
 local function side(pn)
 	local s = 1
 	if pn == PLAYER_1 then return s end

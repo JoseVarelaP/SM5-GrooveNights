@@ -3,10 +3,17 @@ t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("ScreenSelectMusic divider","F"),
     InitCommand=function(s)
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):diffuse( color("#1C2C3C") )
-    end,
-    SelectMenuOpenedMessageCommand=function()
-        SOUND:PlayOnce( THEME:GetPathS("gnJudgeBar","1.ogg") )
-    end,
+    end
+}
+
+LoadModule("Row.Prefs.lua")(LoadModule("Options.Prefs.lua"))
+THEME:ReloadMetrics()
+
+t[#t+1] = Def.Sound{
+	File=THEME:GetPathS("gnJudgeBar","1.ogg"),
+	SelectMenuOpenedMessageCommand=function(self)
+		self:play()
+	end
 }
 
 for pn in ivalues( PlayerNumber ) do

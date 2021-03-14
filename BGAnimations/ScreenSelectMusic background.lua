@@ -19,13 +19,6 @@ t[#t+1] = Def.Sprite{
 }
 
 t[#t+1] = Def.Sprite{
-    Texture=THEME:GetPathG("ScreenSelectMusic divider","B"),
-    InitCommand=function(s)
-        s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):diffuse( color("#060A0E") )
-    end,
-}
-
-t[#t+1] = Def.Sprite{
     Texture=THEME:GetPathG("ScreenSelectMusic wheel","under"),
     InitCommand=function(s)
         s:xy(SCREEN_CENTER_X-5,SCREEN_CENTER_Y):MaskSource()
