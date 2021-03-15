@@ -62,7 +62,7 @@ local curindex = GAMESTATE:GetCurrentStageIndex()+( Var "LoadingScreen" ~= "Scre
 
 t[#t+1] = Def.ActorFrame{
 	OnCommand=function(s)
-		s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-202 - ( currentdata.ColorOffset and 2 or 0 ) ):zoom(0.9)
+		s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-205 - ( currentdata.ColorOffset and 2 or 0 ) ):zoom(0.9)
 		:visible( SCREENMAN:GetTopScreen():GetScreenType() == "ScreenType_GameMenu" )
 	end,
 

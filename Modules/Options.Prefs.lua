@@ -76,7 +76,7 @@ return {
 	NextScreenOption = 
 	{
 		Default = "Gameplay",
-		Choices = { "Music Selection","Gameplay", "GrooveNights Settings" ,"Player Options" },
+		Choices = { OptionNameString("MusicSelection"),OptionNameString("Gameplay"),OptionNameString("GrooveNightsSettings"),OptionNameString("PlayerOptions") },
 		Values = { "ScreenSelectMusic","ScreenStageInformation", "gnPlayerSettings", "ScreenPlayerOptions" },
 		LoadFunc = function(self,list)
 			list[2] = true return

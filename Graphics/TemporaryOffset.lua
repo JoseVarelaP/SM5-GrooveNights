@@ -21,7 +21,7 @@ return Def.ActorFrame{
 
 	Def.BitmapText{
 		Font="Common Normal",
-		Text="Original Offset (".. (GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set) ..")",
+		Text=string.format( THEME:GetString("ScreenPlayerOptions","OriginalOffset"), (GAMESTATE:Env()["GNSetting"] == "Operator" and OperatorSet or set) ),
 		InitCommand=function(s)
 			s:zoom(0.4):xy( widths[1]-240, 6 ):halign(0)
 		end,

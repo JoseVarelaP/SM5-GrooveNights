@@ -33,6 +33,10 @@ t[#t+1] = Def.Sprite{
         s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+10):diffuse( color("#1C2C3C") )
     end
 }
+
+t[#t+1] = Def.Sound{ Name="PlayerReady", File=THEME:GetPathS( 'PlayerReady', 'sound' ) }
+t[#t+1] = Def.Sound{ Name="PlayerNotReady", File=THEME:GetPathS( 'PlayerNotReady', 'sound' ) }
+t[#t+1] = Def.Sound{ Name="PlayerBothReady", File=THEME:GetPathS( 'PlayerBothReady', 'sound' ) }
 local function side(pn)
 	local s = 1
 	if pn == PLAYER_1 then return s end
@@ -45,7 +49,26 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
     local DJS = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentSize",PDir) or GAMESTATE:Env()["DefaultJudgmentSizeMachinetemp"..pn]
     local DJO = PDir and LoadModule("Config.Load.lua")("DefaultJudgmentOpacity",PDir) or GAMESTATE:Env()["DefaultJudgmentOpacityMachinetemp"..pn]
     local DCS = PDir and LoadModule("Config.Load.lua")("DefaultComboSize",PDir) or GAMESTATE:Env()["DefaultComboSizeMachinetemp"..pn]
-    -- Profile picture?
+	
+		local LabelACT = Def.ActorFrame{}
+		local Labels = {"BPM","Speed","Steps","Length"}
+		local longest = 0
+		for _,v in pairs(Labels) do
+			LabelACT[#LabelACT+1] = Def.BitmapText{
+				Condition=GAMESTATE:GetCurrentSong(),
+				Font="novamono/36/_novamono 36px", Text=Screen.String(v)..":",
+				InitCommand=function(self)
+					self:halign(0):zoom(0.5):diffuse( color("#FFA314") )
+					:xy( SCREEN_CENTER_X-160*side(pn)-78, SCREEN_CENTER_Y+154-30+( 16*(_-1) ) )
+
+					if self:GetZoomedWidth() > longest then
+						longest = self:GetZoomedWidth()
+					end
+				end
+			}
+		end
+		
+		-- Profile picture?
         t[#t+1] = Def.ActorFrame{
             OnCommand=function(s)
                 s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+150 )
@@ -53,7 +76,6 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 
             Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay under.png", OnCommand=function(s) s:diffuse( color("#060A0E") ) end },
             Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay B", OnCommand=function(s) s:diffuse( color("#060A0E") ) end },
-
             
             -- Profile Managaer
             Def.Sprite {
@@ -101,7 +123,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(70)
-                    s:xy( -30, -26+( 16*(0) ) )
+                    s:xy( -60+longest, -26+( 16*(0) ) )
                     -- We need to calculate the possible BPM of the CURRENT CHART.
                     -- This is because SM5 support separate timings.
                     local Steps = GAMESTATE:GetCurrentSteps(pn)
@@ -124,7 +146,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(330)
-                    s:xy( -30, -26+( 16*(1) ) )
+                    s:xy( -60+longest, -26+( 16*(1) ) )
                 end,
                 InitCommand= function(s)
                     local speed, mode= GetSpeedModeAndValueFromPoptions(pn)
@@ -141,8 +163,8 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             Def.BitmapText{
                 Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
-                    s:halign(0):zoom(0.55):maxwidth(330)
-                    s:xy( -30, -26+( 16*(2) ) )
+                    s:halign(0):zoom(0.55):maxwidth(330 - longest)
+                    s:xy( -60+longest, -26+( 16*(2) ) )
                     local st = GAMESTATE:GetCurrentSteps(pn):GetAuthorCredit() and GAMESTATE:GetCurrentSteps(pn):GetAuthorCredit() or GAMESTATE:GetCurrentSteps(pn):GetDescription()
                     s:settext( st )
                 end,
@@ -161,7 +183,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 Font="novamono/36/_novamono 36px",
                 OnCommand=function(s)
                     s:halign(0):zoom(0.55):maxwidth(70)
-                    :xy( -30, -26+( 16*(3) ) )
+                    :xy( -60+longest, -26+( 16*(3) ) )
                     :settext(
                         math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) == 105 and "Patched" or
                         SecondsToMMSS( math.floor(GAMESTATE:GetCurrentSong():MusicLengthSeconds()) )
@@ -169,46 +191,55 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                 end,
             },
         }
-    
-        local Labels = {"BPM","Speed","Steps","Length"}
-        for _,v in pairs(Labels) do
-            t[#t+1] = Def.BitmapText{
-                Condition=GAMESTATE:GetCurrentSong(),
-                Font="novamono/36/_novamono 36px", Text=v..":",
-                OnCommand=function(s)
-                    s:halign(0):zoom(0.5):diffuse( color("#FFA314") )
-                    s:xy( SCREEN_CENTER_X-160*side(pn)-78, SCREEN_CENTER_Y+154-30+( 16*(_-1) ) )
-                end
-            }
-        end
+
+		t[#t+1] = LabelACT
 
         -- Draw ready on top of everything else
-        t[#t+1] = Def.Sprite{
-            Condition=GAMESTATE:IsHumanPlayer(pn),
-            Texture=THEME:GetPathG("","PlayerReady"),
-            OnCommand=function(s)
-                s:diffusealpha(0):zoom(0.3):draworder(5):diffuseshift()
-                :effectcolor1( PlayerColor(pn) ):effectcolor2( ColorDarkTone( PlayerColor(pn) ) )
-                s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
-            end,
-            ["ExitSelected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
-                s:stoptweening():decelerate(0.2):zoom(1):diffusealpha(1)
-                SOUND:PlayOnce( THEME:GetPathS( 'PlayerReady', 'sound' ) )
-            end,
-            ["ExitUnselected".. ToEnumShortString(pn) .."MessageCommand"]=function(s,param)
-                s:stoptweening():decelerate(0.2):zoom(0.3):diffusealpha(0)
-                SOUND:PlayOnce( THEME:GetPathS( 'PlayerNotReady', 'sound' ) )
-            end,
-            AllReadyMessageCommand=function(s)
-                SOUND:PlayOnce( THEME:GetPathS( 'PlayerBothReady', 'sound' ) )
-            end,
-        }
+        t[#t+1] = Def.ActorFrame{
+			Condition=GAMESTATE:IsHumanPlayer(pn),
+			InitCommand=function(self)
+				self:xy( SCREEN_CENTER_X-160*side(pn)-5, SCREEN_CENTER_Y+144 )
+				:zoom(0)
+			end,
+			["ExitSelected".. ToEnumShortString(pn) .."MessageCommand"]=function(self,param)
+				self:stoptweening():tween(0.2,"decelerate"):zoom(1):diffusealpha(1)
+				self:GetParent():GetChild("PlayerReady"):play()
+			end,
+			["ExitUnselected".. ToEnumShortString(pn) .."MessageCommand"]=function(self,param)
+				self:stoptweening():tween(0.2,"accelerate"):zoom(0.3):diffusealpha(0)
+				self:GetParent():GetChild("PlayerNotReady"):play()
+			end,
+			AllReadyMessageCommand=function(self)
+				self:GetParent():GetChild("PlayerBothReady"):play()
+			end,
 
-        t[#t+1] = Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay F",
-        OnCommand=function(s)
-            s:diffuse( color("#1C2C3C") )
-            s:xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
-        end }
+			Def.Quad{
+				OnCommand=function(self)
+					local frame = self:GetParent():GetParent():GetChild("PaneDisplayFrame")
+					self:zoomto(
+						frame:GetZoomedWidth()-12,
+						frame:GetZoomedHeight()-38
+					)
+					:diffuse( Alpha(Color.Black,0.8) ):y(12)
+				end,
+			},
+
+			Def.BitmapText{
+				Font="journey/40/_journey 40",
+				Text=Screen.String("Ready"),
+				OnCommand=function(self)
+					self:strokecolor(Color.Black):diffuseshift():effectcolor1( PlayerColor(pn) ):effectcolor2( ColorDarkTone( PlayerColor(pn) ) )
+				end,
+			},
+		}
+
+        t[#t+1] = Def.Sprite{
+			Name="PaneDisplayFrame",
+			Texture="../ScreenSelectMusic underlay/PaneDisplay F",
+        	OnCommand=function(self)
+				self:diffuse( color("#1C2C3C") ):xy( SCREEN_CENTER_X-160*side(pn)-8, SCREEN_CENTER_Y+154 )
+        	end
+		}
 
         t[#t+1] = Def.Sprite{
             Texture=THEME:GetPathG("Judgment","label"),

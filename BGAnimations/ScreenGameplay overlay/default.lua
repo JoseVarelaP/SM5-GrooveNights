@@ -144,7 +144,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             UpdateCommand=function(s)
                 if GAMESTATE:GetCurrentSteps(player) then
                     local steps = GAMESTATE:GetCurrentSteps(player):GetDifficulty();
-                    s:settext( LoadModule("Gameplay.DifficultyName.lua")("Steps", player) ):maxwidth(100)
+                    s:settext( LoadModule("Gameplay.DifficultyName.lua")("Steps", player) ):maxwidth(90)
                 end
             end,
         },
