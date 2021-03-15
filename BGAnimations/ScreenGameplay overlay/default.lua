@@ -49,6 +49,24 @@ local CurrentStage = Def.Sprite{
     end;
 }
 
+local usesystemclock = LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini")
+CurrentStage = LoadActor("../CurrentStage.lua")..{
+	BeforeLoadingNextCourseSongMessageCommand=function(self)
+        self:finishtweening():tween(0.3,"easeoutexpo"):Center():zoom(2.5):sleep(0.5)
+        :zoom( 1 ):y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-40)
+    end,
+    OnCommand=function(self)
+        --if GAMESTATE:GetCurrentStage() == "Stage_Final" then
+        --    self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
+        --end
+        self:Center():draworder(105):zoom(2.5)
+        --:linear(0.3)
+        :tween(0.5,"easeoutexpo")
+        :zoom( 1 )
+        :y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-40)
+    end;
+}
+
 local Score = Def.ActorFrame{}
 local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
 
