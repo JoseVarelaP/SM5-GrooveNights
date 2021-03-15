@@ -1,5 +1,11 @@
 local t = Def.ActorFrame{}
 
+local Months = {"January","February","March","April","May","June","July","August","September","October","November","December"}
+-- Cache translated strings of the months to avoid having to check strings every time.
+local translatedmonths = {}
+for k,v in pairs(Months) do
+	translatedmonths[#translatedmonths+1] = THEME:GetString("Months",v)
+end
 t[#t+1] = Def.BitmapText{
     Font="Common Normal",
     Condition=LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini"),
@@ -8,10 +14,9 @@ t[#t+1] = Def.BitmapText{
         :playcommand("Update")
     end,
     UpdateCommand=function(s)
-        local Months = {"January","February","March","April","May","June","July","August","September","October","November","December"}
         local isPM = Hour() > 12
         local CurHour = isPM and (Hour()-12) or Hour()
-        s:settext( DayOfMonth() .."/".. Months[MonthOfYear()+1] .."/".. Year() .."\n"..CurHour ..":".. string.format("%02i", Minute()).. (isPM and " PM" or " AM")  )
+        s:settext( DayOfMonth() .."/".. translatedmonths[MonthOfYear()+1] .."/".. Year() .."\n"..CurHour ..":".. string.format("%02i", Minute()).. (isPM and " PM" or " AM")  )
         :sleep(30/60):queuecommand("Update")
     end,
 }
