@@ -2,13 +2,15 @@ GameColor.PlayerColors.PLAYER_1 = color("#FBBE03")
 GameColor.PlayerColors.PLAYER_2 = color("#56FF48")
 
 function DifficultyColor( dc )
-	if dc == "Difficulty_Beginner"	then return color("#7300C0") end
-	if dc == "Difficulty_Easy"		then return color("#007300") end
-	if dc == "Difficulty_Medium"	then return color("#C0C000") end
-	if dc == "Difficulty_Hard"		then return color("#C01D1D") end
-	if dc == "Difficulty_Challenge"	then return color("#1868C0") end
-	if dc == "Difficulty_Edit"		then return color("#797979") end
-	return Color.White
+	local coloring = {
+		["Difficulty_Beginner"] = color("#7300C0"),
+		["Difficulty_Easy"] =  color("#007300"),
+		["Difficulty_Medium"] = color("#C0C000"),
+		["Difficulty_Hard"] =  color("#C01D1D"),
+		["Difficulty_Challenge"] = color("#1868C0"),
+		["Difficulty_Edit"] =  color("#797979"),
+	}
+	return coloring[dc] or Color.White
 end
 
 Branch.AfterTitleMenu = function()

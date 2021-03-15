@@ -15,6 +15,9 @@ t[#t+1] = Def.ActorFrame{
 			s:y(60)
 		end
 	end,
+	CoinModeChangedMessageCommand=function(self)
+		self:stoptweening():tween(0.25,"decelerate"):y( GAMESTATE:GetCoinMode() ~= "CoinMode_Home" and 60 or 0 )
+	end,
 	Def.Sprite{ Texture="TitleScreen0002", OnCommand=function(s)
 		s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):addy(460):diffusealpha(1):sleep(1.7):zoom(1.7):
 		diffusealpha(1):accelerate(0.5):addy(-510):zoom(0.8):decelerate(2):diffusealpha(1):addy(10)

@@ -17,7 +17,7 @@ local ProgressBar = Def.ActorFrame{
     Def.BitmapText{
         Font="novamono/36/_novamono 36px",
         OnCommand=function(s) s:zoom(0.6):y(-5):strokecolor(Color.Black):maxwidth( SCREEN_WIDTH/1.02 ) end,
-        InitCommand=function(s) s:shadowlength(0):playcommand("Update") end,
+        InitCommand=function(s) s:playcommand("Update") end,
         CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
 		UpdateCommand=function(s)
 			local song = GAMESTATE:GetCurrentSong()

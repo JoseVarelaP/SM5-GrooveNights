@@ -1,24 +1,22 @@
 return Def.ActorFrame{
 	Def.BitmapText{
-	Font="_eurostile outline",
+	Font="novamono/36/_novamono 36",
 	Text="???",
 	OnCommand=function(self)
-		self:x(SCREEN_CENTER_X):y(SCREEN_BOTTOM-86):shadowlength(2):zoom(1):playcommand("Refresh")
+		self:strokecolor(Color.Black):xy(SCREEN_CENTER_X,SCREEN_BOTTOM-86):playcommand("Refresh")
 	end;
 		CoinModeChangedMessageCommand=function(self)
 			self:playcommand("Refresh")
 		end;
 		RefreshCommand=function(self) 
 				if GAMESTATE:GetCoinMode()=='CoinMode_Home' then
-					self:settext('');
-				return
+					self:settext('')
+					return
 				end
-				local coins=GAMESTATE:GetCoins()
-				local coinsPerCredit=PREFSMAN:GetPreference('CoinsPerCredit')
-				if coins >= coinsPerCredit or GAMESTATE:GetCoinMode()=='CoinMode_Free' then
-					self:playcommand("PressStart");
+				if GAMESTATE:EnoughCreditsToJoin() or GAMESTATE:GetCoinMode()=='CoinMode_Free' then
+					self:playcommand("PressStart")
 				else
-					self:playcommand("InsertCoin");
+					self:playcommand("InsertCoin")
 				end 
 			end,
 		InsertCoinCommand=function(self)
@@ -34,10 +32,10 @@ return Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-	Font="_eurostile outline",
+	Font="novamono/36/_novamono 36",
 	Text="???",
 	OnCommand=function(self)
-		self:x(SCREEN_CENTER_X):y(SCREEN_BOTTOM-56):shadowlength(2):zoom(0.8):diffuse(0.7,0.7,0.7,1):diffusebottomedge(color("#DFB629D0")):playcommand("Refresh")
+		self:strokecolor(Color.Black):xy(SCREEN_CENTER_X,SCREEN_BOTTOM-56):zoom(0.8):diffuse(0.7,0.7,0.7,1):diffusebottomedge(color("#DFB629D0")):playcommand("Refresh")
 	end;
 		RefreshCommand=function(self)
 			if GAMESTATE:IsEventMode() and GAMESTATE:GetCoinMode() ~= 'CoinMode_Home' then self:settext('EVENT MODE') return end
@@ -54,7 +52,7 @@ return Def.ActorFrame{
 			self:settext(s)
 		end,
 		CoinInsertedMessageCommand=function(self)
-			self:playcommand("Refresh")
+			self:finishtweening():zoom(0.9):tween(0.2,"easeoutbounce"):zoom(0.8):playcommand("Refresh")
 		end;
 		CoinModeChangedMessageCommand=function(self)
 			self:playcommand("Refresh")

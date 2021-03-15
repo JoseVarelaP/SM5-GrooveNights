@@ -34,8 +34,8 @@ t[#t+1] = Def.Actor{
 			else
                 text = string.upper(speed[pn][2]) .. speed[pn][1]
             end
-            MESSAGEMAN:Broadcast("SpeedChoiceChanged",{pn=pn,mode=speed[pn][2],speed=speed[pn][1]})
             SCREENMAN:GetTopScreen():GetOptionRow(ORNum):GetChild(""):GetChild("Item")[col]:settext( text )
+            MESSAGEMAN:Broadcast("SpeedChoiceChanged",{pn=pn,mode=speed[pn][2],speed=speed[pn][1]})
         end
     end,
     OnCommand=function(s)
@@ -62,7 +62,7 @@ t[#t+1] = Def.Actor{
                 text = string.upper(speed[pn][2]) .. speed[pn][1]
             end
             MESSAGEMAN:Broadcast("SpeedChoiceChanged",{pn=pn,mode=speed[pn][2],speed=speed[pn][1]})
-            s:sleep(0.2):queuecommand("UpdateString")
+            s:queuecommand("UpdateString")
         end
     end,
     ["MenuLeft"..ToEnumShortString(pn).."MessageCommand"]=function(s)

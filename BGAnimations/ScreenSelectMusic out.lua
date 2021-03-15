@@ -14,7 +14,7 @@ t[#t+1] = Def.ActorFrame{
 
 		self:zoom( LoadModule("Lua.Resize.lua")( textwidth, self:GetChild("MainText"):GetZoomedHeight(), SCREEN_WIDTH*0.6, SCREEN_HEIGHT*0.6 ) )
 
-		self:GetChild("Cover"):zoomto( textwidth+8, 40 )
+		self:GetChild("Cover"):zoomto( textwidth+8, self:GetChild("MainText"):GetZoomedHeight()+8 )
 		--self:GetChild("Button"):x( -textwidth*.09 )
 	end,
 	ShowEnteringOptionsCommand=function(self)
