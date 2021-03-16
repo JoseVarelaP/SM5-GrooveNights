@@ -7,7 +7,7 @@ PREFSMAN:SetPreference( "GlobalOffsetSeconds", GAMESTATE:Env()["NewOffset"] )
 
 t[#t+1] = Def.ActorFrame{
 	InitCommand=function(s)
-		s:xy( SCREEN_CENTER_X,SCREEN_BOTTOM+50 ):zoom(2.5):sleep(0.333):tween(0.5,"easeoutback"):y( SCREEN_CENTER_Y )
+		s:xy( SCREEN_CENTER_X,SCREEN_BOTTOM+50 ):zoom(3.5):sleep(0.333):tween(0.5,"easeoutback"):y( SCREEN_CENTER_Y )
 	end,
 	LoadActor("../CurrentStage.lua")
 };

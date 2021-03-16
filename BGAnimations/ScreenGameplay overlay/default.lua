@@ -16,7 +16,7 @@ local ProgressBar = Def.ActorFrame{
 
     Def.BitmapText{
         Font="novamono/36/_novamono 36px",
-        OnCommand=function(s) s:zoom(0.6):y(-5):strokecolor(Color.Black):maxwidth( SCREEN_WIDTH/1.02 ) end,
+        OnCommand=function(s) s:zoom(0.6):y(-4):strokecolor(Color.Black):maxwidth( SCREEN_WIDTH/1.02 ) end,
         InitCommand=function(s) s:playcommand("Update") end,
         CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
 		UpdateCommand=function(s)
@@ -52,21 +52,20 @@ local CurrentStage = Def.Sprite{
 local usesystemclock = LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini")
 CurrentStage = LoadActor("../CurrentStage.lua")..{
 	BeforeLoadingNextCourseSongMessageCommand=function(self)
-        self:finishtweening():tween(0.3,"easeoutexpo"):Center():zoom(2.5):sleep(0.5)
-        :zoom( 1 ):y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-40)
-    end,
-    OnCommand=function(self)
-        --if GAMESTATE:GetCurrentStage() == "Stage_Final" then
-        --    self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
-        --end
-        self:Center():draworder(105):zoom(2.5)
-        --:linear(0.3)
-        :tween(0.5,"easeoutexpo")
-        :zoom( 1 )
-        :y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-40)
-    end;
+		self:finishtweening():tween(0.3,"easeoutexpo"):Center():zoom(2.5):sleep(0.5)
+		:zoom( 1 ):y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-40)
+	end,
+	OnCommand=function(self)
+		--if GAMESTATE:GetCurrentStage() == "Stage_Final" then
+		--    self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
+		--end
+		self:Center():draworder(105):zoom(3.5)
+		--:linear(0.3)
+		:tween(0.5,"easeoutexpo")
+		:zoom( 1 )
+		:y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-35)
+	end;
 }
-
 local Score = Def.ActorFrame{}
 local pn_to_color_name= {[PLAYER_1]= "PLAYER_1", [PLAYER_2]= "PLAYER_2"}
 
@@ -78,14 +77,14 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
     local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1] or 0
 	
 	local ScoringMethodology = LoadModule("Gameplay.CalculatePercentage.lua")( player )
-    Score[#Score+1] = Def.BitmapText{
+	Score[#Score+1] = Def.BitmapText{
         Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni";
-        Font="_futurist metalic";
+        Font="journey/number/_journey 40",
         OnCommand=function(s)
-            s:xy( player == PLAYER_1 and SCREEN_CENTER_X-180 or SCREEN_CENTER_X+180, SCREEN_TOP+56 )
-            :diffuse( color ):playcommand("UpdateScore")
-        end;
-        JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end;
+            s:xy( player == PLAYER_1 and SCREEN_CENTER_X-180 or SCREEN_CENTER_X+180, 56 )
+            :diffuse( color ):zoomy(0.9):playcommand("UpdateScore")
+        end,
+        JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end,
         UpdateScoreCommand=function(s) s:settext( ScoringMethodology << nil ) end
     }
 

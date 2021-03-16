@@ -55,7 +55,7 @@ return Def.ActorFrame{
 		ConvertText( self:GetChild("Number") )
 
 		local num = self:GetChild("Number")
-		num:zoom( LoadModule("Lua.Resize.lua")( num:GetZoomedWidth(), num:GetZoomedHeight(), 125, 70 ) )
+		num:zoom( LoadModule("Lua.Resize.lua")( num:GetZoomedWidth(), num:GetZoomedHeight(), 140, 70 ) )
 	end,
 	BeforeLoadingNextCourseSongMessageCommand=function(self)
         CourseIndx = CourseIndx + 1

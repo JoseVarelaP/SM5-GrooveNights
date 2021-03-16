@@ -40,20 +40,20 @@ local Choices = Def.ActorFrame{
 		Font="journey/40/_journey 40",
 		Name="MORE",
 		Text=THEME:GetString("ScreenOptions","MORE"),
-		InitCommand=function(self) self:halign(0):strokecolor(Color.Black):diffuse(color("#89B7D7")):y( 4 ):zoom(0.6) end
+		InitCommand=function(self) self:halign(0):strokecolor(Color.Black):diffuse(color("#89B7D7")):y( 4 ):zoom(1.4) end
 	},
 
 	Def.BitmapText{
 		Font="journey/40/_journey 40",
 		Name="DONE",
 		Text=THEME:GetString("ScreenOptions","DONE"),
-		InitCommand=function(self) self:halign(0):strokecolor(Color.Black):y( 24 ):zoom(0.6) end
+		InitCommand=function(self) self:halign(0):strokecolor(Color.Black):y( 56 ):zoom(1.4) end
 	}
 }
 
 t[#t+1] = Def.ActorFrameTexture{
 	InitCommand=function(self)
-		self:SetTextureName("MoreDoneText"):SetWidth( 76*2 ):SetHeight( 18 ):EnableAlphaBuffer(true):Create()
+		self:SetTextureName("MoreDoneText"):SetWidth( 76*4 ):SetHeight( 18*4 ):EnableAlphaBuffer(true):Create()
 	end,
 
 	Choices
@@ -63,15 +63,21 @@ t[#t+1] = Def.ActorFrameTexture{
 t[#t+1] = Def.Sprite{
 	Texture="MoreDoneText",
 	OnCommand=function(s)
-		s:xy(72*.25, 0)
+		s:xy(72*.35, 0):zoom(0.45):cropbottom(0.2):croptop(0.2)
+		chcontroller:y(20)
 	end,
-	ToEndCommand=function(s) chcontroller:stoptweening():decelerate(0.2):y(-20) end,
-	ToMoreCommand=function(s) chcontroller:stoptweening():decelerate(0.2):y(0) end,
+	ToEndCommand=function(s) chcontroller:stoptweening():decelerate(0.2):y(-30) end,
+	ToMoreCommand=function(s) chcontroller:stoptweening():decelerate(0.2):y(20) end,
 	AllReadyMessageCommand=function(self)
+		-- If we're dealing with players, there could be the possibility of the translated More/Done text
+		-- to be longer than it's current x ending position, so fix that.
+		if GAMESTATE:IsPlayerEnabled(0) then
+			-- With player 1, it's simple because the text is aligned to the left.
+			SCREENMAN:GetTopScreen():GetChild("Container"):GetChild("Cursor")[1]:addx( -5 )
+		end
 		if GAMESTATE:IsPlayerEnabled(1) then
-			-- If we're dealing with player 2, there could be the possibility of the translated More/Done text
-			-- to be longer than it's current x ending position, so fix that.
-			SCREENMAN:GetTopScreen():GetChild("Container"):GetChild("Cursor")[2]:addx( chcontroller:GetChild("DONE"):GetZoomedWidth()-50 )
+			-- Player 2, we need to calculate the size of the text.	
+			SCREENMAN:GetTopScreen():GetChild("Container"):GetChild("Cursor")[2]:addx( (chcontroller:GetChild("DONE"):GetZoomedWidth()*0.5)-60 )
 		end
 	end,
 	TweenCheckMessageCommand=function(s)
@@ -91,7 +97,7 @@ t[#t+1] = Def.Sprite{
 				s:playcommand("ToMore")
 			end
 		end
-	end;
-};
+	end
+}
 
 return t;

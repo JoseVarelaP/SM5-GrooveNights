@@ -38,7 +38,7 @@ t[#t+1] = Def.BitmapText{
 		end
 		s:settext( string ):strokecolor(Color.Black)
 	end,
-	OnCommand=function(s) s:xy( s:GetWidth()/2+20, 33 ) end,
+	BeginCommand=function(s) s:halign(0):xy( 20, 33 ):maxwidth( SCREEN_WIDTH*.6 - s:GetParent():GetChild("StageInfo"):GetChild("RoundArea"):GetZoomedWidth() ) end,
 }
 
 -- Some stage graphics contain different coloring offsets depending on the text string.
@@ -61,6 +61,7 @@ local currentdata = stagecases[GAMESTATE:GetCurrentStage()]
 local curindex = GAMESTATE:GetCurrentStageIndex()+( Var "LoadingScreen" ~= "ScreenEvaluationNormal" and 1 or 0 )
 
 t[#t+1] = Def.ActorFrame{
+	Name="StageInfo",
 	OnCommand=function(s)
 		s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-205 - ( currentdata.ColorOffset and 2 or 0 ) ):zoom(0.9)
 		:visible( SCREENMAN:GetTopScreen():GetScreenType() == "ScreenType_GameMenu" )
