@@ -231,9 +231,9 @@ t[#t+1] = Def.ActorFrame{
 		},
 
 		Def.BitmapText{
-			Font="_futurist metalic", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player) << 0, OnCommand=function(self)
+			Font="journey/number/_journey 40", Text=LoadModule("Gameplay.CalculatePercentage.lua")(player) << 0, OnCommand=function(self)
 				self:xy(DoublesIsOn and -110 or -46*side(player),-20-83-50):diffuse(PlayerColor(player))
-				:zoom(0.9):linear(0.3):zoom(1)
+				:zoom(0.8):decelerate(0.3):zoom(1):zoomy(0.9)
 			end
 		},
 		

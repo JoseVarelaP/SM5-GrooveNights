@@ -37,7 +37,7 @@ local CurrentStage = LoadActor("../CurrentStage.lua")..{
 		--:linear(0.3)
 		:tween(0.5,"easeoutexpo")
 		:zoom( 1 )
-		:y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-35)
+		:y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-40)
 	end;
 }
 local Score = Def.ActorFrame{}
