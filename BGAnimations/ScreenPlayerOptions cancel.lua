@@ -10,6 +10,18 @@ return Def.ActorFrame{
         end
     },
 
+	Def.BitmapText{
+		Font="journey/40/_journey 40",
+        Text=THEME:GetString("Common","Loading..."),
+        OnCommand=function(s)
+            s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+65):diffusealpha(0)
+			s:zoom( LoadModule("Lua.Resize.lua")( s:GetZoomedWidth(), s:GetZoomedHeight(), SCREEN_WIDTH*0.6, SCREEN_HEIGHT*0.6 ) )
+        end,
+		StartTransitioningCommand=function(s)
+			s:accelerate(0.2):diffusealpha(1)
+		end
+    },
+
     Def.Sprite{
         Texture=THEME:GetPathG("","TransitionArrow"),
         OnCommand=function(s)
