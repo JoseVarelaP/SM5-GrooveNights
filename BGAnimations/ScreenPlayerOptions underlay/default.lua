@@ -75,7 +75,6 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             end,
 
             Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay under.png", OnCommand=function(s) s:diffuse( color("#060A0E") ) end },
-            Def.Sprite{ Texture="../ScreenSelectMusic underlay/PaneDisplay B", OnCommand=function(s) s:diffuse( color("#060A0E") ) end },
             
             -- Profile Managaer
             Def.Sprite {

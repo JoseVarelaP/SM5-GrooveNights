@@ -99,7 +99,6 @@ t[#t+1] = BI
 
 -- Begin by drawing the overlay
 t[#t+1] = Def.Sprite{ Texture="PaneDisplay under.png", OnCommand=function(s) s:diffuse( color("#060A0E") ) end }
-t[#t+1] = Def.Sprite{ Texture="PaneDisplay B", OnCommand=function(s) s:diffuse( color("#060A0E") ) end }
 t[#t+1] = Def.Sprite{ Texture="PaneDisplay under under.png", OnCommand=function(s) s:diffuse( color("#333333") ) end }
 -- Ok, base drawing done, time for profile picture.
 t[#t+1] = Def.Sprite {
