@@ -29,7 +29,6 @@ local BI = Def.ActorFrame{
 }
 
 	BI[#BI+1] = Def.Sprite{ Texture="PaneDisplay under.png", OnCommand=function(s) s:diffuse( color("#060A0E") ):zoom(0.8):xy(-28,-33) end }
-	BI[#BI+1] = Def.Sprite{ Texture="PaneDisplay B", OnCommand=function(s) s:diffuse( color("#060A0E") ):zoom(0.8):xy(-28,-33) end }
 
 	-- Achievement Icons
 	local Achievements = {

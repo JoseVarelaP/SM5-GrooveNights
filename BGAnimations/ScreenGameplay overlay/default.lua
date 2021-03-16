@@ -26,39 +26,13 @@ local ProgressBar = Def.ActorFrame{
     }
 }
 
-local IsEvent = GAMESTATE:IsEventMode()
-local CourseIndx = 1
-local StageStart = GAMESTATE:IsCourseMode() and "course song "..CourseIndx or "stage ".. ToEnumShortString(GAMESTATE:GetCurrentStage())
-local CurrentStage = Def.Sprite{
-    Texture=THEME:GetPathG( "Stages/ScreenGameplay",StageStart ),
-    BeforeLoadingNextCourseSongMessageCommand=function(s)
-        CourseIndx = CourseIndx + 1
-        s:Load( THEME:GetPathG("Stages/ScreenGameplay course song",CourseIndx) )
-        :finishtweening():linear(0.3):Center():zoom(1):sleep(0.5)
-        :zoom( (IsEvent and not GAMESTATE:IsCourseMode()) and 0.25 or 0.4 ):y(SCREEN_BOTTOM-40)
-    end,
-    OnCommand=function(self)
-        if GAMESTATE:GetCurrentStage() == "Stage_Final" then
-            self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
-        end
-        self:Center():draworder(105):zoom(1)
-        --:linear(0.3)
-        :tween(0.5,"easeoutexpo")
-        :zoom( (IsEvent and not GAMESTATE:IsCourseMode()) and 0.25 or 0.4)
-        :y( LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini") and ( IsEvent and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-66) or SCREEN_BOTTOM-40)
-    end;
-}
-
 local usesystemclock = LoadModule("Config.Load.lua")("ToggleSystemClock","Save/GrooveNightsPrefs.ini")
-CurrentStage = LoadActor("../CurrentStage.lua")..{
+local CurrentStage = LoadActor("../CurrentStage.lua")..{
 	BeforeLoadingNextCourseSongMessageCommand=function(self)
 		self:finishtweening():tween(0.3,"easeoutexpo"):Center():zoom(2.5):sleep(0.5)
 		:zoom( 1 ):y( usesystemclock and SCREEN_BOTTOM-58 or SCREEN_BOTTOM-40)
 	end,
 	OnCommand=function(self)
-		--if GAMESTATE:GetCurrentStage() == "Stage_Final" then
-		--    self:Load( THEME:GetPathG("Stages/ScreenGameplay stage","final") )
-		--end
 		self:Center():draworder(105):zoom(3.5)
 		--:linear(0.3)
 		:tween(0.5,"easeoutexpo")

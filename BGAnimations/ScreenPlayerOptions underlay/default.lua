@@ -86,36 +86,25 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
                     if LoadModule("Options.GetProfileData.lua")(pn)["Name"] == "No Card" then
                         s:diffuse( PlayerColor(pn) )
                     end
-                end,
+                end
             },
             Def.Quad {
                 Condition=PROFILEMAN:GetProfile(pn):GetDisplayName() ~= "",
-                OnCommand=function(s) s:zoomto(64,64):xy(-114,-2):croptop(0.7):fadetop(0.1):diffuse(Color.Black) end,
+                OnCommand=function(s) s:zoomto(64,64):xy(-114,-2):croptop(0.7):fadetop(0.1):diffuse(Color.Black) end
             },
             Def.Sprite {
                 Texture=THEME:GetPathG("","AvatarFrame");
                 OnCommand=function(s)
                     s:xy(-114,0):diffuse( color("#1C2C3C") )
-                end,
+                end
             },
             Def.BitmapText {
                 Font="novamono/36/_novamono 36px",
                 Text=PROFILEMAN:GetProfile(pn):GetDisplayName(),
                 OnCommand=function(s)
                     s:xy(-114,20):zoom(0.5):diffuse( PlayerColor(pn) )
-                end,
+                end
             },
-
-            --[[
-            Def.Sprite{
-                Condition=GAMESTATE:IsHumanPlayer(pn),
-                Texture="ScreenOptions playerframe",
-                OnCommand=function(s)
-                    s:xy( PPos[pn], SCREEN_CENTER_Y-112 )
-                    :zoomx( pn == PLAYER_2 and -1 or 1 )
-                end,
-            },
-            ]]
 
             -- BPM Display
             Def.BitmapText{
@@ -137,7 +126,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 				        end
 			        end
 			        s:settext(val)
-                end,
+                end
             },
 
             -- SPEED

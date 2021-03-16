@@ -9,7 +9,7 @@ t[#t+1] = Def.ActorFrame{
 	InitCommand=function(s)
 		s:xy( SCREEN_CENTER_X,SCREEN_BOTTOM+50 ):zoom(3.5):sleep(0.333):tween(0.5,"easeoutback"):y( SCREEN_CENTER_Y )
 	end,
-	LoadActor("../CurrentStage.lua")
+	LoadActor("CurrentStage.lua")
 };
 
 t[#t+1] = Def.Sprite{
