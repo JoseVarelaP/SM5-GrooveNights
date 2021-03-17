@@ -32,15 +32,26 @@ t[#t+1] = Def.HelpDisplay {
 	end,
 	SetHelpTextCommand=function(s, params) s:SetTipsColonSeparated( params.Text ) end,
 	SelectMenuOpenedMessageCommand=function(s) s:stoptweening():decelerate(0.2):zoomy(0) end,
-	SelectMenuClosedMessageCommand=function(s) s:stoptweening():bouncebegin(0.2):zoomy(0.75) end
+	SelectMenuClosedMessageCommand=function(s) s:stoptweening():decelerate(0.2):zoomy(0.75) end
 }
 
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
 GAMESTATE:Env()["gnAlreadyAtMenu"] = false
 t[#t+1] = Def.ActorFrame{
-    OnCommand=function(s)
-        s:y( SCREEN_BOTTOM-17-24 )
+    OnCommand=function(self)
+        self:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-17-12 ):zoom(0.8):zoomy(0)
+
+		local CenterText = self:GetChild("ChangeSort"):GetChild("Dialog"):GetZoomedWidth()
+		self:GetChild("Easier"):x( -(CenterText*.5+50) )
+		self:GetChild("Harder"):x( ((CenterText*.5+20)) )
+		self:GetChild("ChangeSort"):x( -CenterText*.5 )
     end,
+	SelectMenuOpenedMessageCommand=function(self)
+		self:stoptweening():decelerate(0.2):y( SCREEN_BOTTOM-17-24 ):zoomy(0.8):diffusealpha(1)
+	end,
+	SelectMenuClosedMessageCommand=function(self)
+		self:stoptweening():decelerate(0.2):diffusealpha(0):zoomy(0):y( SCREEN_BOTTOM-17-12 )
+	end,
 
 	Def.Sound{
 		File=THEME:GetPathS("ScreenSelectMusic select","down"),
@@ -50,78 +61,61 @@ t[#t+1] = Def.ActorFrame{
 	},
 
     Def.ActorFrame{
-    OnCommand=function(s)
-        if ModeMenuAvailable then s:x(SCREEN_CENTER_X-225) else s:x(SCREEN_CENTER_X-125) end
-    end,
-        LoadFont("Common Normal")..{ Text="&MENULEFT;";
-        OnCommand=function(s)
-            s:x(-5):horizalign(right):zoomx(0.5):zoomy(0.7):diffusealpha(0)
-        end,
-        SelectMenuOpenedMessageCommand=function(s)
-            s:stoptweening():bounceend(0.2):diffusealpha(1):zoomx(0.7)
-        end,
-        SelectMenuClosedMessageCommand=function(s)
-            s:stoptweening():linear(0.2):diffusealpha(0):zoomx(0.5)
-        end,
-        };
+		Name="Easier",
+        Def.BitmapText{
+			Font="Common Normal",
+			Name="Button",
+			Text="&MENULEFT;",
+			OnCommand=function(self) self:x( -(self:GetParent():GetChild("Dialog"):GetZoomedWidth() + 15) ) end,
+        },
 
-        LoadFont("Common Normal")..{ Text="Easier";
-        OnCommand=function(s)
-            s:x(0):horizalign(left):zoomx(0.5):zoomy(0.7):diffusealpha(0):diffuseramp():effectperiod(1):effectoffset(0.20):effectclock("bgm"):effectcolor1(color("#FFFFFF")):effectcolor2(color("#20D020"))
-        end,
-        SelectMenuOpenedMessageCommand=function(s)
-            s:stoptweening():bounceend(0.2):diffusealpha(1):zoomx(0.7)
-        end,
-        SelectMenuClosedMessageCommand=function(s)
-            s:stoptweening():linear(0.2):diffusealpha(0):zoomx(0.5)
-        end,
-        };
-    };
+        Def.BitmapText{
+			Font="Common Normal",
+			Name="Dialog",
+			Text=Screen.String("Easier"),
+			OnCommand=function(self)
+				self:halign(1):diffuseramp():effectperiod(1):effectoffset(0.20):effectclock("bgm")
+				:effectcolor1(color("#FFFFFF")):effectcolor2(color("#20D020"))
+			end
+        }
+    },
 
-    Def.ActorFrame{
-        OnCommand=function(s)
-            if ModeMenuAvailable then s:x(SCREEN_CENTER_X+225) else s:x(SCREEN_CENTER_X+125) end
-        end,
-            LoadFont("Common Normal")..{ Text="&MENURIGHT;";
-            OnCommand=function(s)
-                s:x(15):horizalign(center):zoomx(0.5):zoomy(0.7):diffusealpha(0)
-            end,
-            SelectMenuOpenedMessageCommand=function(s)
-                s:stoptweening():bounceend(0.2):diffusealpha(1):zoomx(0.7)
-            end,
-            SelectMenuClosedMessageCommand=function(s)
-                s:stoptweening():linear(0.2):diffusealpha(0):zoomx(0.5)
-            end,
-            };
+	Def.ActorFrame{
+		Name="Harder",
+        Def.BitmapText{
+			Font="Common Normal",
+			Name="Button",
+			Text="&MENURIGHT;",
+			OnCommand=function(self) self:x( (self:GetParent():GetChild("Dialog"):GetZoomedWidth() + 15) ) end,
+        },
 
-            LoadFont("Common Normal")..{ Text="Harder";
-            OnCommand=function(s)
-                s:x(0):horizalign(right):zoomx(0.5):zoomy(0.7):diffusealpha(0):diffuseramp():effectperiod(1):effectoffset(0.20):effectclock("bgm"):effectcolor1(color("#FFFFFF")):effectcolor2(color("#E06060"))
-            end,
-            SelectMenuOpenedMessageCommand=function(s)
-                s:stoptweening():bounceend(0.2):diffusealpha(1):zoomx(0.7)
-            end,
-            SelectMenuClosedMessageCommand=function(s)
-                s:stoptweening():linear(0.2):diffusealpha(0):zoomx(0.5)
-            end,
-            };
-    };
+        Def.BitmapText{
+			Font="Common Normal",
+			Name="Dialog",
+			Text=Screen.String("Harder"),
+			InitCommand=function(self)
+				self:halign(0):diffuseramp():effectperiod(1):effectoffset(0.20):effectclock("bgm")
+				:effectcolor1(color("#FFFFFF")):effectcolor2(color("#E06060"))
+			end
+        }
+    },
 
-    Def.BitmapText{
-        Font="Common Normal",
-        Text="&START; Change Sort",
-        Condition=ModeMenuAvailable;
-        OnCommand=function(s)
-            s:x(SCREEN_CENTER_X):zoomx(0.5):zoomy(0.7):diffusealpha(0)
-        end,
-        SelectMenuOpenedMessageCommand=function(s)
-            s:stoptweening():bounceend(0.2):diffusealpha(1):zoomx(0.7)
-        end,
-        SelectMenuClosedMessageCommand=function(s)
-            s:stoptweening():linear(0.2):diffusealpha(0):zoomx(0.5)
-        end,
-    };
+	Def.ActorFrame{
+		Name="ChangeSort",
+        Def.BitmapText{
+			Font="Common Normal",
+			Name="Button",
+			Text="&START;",
+			InitCommand=function(self) self:x(-7):halign(1) end,
+        },
 
-};
+        Def.BitmapText{
+			Font="Common Normal",
+			Name="Dialog",
+			Text=Screen.String("ChangeSort"),
+			InitCommand=function(self) self:halign(0) end
+        }
+    }
+}
 
 return t;

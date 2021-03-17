@@ -3,11 +3,9 @@ local CurDir = {}
 
 t[#t+1] = Def.Actor{
 	OnCommand=function(s)
-		s:visible(false)
 		local OpRow = s:GetParent():GetParent():GetParent()
 		if OpRow then
 			if OpRow:GetName() == "Steps" then
-				s:visible(true)
 				for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 					CurDir[pn] = OpRow:GetChoiceInRowWithFocus(pn)
 				end
@@ -31,7 +29,7 @@ local TKN = PREFSMAN:GetPreference("ThreeKeyNavigation")
 t[#t+1] = Def.ActorFrame{
 	OnCommand=function(self)
 		local name = self:GetParent():GetParent():GetParent():GetName()
-		self:y(6):x( TKN and 298 or 276 )
+		self:xy( TKN and 298 or 276, 6 )
 		if name == "gnGlobalOffset" or name == "OPERATORGlobalOffset" then
 			self:AddChildFromPath( THEME:GetPathG("","TemporaryOffset.lua") )
 		end

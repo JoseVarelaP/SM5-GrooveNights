@@ -183,8 +183,8 @@ t[#t+1] = Def.ActorFrame{
 			Def.BitmapText{
 				Font="Common Normal",
 				OnCommand=function(s)
-					s:halign(0):xy( -38, -14 ):zoom(0.5)
-					s:settext( "Level ".. ach[3] )
+					s:halign(0):xy( -38, -14 ):zoom(0.45)
+					s:settext( string.format(THEME:GetString("Level","Level"), ach[3]) )
 				end,
 			},
 			Def.BitmapText{
@@ -352,9 +352,15 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 			end
 		end,
 
-		Def.Sprite{ Texture="judgment"..string.format("%04i",index),
-			OnCommand=function(s)
-				s:xy( -126, 16*index+2):zoom(0.65):halign(0)
+		Def.BitmapText{
+			Font="journey/40/_journey 40",
+			-- Since we already define the strings for LuaTimings, that will be used,
+			-- instead of making new lines.
+			Text=THEME:GetString("ITG","Judgment"..ScWin),
+			--Texture="judgment0012",
+			OnCommand=function(self)
+				self:xy( -124, 16*index-2 ):zoom(0.36):halign(0)
+				:diffuse( Colors[index] )
 			end
 		},
 
@@ -442,9 +448,12 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 		end
 		},
 
-		Def.Sprite{ Texture="judgment"..string.format("%04i",index+6),
+		Def.BitmapText{
+			Font="journey/40/_journey 40",
+			Text=THEME:GetString("PaneDisplay",RCType),
+			--Texture="judgment0012",
 			OnCommand=function(self)
-				self:xy( -125, 16*index ):zoom(0.65):halign(0)
+				self:xy( -123, 16*index-3 ):zoom(0.36):halign(0)
 			end
 		},
 
@@ -504,11 +513,14 @@ t[#t+1] = Def.ActorFrame{
 		end
 	end,
 
-	Def.Sprite{ Texture="judgment0012",
-	OnCommand=function(self)
-		self:xy( 3, 16*4-2 ):zoom(0.65):halign(0)
-	end,
-	};
+	Def.BitmapText{
+		Font="journey/40/_journey 40",
+		Text=THEME:GetString("ScreenEvaluation","MAXCOMBO"),
+		--Texture="judgment0012",
+		OnCommand=function(self)
+			self:xy( 6, 16*3.6 ):zoom(0.38):halign(0)
+		end
+	},
 
 	Def.BitmapText{ Font="ScreenEvaluation judge";
 		OnCommand=function(self)

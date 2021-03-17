@@ -52,10 +52,10 @@ for _,v in pairs( GAMESTATE:Env()["AngryGrandpa"] and Labels.Grandpa or Labels.N
     for a,e in pairs(v) do
         t[#t+1] = Def.BitmapText{
             Font="novamono/36/_novamono 36px",
-            Text=e..":",
+            Text=THEME:GetString("SongInfo",e)..":",
             OnCommand=function(s)
                 s:halign(1):xy( SCREEN_CENTER_X-48+(310*(_-1)), SCREEN_CENTER_Y-61+(16*a) ):diffuse(color("#FFA314"))
-                :zoom(0.6)
+                :zoom(0.6):maxwidth(84)
             end,
         }
 

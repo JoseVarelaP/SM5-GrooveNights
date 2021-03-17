@@ -257,7 +257,8 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
             end,
             DefaultComboSizeChangeMessageCommand=function(s,param)
                 if param.pn == pn and param.choice then
-                    s:finishtweening():zoom( 0.75*(param.choice)/10 ) curzoom = (param.choice-1)/10 end
+                    s:finishtweening():zoom( 0.75*(param.choice)/10 ) curzoom = (param.choice-1)/10
+				end
             end,
         }
 end

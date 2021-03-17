@@ -76,7 +76,7 @@ local BI = Def.ActorFrame{
 			Font="Common Normal",
 			OnCommand=function(s)
 				s:halign(0):xy( -38, -13 ):zoom(0.4)
-				s:settext( "Level ".. ach[3] )
+				s:settext( string.format(THEME:GetString("Level","Level"), ach[3]) )
 			end,
 		},
 		Def.BitmapText{
@@ -174,7 +174,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 		for vind,val in ipairs( ObtainData[ind] ) do
 			t[#t+1] = Def.BitmapText{
 				Font="novamono/36/_novamono 36px",
-				Text=val[1],
+				Text=type(val[1]) == "function" and val[1] or THEME:GetString("PaneDisplay",val[1]),
 				InitCommand=function(s)
 					s:zoom(0.5):xy(
 						ObtainData[ind].xpos[1] + 0
