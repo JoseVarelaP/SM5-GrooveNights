@@ -105,8 +105,8 @@ t[#t+1] = Def.ActorFrame{
 			Texture=THEME:GetPathG('_difficulty pips','B'),
 			OnCommand=function(self)
 				self:xy(0,0):animate(0):playcommand("Update")
-			end;
-			UpdateCommand=function(self,parent) self:setstate( LoadModule("Gameplay.SetFrameDifficulty.lua")(player,true) ) end,
+			end,
+			UpdateCommand=function(self,parent) self:setstate( LoadModule("Gameplay.SetFrameDifficulty.lua")(player,true) ) end
 		},
 
 		Def.Sprite{
@@ -114,44 +114,44 @@ t[#t+1] = Def.ActorFrame{
 			OnCommand=function(self)
 				self:xy(0,0):animate(0)
 				:diffuse(color("#1C2C3C"))
-			end;
-			UpdateCommand=function(self,parent) self:setstate( LoadModule("Gameplay.SetFrameDifficulty.lua")(player,true) ) end,
+			end,
+			UpdateCommand=function(self,parent) self:setstate( LoadModule("Gameplay.SetFrameDifficulty.lua")(player,true) ) end
 		},
 
 		Def.BitmapText{
 			Font="Common Normal",
 			OnCommand=function(self)
 				self:zoom(0.5):xy(33,-6):strokecolor(Color.Black):playcommand("Update")
-			end;
+			end,
 			UpdateCommand=function(self)
-					self:settext( TrailOrSteps(player):GetMeter() )
-				end,
+				self:settext( TrailOrSteps(player):GetMeter() )
+			end
 		},
 
 		Def.BitmapText{
 			Font="Common Normal",
-			OnCommand=function(s)
-				s:zoom(0.5):xy(102,-6):maxwidth(200)
-				s:settext(
+			OnCommand=function(self)
+				self:zoom(0.5):xy(102,-6):maxwidth(200)
+				:settext(
 					GAMESTATE:GetCurrentSteps(player):GetAuthorCredit() and GAMESTATE:GetCurrentSteps(player):GetAuthorCredit()
 					or GAMESTATE:GetCurrentSteps(player):GetDescription()
 				)
-			end;
-		},
-	};
+			end
+		}
+	},
 
 	-- Avatar Frame
 	Def.Sprite{
 		Texture="nocard",
 		Condition=not isvalidplayer,
-		OnCommand=function(s)
-			s:xy(-70,18):diffuse( color("#1C2C3C") )
+		OnCommand=function(self)
+			self:xy(-70,18):diffuse( color("#1C2C3C") )
 		end,
-		EvaluationInputChangedMessageCommand=function(s,param)
+		EvaluationInputChangedMessageCommand=function(self,param)
 			if param.Player == player then
-				s:stoptweening():linear(0.2):diffusealpha( param.Index == 1 and 1 or 0 )
+				self:stoptweening():linear(0.2):diffusealpha( param.Index == 1 and 1 or 0 )
 			end
-		end,
+		end
 	},
 	Def.ActorFrame{
 		Condition=isvalidplayer,
@@ -251,7 +251,7 @@ t[#t+1] = Def.ActorFrame{
 			end,
 			EvaluationInputChangedMessageCommand=function(s,param)
 				if param.Player == player then
-					s:finishtweening():diffusealpha(0.4):settext( "Page ".. param.Index .. "/2" ):sleep(0.3):linear(0.2):diffusealpha(0)
+					s:finishtweening():diffusealpha(0.4):settext( string.format( THEME:GetString("ScreenEvaluation","Page"), param.Index, "2" ) ):sleep(0.3):linear(0.2):diffusealpha(0)
 				end
 			end,
 		},
@@ -554,10 +554,10 @@ local ArB = Def.ActorFrame{
 			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 0 or 1 )
 		end
 	end,
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Arrow Breakdown", OnCommand=function(s) s:zoom(0.5):y(-8+98) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Offset Derivative", OnCommand=function(s) s:zoom(0.5):xy(140,-4) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Early", OnCommand=function(s) s:zoom(0.35):xy( 90,10 ) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text="Late", OnCommand=function(s) s:zoom(0.35):xy( 185,10 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Arrow Breakdown"), OnCommand=function(s) s:zoom(0.5):y(-8+96) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Offset Derivative"), OnCommand=function(s) s:zoom(0.5):xy(140,-4) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Early"), OnCommand=function(s) s:zoom(0.35):xy( 90,10 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Late"), OnCommand=function(s) s:zoom(0.35):xy( 185,10 ) end },
 
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Early, OnCommand=function(s) s:zoom(0.35):xy( 90,24 ) end },
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Late, OnCommand=function(s) s:zoom(0.35):xy( 185,24 ) end },
@@ -566,22 +566,36 @@ local ArB = Def.ActorFrame{
 	Def.Quad{ Name="Late", OnCommand=function(s) s:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Red ) end, },
 }
 
-local Side = {"&LEFT;","&DOWN;","&UP;","&RIGHT;"}
-for i=0,3 do
-	ArB[#ArB+1] = Def.BitmapText{
-		Font="novamono/36/_novamono 36px",
-		Text=Side[i+1],
-		OnCommand=function(s)
-			s:xy( -40 + (26*i), 106 ):zoom(0.6)
-		end
+--local Side = {"&LEFT;","&DOWN;","&UP;","&RIGHT;"}
+
+-- Noteskin Operation
+local noteskin = GAMESTATE:GetPlayerState(player):GetPlayerOptions('ModsLevel_Song'):NoteSkin():lower()
+
+-- Print the noteskin columns
+local col = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer()
+for i=1,col do
+	-- Check if the noteskin actually exists, otherwise warn, and use the first noteskin
+	-- available on the array.
+	if not NOTESKIN:DoesNoteSkinExist( noteskin ) then
+		Warn( "The noteskin currently set does not exist on this game mode. Using ".. NOTESKIN:GetNoteSkinNames()[1] .." instead." )
+		noteskin = NOTESKIN:GetNoteSkinNames()[1]
+	end
+	local tcol = GAMESTATE:GetCurrentStyle():GetColumnInfo( player, i )
+	local sidespacing = scale( col,3,10,20,210 )
+	ArB[#ArB+1] = Def.ActorFrame{
+		InitCommand=function(self)
+			self:xy( scale( i, 1, col, -sidespacing, sidespacing ), 106 )
+			:zoom(.3)
+		end,
+		NOTESKIN:LoadActorForNoteSkin( tcol["Name"], "Tap Note", noteskin)
 	}
 
 	for index, ValTC in ipairs(JudgmentInfo.Types) do
 		ArB[#ArB+1] = Def.BitmapText{
 			Font="novamono/36/_novamono 36px",
-			Text=timingWindow[i+1][ValTC],
+			Text=timingWindow[i][ValTC],
 			OnCommand=function(s)
-				s:xy( -40 + (26*i), 12*index+108 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
+				s:xy( scale( i, 1, col, -sidespacing, sidespacing ), 12*index+108 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
 			end
 		}
 	end
