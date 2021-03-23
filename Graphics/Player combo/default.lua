@@ -1,5 +1,5 @@
-local c;
-local player = Var "Player";
+local c
+local player = Var "Player"
 local PDir = (
 	(PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none')
 	and PROFILEMAN:GetProfileDir(string.sub(player,-1)-1).."GrooveNights.save"
@@ -34,32 +34,31 @@ for _,v in pairs(settings) do
 	end
 end
 
+local staticzoom = settings[1] or 1
 local t = Def.ActorFrame {
-	InitCommand=function(self)
-		self:vertalign(bottom)
-	end,
-	
-		-- These are behind the combo and label for obvious reasons.
-		-- 100 Combo milestone
+	-- These are behind the combo and label for obvious reasons.
+	-- 100 Combo milestone
 	Def.ActorFrame{
 		Condition=tobool(settings[4]),
 		
-		LoadActor("explosion")..{
-		InitCommand=function(self)
-			self:diffusealpha(0):blend("BlendMode_Add")
-		end,
-		HundredMilestoneCommand=function(self)
-			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
-		end,
+		Def.Sprite{
+			Texture="explosion",
+			InitCommand=function(self)
+				self:diffusealpha(0):blend("BlendMode_Add")
+			end,
+			HundredMilestoneCommand=function(self)
+				self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
+			end,
 		},
 
-		LoadActor("explosion")..{
-		InitCommand=function(self)
-			self:diffusealpha(0):blend("BlendMode_Add")
-		end,
-		HundredMilestoneCommand=function(self)
-			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
-		end,
+		Def.Sprite{
+			Texture="explosion",
+			InitCommand=function(self)
+				self:diffusealpha(0):blend("BlendMode_Add")
+			end,
+			HundredMilestoneCommand=function(self)
+				self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
+			end
 		},
 
 		Def.Sprite{
@@ -69,7 +68,7 @@ local t = Def.ActorFrame {
 			end,
 			HundredMilestoneCommand=function(self)
 				self:rotationz(10):zoom(.25):diffusealpha(1):decelerate(0.5):rotationz(0):zoom(1.3):diffusealpha(0)
-			end,
+			end
 		},
 
 		Def.Sprite{
@@ -79,88 +78,95 @@ local t = Def.ActorFrame {
 			end,
 			HundredMilestoneCommand=function(self)
 				self:rotationz(10):zoom(.25):diffusealpha(1):linear(0.5):rotationz(0):zoom(1.3):diffusealpha(0)
-			end,
+			end
 		},
 
 		-- 1000 Combo milestone
-		LoadActor("explosion")..{
-		InitCommand=function(self)
-			self:diffusealpha(0):blend("BlendMode_Add")
-		end,
-		ThousandMilestoneCommand=function(self)
-			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
-		end,
+		Def.Sprite{
+			Texture="explosion",
+			InitCommand=function(self)
+				self:diffusealpha(0):blend("BlendMode_Add")
+			end,
+			ThousandMilestoneCommand=function(self)
+				self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
+			end
 		},
 
-		LoadActor("explosion")..{
-		InitCommand=function(self)
-			self:diffusealpha(0):blend("BlendMode_Add")
-		end,
-		ThousandMilestoneCommand=function(self)
-			self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
-		end,
+		Def.Sprite{
+			Texture="explosion",
+			InitCommand=function(self)
+				self:diffusealpha(0):blend("BlendMode_Add")
+			end,
+			ThousandMilestoneCommand=function(self)
+				self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(-90):zoom(2):diffusealpha(0)
+			end
 		},
 
-		LoadActor("shot")..{
-		InitCommand=function(self)
-			self:diffusealpha(0):blend("BlendMode_Add")
-		end,
-		ThousandMilestoneCommand=function(self)
-			self:zoomx(-2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(-150)
-		end,
+		Def.Sprite{
+			Texture="shot",
+			InitCommand=function(self)
+				self:diffusealpha(0):blend("BlendMode_Add")
+			end,
+			ThousandMilestoneCommand=function(self)
+				self:zoomx(-2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(-150)
+			end
 		},
-		LoadActor("shot")..{
-		InitCommand=function(self)
-			self:diffusealpha(0):blend("BlendMode_Add")
-		end,
-		ThousandMilestoneCommand=function(self)
-			self:zoomx(2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(150)
-		end,
-		},
+
+		Def.Sprite{
+			Texture="shot",
+			InitCommand=function(self)
+				self:diffusealpha(0):blend("BlendMode_Add")
+			end,
+			ThousandMilestoneCommand=function(self)
+				self:zoomx(2):zoomy(2):diffusealpha(1):x(0):linear(0.5):diffusealpha(0):x(150)
+			end
+		}
 	},
 
-	LoadFont( "_xenotron", "metal" ) .. {
-		Name="Number";
-		OnCommand = THEME:GetMetric("Combo", "NumberOnCommand"),
-		BeginCommand=function(self)
-			self:y(10)
-		end,
-		ComboCommand=function(s)
-			if s:GetText() and s:GetText() ~= "" then
-				local staticzoom = settings[1]
-				local zoomed = settings[2] and (scale( s:GetText() ,0,500,0.9,1.4) > 1.4 and 1.4 or scale( s:GetText() ,0,500,0.9,1.4)) or 1
+	Def.BitmapText{
+		-- TODO: Either add engine function to provide adding x positioning to the current glyph or make a separate number set for combo.
+		Font="_xenotron metal",
+		Name="Number",
+		OnCommand = function(self) self:valign(1):y(0) end,
+		ComboCommand=function(self)
+			if self:GetText() and self:GetText() ~= "" then
+				local zoomed = settings[2] and (scale( self:GetText() ,0,500,0.9,1.4) > 1.4 and 1.4 or scale( self:GetText() ,0,500,0.9,1.4)) or 1
 				if PDir and settings[3] then
-					s:finishtweening():zoom( (1.05*zoomed)*staticzoom ):linear(0.05):zoom( zoomed*staticzoom )
+					self:finishtweening():zoom( (1.05*zoomed)*staticzoom ):linear(0.05):zoom( zoomed*staticzoom )
 				else
-					s:finishtweening():zoom( staticzoom and 1*staticzoom or 1 )
+					self:finishtweening():zoom( staticzoom )
 				end
 			end
 		end,
 	};
-	LoadActor("label") .. {
-		Name="Label";
-		OnCommand = THEME:GetMetric("Combo", "LabelOnCommand"),
-		ComboCommand=function(s)
-			local staticzoom = settings[1]
-				if PDir and settings[3] then
-					s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
-				else
-					s:finishtweening():zoom( staticzoom and 1*staticzoom or 1 )
-				end
-		end,
-	};
-	LoadActor("misses") .. {
-		Name="Misses";
-		InitCommand = THEME:GetMetric("Combo", "LabelOnCommand"),
-		ComboCommand=function(s)
-			local staticzoom = settings[1]
+	Def.BitmapText{
+		Font="journey/40/_journey 40",
+		Text=THEME:GetString("ScreenGameplay","Combo"),
+		Name="Label",
+		OnCommand = function(self) self:valign(0):zoomy(0.6) end,
+		ComboCommand=function(self)
+			self:finishtweening()
 			if PDir and settings[3] then
-				s:finishtweening():zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
+				self:zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
 			else
-				s:finishtweening():zoom( staticzoom and 1*staticzoom or 1 )
+				self:zoom( staticzoom )
 			end
 		end,
 	};
+	Def.BitmapText{
+		Font="journey/40/_journey 40",
+		Text=THEME:GetString("ScreenGameplay","Misses"),
+		Name="Misses",
+		OnCommand = function(self) self:valign(0):diffuse(Color.Red) end,
+		ComboCommand=function(self)
+			self:finishtweening()
+			if PDir and settings[3] then
+				self:zoom( 1.05*staticzoom ):linear(0.05):zoom( 1*staticzoom )
+			else
+				self:zoom( staticzoom )
+			end
+		end
+	},
 	
 	InitCommand = function(self)
 		c = self:GetChildren()
@@ -168,28 +174,12 @@ local t = Def.ActorFrame {
 		c.Label:visible(false)
 		c.Misses:visible(false)
 	end,
-	-- Milestones:
-	-- 25,50,100,250,600 Multiples;
---[[ 		if (iCombo % 100) == 0 then
-			c.OneHundredMilestone:playcommand("Milestone")
-		elseif (iCombo % 250) == 0 then
-			-- It should really be 1000 but thats slightly unattainable, since
-			-- combo doesnt save over now.
-			c.OneThousandMilestone:playcommand("Milestone")
-		else
-			return
-		end, --]]
 	ComboCommand=function(self, param)
 		local iCombo = param.Misses or param.Combo;
 		if not iCombo or iCombo < ShowComboAt then
-			c.Number:visible(false)
-			c.Number:y(15)
-			c.Label:visible(false)
-			c.Label:y(10)
-			c.Misses:y(10)
-			c.Number:x(-5)
-			c.Label:x(-5)
-			c.Misses:x(-5)
+			c.Number:visible(false):y(10)
+			c.Label:visible(false):y(0)
+			c.Misses:y(0)
 			return;
 		end
 
@@ -201,9 +191,8 @@ local t = Def.ActorFrame {
 		param.LabelZoom = scale( iCombo, 0, NumberMaxZoomAt, LabelMinZoom, LabelMaxZoom )
 		param.LabelZoom = clamp( param.LabelZoom, LabelMinZoom, LabelMaxZoom )
 		
-		c.Number:visible(true)
+		c.Number:visible(true):settext( string.format("%i", iCombo) )
 		c.Label:visible(true)
-		c.Number:settext( string.format("%i", iCombo) )
 		-- FullCombo Rewards
 		if param.FullComboW1 then
 			c.Number:diffuseshift():effectcolor1(color("#9BD8EC")):effectcolor2(color("#6ECDEC")):effectperiod(0.5)
@@ -215,18 +204,13 @@ local t = Def.ActorFrame {
 			c.Number:diffuseshift():effectcolor1(color("#9BE999")):effectcolor2(color("#42E93D")):effectperiod(0.5)
 			c.Label:diffuseshift():effectcolor1(color("#9BE999")):effectcolor2(color("#42E93D")):effectperiod(0.5)
 		elseif param.Combo then
-			c.Number:diffuse(Color("White"))
-			c.Number:stopeffect()
-			c.Label:stopeffect()
+			c.Number:diffuse(Color("White")):stopeffect()
+			c.Label:stopeffect():diffuse(Color("White"))
 			c.Misses:visible(false)
-			c.Label:diffuse(Color("White"))
 		else
-			c.Number:diffuse(color("#ff0000"))
-			c.Label:visible(false)
-			c.Number:stopeffect()
-			c.Label:stopeffect()
+			c.Number:diffuse(color("#ff0000")):stopeffect()
+			c.Label:visible(false):stopeffect()
 			c.Misses:visible(true)
-			c.Misses:diffuse(color("#ff0000"))
 		end
 
 		c.Number:finishtweening()
