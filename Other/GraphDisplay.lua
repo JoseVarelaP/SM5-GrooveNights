@@ -71,7 +71,7 @@ t[#t+1] = Def.ActorFrame{
     InitCommand=function(self)
         self:xy(
             scale( MinLifeSoFarAt, 1, SampleAmmount, -width*.5, width*.5 ),
-            scale( fMinLifeSoFar, 0, 1, 0, -height ) - 30
+            scale( fMinLifeSoFar, 0, 1, 0, -height ) - 32
         )
     end,
 	OnCommand=function(self)
@@ -84,11 +84,11 @@ t[#t+1] = Def.ActorFrame{
 	Def.BitmapText{
         Font="Common Normal",
 		Text=THEME:GetString("GraphDisplay", "Barely"),
-		InitCommand=function(self) self:zoom(0.75) end,
+		InitCommand=function(self) self:zoom(0.25):x(1) end,
 	},
 	Def.Sprite{
-        Texture=THEME:GetPathB("ScreenSelectMusic", "overlay/PerPlayer/arrow.png"),
-		InitCommand=function(self) self:rotationz(90):zoom(0.5):y(10) end,
+        Texture=THEME:GetPathG("GraphDisplay", "Barely Arrow"),
+		InitCommand=function(self) self:zoom(0.75):y(10) end,
 		OnCommand=function(self) self:sleep(0.5):diffuseshift():effectcolor1(1,1,1,1):effectcolor2(1,1,1,0.2) end
 	}
 }
