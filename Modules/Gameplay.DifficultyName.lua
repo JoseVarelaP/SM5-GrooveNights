@@ -1,7 +1,7 @@
 return function( name, pn )
 	local ToGet = {
 		["Steps"] = GAMESTATE:GetCurrentSteps(pn),
-		["Trail"] = GAMESTATE:GetCurrentTrail(pn),
+		["Trail"] = GAMESTATE:GetCurrentTrail(pn)
 	}
 
 	local Diffs = {
@@ -14,13 +14,13 @@ return function( name, pn )
         ["Easy"] = {"Based","haha","hard"},
         ["Medium"] = {"Based","banana","medium"},
         ["Hard"] = {"Based","yes","easy"},
-        ["Challenge"] = {"Based","WinDEU","novice"},
+        ["Challenge"] = {"Based","WinDEU","novice"}
     }
 
 	if ToGet[name] then
 		local Shorten = ToEnumShortString( ToGet[name]:GetDifficulty() )
 		local finished
-		finished = name == "Trail" and THEME:GetString("CourseDifficulty", Shorten) or THEME:GetString("Difficulty", Shorten)
+		finished = THEME:GetString( (name == "Trail" and "Course" or "") .."Difficulty", Shorten)
 		for _,v in pairs(Diffs.Profiles) do
 			for i,a in pairs(v) do
 				if PROFILEMAN:GetProfile(pn):GetDisplayName() == a then
