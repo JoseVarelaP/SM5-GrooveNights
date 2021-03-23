@@ -62,7 +62,7 @@ end
 local t = Def.ActorFrame{};
 local isvalidplayer = LoadModule("Profile.IsMachine.lua")(player)
 
-local DoublesIsOn = GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_OnePlayerTwoSides"
+local DoublesIsOn = GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_OnePlayerTwoSides" or GAMESTATE:Env()["UsingBOA"]
 t[#t+1] = Def.ActorFrame{
 	Def.Sprite{ Texture="base frame B" }..{
 		OnCommand=function(s)

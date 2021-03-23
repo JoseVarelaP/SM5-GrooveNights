@@ -6,6 +6,7 @@ t[#t+1] = Def.Sprite{
     end
 }
 
+GAMESTATE:Env()["UsingBOA"] = false
 LoadModule("Row.Prefs.lua")(LoadModule("Options.Prefs.lua"))
 THEME:ReloadMetrics()
 

@@ -55,7 +55,10 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 	Condition=GAMESTATE:IsPlayerEnabled(player);
 		LoadActor( THEME:GetPathG("","ScreenEvaluation grade frame"), player )..{
 		InitCommand=function(self)
-		self:xy( DoublesIsOn and SCREEN_CENTER_X or ( SCREEN_CENTER_X+((-130*1.2)*side(player)) ),SCREEN_CENTER_Y+58)
+			self:xy( DoublesIsOn and SCREEN_CENTER_X or ( SCREEN_CENTER_X+((-130*1.2)*side(player)) ),SCREEN_CENTER_Y+58)
+			if GAMESTATE:Env()["UsingBOA"] then
+				self:tween(0.5,"easeoutquad"):x( SCREEN_CENTER_X ):diffusealpha( GAMESTATE:GetMasterPlayerNumber() == player and 1 or 0 )
+			end
 		end,
 		};
 	};
@@ -64,7 +67,12 @@ end
 t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
 
 t[#t+1] = Def.ActorFrame{
-	InitCommand=function(s) s:x( DoublesIsOn and SCREEN_CENTER_X+80 or SCREEN_CENTER_X ) end,
+	InitCommand=function(self)
+		self:x( DoublesIsOn and SCREEN_CENTER_X+80 or SCREEN_CENTER_X )
+		if GAMESTATE:Env()["UsingBOA"] then
+			self:tween(0.5,"easeoutquad"):x( SCREEN_CENTER_X+90 )
+		end
+	end,
 	Def.Sprite{
 		Texture=THEME:GetPathG("Common fallback","banner"),
 		InitCommand=function(s) s:y(SCREEN_CENTER_Y-114)

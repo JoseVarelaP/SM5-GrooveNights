@@ -59,7 +59,14 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             :diffuse( color ):zoomy(0.9):playcommand("UpdateScore")
         end,
         JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end,
-        UpdateScoreCommand=function(s) s:settext( ScoringMethodology << nil ) end
+        UpdateScoreCommand=function(s)
+			if not GAMESTATE:Env()["UsingBOA"] then
+				if PREFSMAN:GetPreference("BothAtOnce") then
+					GAMESTATE:Env()["UsingBOA"] = true
+				end
+			end
+			s:settext( ScoringMethodology << nil )
+		end
     }
 
 
@@ -78,14 +85,6 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
                 local GPSS = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
                 local ScoreToCalculate = GPSS:GetPercentDancePoints()
                 s:settext( ScoringMethodology << 0 )
-                -- time to check who's winning
-                if GAMESTATE:GetNumPlayersEnabled() == 2 then
-                    if LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) < LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) then
-                        s:diffusealpha(0.8)
-                    else
-                        s:diffusealpha(1)
-                    end
-                end
             end
         }
     end
@@ -102,11 +101,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
             JudgmentMessageCommand=function(s) s:queuecommand("UpdateScore") end,
             UpdateScoreCommand=function(s)
                 -- time to check who's winning
-                if LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) < LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) then
-                    s:diffusealpha(0)
-                else
-                    s:diffusealpha(1)
-                end
+				s:visible( LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player) > LoadModule("Gameplay.RealTimeWinnerCalculation.lua")(player == PLAYER_1 and 1 or 0) )
             end
         }
     end
