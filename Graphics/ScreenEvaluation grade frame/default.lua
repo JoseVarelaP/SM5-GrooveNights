@@ -203,24 +203,15 @@ t[#t+1] = Def.ActorFrame{
 
 	},
 
-		Def.GraphDisplay{
-			InitCommand=function(self)
-				self:y(134-40)
-			end,
-			BeginCommand=function(self)
-				self:Load("GraphDisplayP"..pnum(player))
-				local playerStageStats = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
-				local stageStats = STATSMAN:GetCurStageStats()
-				self:Set(stageStats, playerStageStats)
-			end,
-			OffCommand=function(s)
-				s:accelerate(0.1):zoomy(0)
-			end
-		},
+	LoadActor( THEME:GetPathO("","GraphDisplay"), { Pn = player, Width = 271, Height = 40  } )..{
+		OnCommand=function(self)
+			self:y(134-20)
+		end
+	},
 
 		Def.ComboGraph{
 			InitCommand=function(self)
-				self:y( 134-14 )
+				self:y( 134-10 )
 			end,
 			BeginCommand=function(self)
 				self:Load("ComboGraphP"..pnum(player))
