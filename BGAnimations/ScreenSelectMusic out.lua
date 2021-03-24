@@ -14,7 +14,7 @@ t[#t+1] = Def.ActorFrame{
 
 		self:zoom( LoadModule("Lua.Resize.lua")( textwidth, self:GetChild("MainText"):GetZoomedHeight(), SCREEN_WIDTH*0.6, SCREEN_HEIGHT*0.6 ) )
 
-		self:GetChild("Cover"):zoomto( textwidth+8, self:GetChild("MainText"):GetZoomedHeight()+8 )
+		self:GetChild("Cover"):zoomto( textwidth+8, self:GetChild("MainText"):GetZoomedHeight()+10 )
 		--self:GetChild("Button"):x( -textwidth*.09 )
 	end,
 	ShowEnteringOptionsCommand=function(self)
@@ -43,10 +43,13 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=function(self) self:y( 6 ):diffuse(Color.Black) end,
 		ShowPressStartForOptionsCommand=function(self)
 			self:diffusealpha(1):faderight(.3):fadeleft(.3):cropright(-0.3):cropleft(-0.3):linear(0.3):cropleft(1.3)
-		end;
+			-- Ending fade is here because the HideMessageCommand happens too late.
+			:sleep(1.5):cropright(1.3):cropleft(-0.3):linear(0.3):cropright(-0.3)
+		end,
 		ShowEnteringOptionsCommand=function(self)
-			self:hurrytweening(0.5)
-		end;
+			-- When the player needs to go to the menu, force the crop to the end state.
+			self:stoptweening():cropleft(1.3)
+		end
 	}
 }
 
