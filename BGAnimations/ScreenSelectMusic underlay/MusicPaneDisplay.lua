@@ -233,7 +233,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 
     t[#t+1] = Def.BitmapText{
         Font="novamono/36/_novamono 36px",
-        Text="Step Artist",
+        Text=THEME:GetString("PaneDisplay","StepArtist"),
 		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-28):maxwidth(120):zoom(0.53):diffuse( color("#FFA314") ) end;
 	};
     
