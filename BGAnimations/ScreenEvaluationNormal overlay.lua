@@ -1,10 +1,12 @@
 -- Time to insert a mapper.
 -- This is used to track the player's inputs so we can use a lua screen.
+
+-- TODO: Move this into the grade frame itself.
 local pageIndex = { ["PlayerNumber_P1"] = 1, ["PlayerNumber_P2"] = 1 }
 local function ChangeOffset(player, index)
 	pageIndex[player] = pageIndex[player] + index
 	local changed = true
-	if pageIndex[player] > 2 then pageIndex[player] = 2 changed = false end
+	if pageIndex[player] > 3 then pageIndex[player] = 3 changed = false end
 	if pageIndex[player] < 1 then pageIndex[player] = 1 changed = false end
 	if changed then
 		-- SOUND:PlayOnce()

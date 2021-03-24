@@ -242,7 +242,7 @@ t[#t+1] = Def.ActorFrame{
 			end,
 			EvaluationInputChangedMessageCommand=function(s,param)
 				if param.Player == player then
-					s:finishtweening():diffusealpha(0.4):settext( string.format( THEME:GetString("ScreenEvaluation","Page"), param.Index, "2" ) ):sleep(0.3):linear(0.2):diffusealpha(0)
+					s:finishtweening():diffusealpha(0.4):settext( string.format( THEME:GetString("ScreenEvaluation","Page"), param.Index, "3" ) ):sleep(0.3):linear(0.2):diffusealpha(0)
 				end
 			end,
 		},
@@ -542,7 +542,7 @@ local ArB = Def.ActorFrame{
 	end,
 	EvaluationInputChangedMessageCommand=function(s,param)
 		if param.Player == player then
-			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 0 or 1 )
+			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 2 and 1 or 0)
 		end
 	end,
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Arrow Breakdown"), OnCommand=function(s) s:zoom(0.5):y(-8+96) end },
@@ -624,5 +624,23 @@ if highscores then
 end
 
 t[#t+1] = ArB
+
+local QRInfo = Def.ActorFrame{
+	OnCommand=function(s)
+		s:xy( 0, -116 ):diffusealpha(0)
+	end,
+	EvaluationInputChangedMessageCommand=function(s,param)
+		if param.Player == player then
+			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 3 and 1 or 0 )
+		end
+	end,
+	LoadModule("qrencode.lua"):GenerateGrooveStatsURL( player, 100 )..{
+		InitCommand=function(self)
+			self:x(20)
+		end
+	}
+}
+
+t[#t+1] = QRInfo
 
 return t;
