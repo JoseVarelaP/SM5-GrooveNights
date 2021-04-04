@@ -93,6 +93,7 @@ for i,v in ipairs(Choices) do
 			InitCommand= function(self)
 				self.originalwidth = self:GetZoomedWidth()
 				self.maximum = LoadModule("Lua.Resize.lua")( self:GetZoomedWidth(), self:GetZoomedHeight(), 180, 80 )
+				self:zoom(0.75):diffuse( color("#777777") )
 				--self:diffuse( ColorTable["menuTextGainFocus"] ):playcommand("LoseFocus")
 			end,
 			LoseFocusCommand= function(self) self:tween(0.2,"easeoutcircle"):zoom(0.75):diffuse( color("#777777") ) end,
@@ -105,13 +106,14 @@ return Def.ActorFrame{
 	OnCommand=function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(LoadModule("Lua.InputSystem.lua")(self))
 		self:visible(false):Center()
+		ChangeSel(self,0)
 	end,
 	NonGameBackCommand=function(self)
 		if not Paused then 
 			SCREENMAN:GetTopScreen():PauseGame(true) 
 			ChangeSel(self,0)
 			self:visible(true)
-			self:GetChild("Dim"):playcommand("ShowOrHide",{state="show"})
+			self:GetChild("Dim"):playcommand("ShowOrHide",{state=true})
 		end
 		Paused = true
 	end,
@@ -119,7 +121,7 @@ return Def.ActorFrame{
 		if Paused then 
 			Choices[CurSel].Action( SCREENMAN:GetTopScreen() )
 			self:visible(false)
-			self:GetChild("Dim"):playcommand("ShowOrHide",{state="hide"})
+			self:GetChild("Dim"):playcommand("ShowOrHide",{state=false})
 		end
 		Paused = false
 	end,
@@ -133,7 +135,7 @@ return Def.ActorFrame{
 			self:stretchto(SCREEN_WIDTH*-1,SCREEN_HEIGHT*-1,SCREEN_WIDTH,SCREEN_HEIGHT):diffuse( Color.Black ):diffusealpha(0)
 		end,
 		ShowOrHideCommand=function(self,param)
-			self:stoptweening():linear(0.2):diffusealpha( param.state == "show" and 0.5 or 0 )
+			self:stoptweening():linear(0.2):diffusealpha( param.state and 0.5 or 0 )
 		end
 	},
 	Selections
