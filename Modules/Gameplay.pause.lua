@@ -76,16 +76,13 @@ local function ChangeSel(self,offset)
 	end
 end
 
-local menu_item_height = 48
-local menu_spacing= menu_item_height + 12
-local menu_bg_width= SCREEN_WIDTH * .2
-local menu_text_width= SCREEN_WIDTH * .35
-local middlepoint = menu_item_height * #Choices
+local menuItemHeight = 48
+local middlepoint = menuItemHeight * #Choices
 for i,v in ipairs(Choices) do
 	Selections[#Selections+1] = Def.ActorFrame {
 		Name=i,
 		InitCommand=function(self)
-			self:y( (- (middlepoint*.6) ) +((menu_item_height - 6)*i)):zoom(.75)
+			self:y( (- (middlepoint*.6) ) +((menuItemHeight - 6)*i)):zoom(.75)
 		end,
 		Def.BitmapText{
 			Font="journey/40/_journey 40px",
