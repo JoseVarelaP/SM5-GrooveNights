@@ -151,6 +151,12 @@ return {
 		Choices = { OptionNameString('Off'), OptionNameString('On') },
 		Values = { false, true }
 	},
+	UsePauseMenu = 
+	{
+		Default = false,
+		Choices = { OptionNameString('Off'), OptionNameString('On') },
+		Values = { false, true }
+	},
 	ScoringFormat = 
 	{
 		Default = 0,

@@ -32,7 +32,7 @@ end
 function GNSettings_Choices()
     local settings = {
 		["Judgment"] = "DefaultJudgmentSize,DefaultJudgmentOpacity,ToggleJudgmentBounce,TournamentCrownEnabled,DefaultComboSize,ToggleComboSizeIncrease,ToggleComboBounce,ToggleComboExplosion",
-		["Menu"] = "ToggleEXPCounter,ToggleTotalPlayTime,ToggleSystemClock,OPERATORGlobalOffset",
+		["Menu"] = "ToggleEXPCounter,ToggleTotalPlayTime,ToggleSystemClock,OPERATORGlobalOffset,UsePauseMenu",
 	}
     if settings[GAMESTATE:Env()["GNSetting"]] then
         return settings[GAMESTATE:Env()["GNSetting"]]
