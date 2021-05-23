@@ -7,7 +7,7 @@ t[#t+1] = Def.BitmapText{
         s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-178 )
         :zoom(0.75):maxwidth(450)
         if GAMESTATE:GetCurrentSong() then
-            s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
+            s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle(), GAMESTATE:GetCurrentSong():GetTranslitMainTitle() )
         end
     end
 }

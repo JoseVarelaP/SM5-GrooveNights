@@ -21,7 +21,7 @@ local ProgressBar = Def.ActorFrame{
         CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
 		UpdateCommand=function(s)
 			local song = GAMESTATE:GetCurrentSong()
-			s:settext( song and ( GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDisplayFullTitle().." - "..song:GetDisplayFullTitle() or song:GetDisplayFullTitle()) or "" )
+			s:settext( song and ( GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDisplayFullTitle().." - "..song:GetDisplayFullTitle() or song:GetDisplayFullTitle()) or "", song:GetTranslitFullTitle() )
 		end
     }
 }

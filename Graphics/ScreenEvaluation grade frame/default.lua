@@ -203,7 +203,7 @@ t[#t+1] = Def.ActorFrame{
 
 	},
 
-	LoadActor( THEME:GetPathO("","GraphDisplay"), { Pn = player, Width = 271, Height = 40  } )..{
+	LoadActor( THEME:GetPathO("","GraphDisplay"), { Pn = player, Width = 272, Height = 38  } )..{
 		OnCommand=function(self)
 			self:y(134-20)
 		end
