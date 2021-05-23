@@ -2,7 +2,7 @@ local t = Def.ActorFrame{}
 
 t[#t+1] = Def.ActorFrame{
 	InitCommand=function(self)
-		self:zoom(0.7):xy(SCREEN_CENTER_X-208, 60)
+		self:zoom(0.7):xy(SCREEN_CENTER_X-212, 60)
 		:sleep(1):easeincubic(0.5):y(30):diffusealpha(0)
 	end,
 	SortOrderChangedMessageCommand=function(self)
@@ -33,14 +33,14 @@ t[#t+1] = Def.ActorFrame{
 	Def.BitmapText{
 		Font="Common Normal",
 		Text=THEME:GetString("ScreenSelectMusic","CurrentSort"),
-		InitCommand=function(self) self:xy(-4,0):zoom(0.8) end
+		InitCommand=function(self) self:y(0):zoom(0.8) end
 	},
 
 	Def.BitmapText{
 		Font="Common Normal",
 		Name="SortText",
 		Text="All Music (Group)",
-		InitCommand=function(self) self:xy(-4,18) end
+		InitCommand=function(self) self:y(18) end
 	}
 }
 
