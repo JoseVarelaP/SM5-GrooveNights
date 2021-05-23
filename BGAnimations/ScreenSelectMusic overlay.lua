@@ -1,10 +1,55 @@
 local t = Def.ActorFrame{}
 
+t[#t+1] = Def.ActorFrame{
+	InitCommand=function(self)
+		self:zoom(0.7):xy(SCREEN_CENTER_X-208, 60)
+		:sleep(1):easeincubic(0.5):y(30):diffusealpha(0)
+	end,
+	SortOrderChangedMessageCommand=function(self)
+		self:playcommand("Set")
+	end,
+	SetCommand=function(self)
+		local sortorder = GAMESTATE:GetSortOrder()
+		if sortorder and sortorder ~= "SortOrder_ModeMenu" then
+			self:GetChild("SortText"):settext( SortOrderToLocalizedString(sortorder) )
+			self:stoptweening():easeoutcubic(0.5):y(60):diffusealpha(1)
+			:sleep(1):easeincubic(0.5):y(30):diffusealpha(0)
+		end
+	end,
+	SelectMenuOpenedMessageCommand=function(self)
+		self:stoptweening():easeoutcubic(0.5):y(60):diffusealpha(1)
+	end,
+	SelectMenuClosedMessageCommand=function(self)
+		self:stoptweening():easeoutcubic(0.5):y(30):diffusealpha(0)
+	end,
+
+	Def.Sprite{ Texture="ScreenSelectMusic underlay/PaneDisplay under.png",
+		InitCommand=function(self) self:rotationz(180):cropbottom(0.4):diffuse( color("#060A0E") ) end
+	},
+	Def.Sprite{ Texture="ScreenSelectMusic underlay/PaneDisplay F",
+		InitCommand=function(self) self:rotationz(180):cropbottom(0.4):diffuse( color("#4F5F6F") ) end
+	},
+
+	Def.BitmapText{
+		Font="Common Normal",
+		Text=THEME:GetString("ScreenSelectMusic","CurrentSort"),
+		InitCommand=function(self) self:xy(-4,0):zoom(0.8) end
+	},
+
+	Def.BitmapText{
+		Font="Common Normal",
+		Name="SortText",
+		Text="All Music (Group)",
+		InitCommand=function(self) self:xy(-4,18) end
+	}
+}
+
 t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
 
 t[#t+1] = loadfile( THEME:GetPathG('ScreenSelectMusic','StepsDisplayList') )()..{
     OnCommand=function(s) s:xy( SCREEN_CENTER_X+136, SCREEN_CENTER_Y+14 ) end
 }
+
 
 t[#t+1] = Def.HelpDisplay {
 	File="novamono/36/_novamono 36px",
