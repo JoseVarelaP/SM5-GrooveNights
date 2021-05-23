@@ -53,7 +53,7 @@ local BI = Def.ActorFrame{
 		local total = ach[5]["Grade_Tier0"..i]
 		BI[#BI+1] = Def.ActorFrame{
 			OnCommand=function(s)
-				s:xy( -106+(34*(i-1)), -53 )
+				s:xy( -106+(34*(i-1)), -30 )
 			end,
 			LVBarOnCommand=function(s) s:stoptweening():easeoutcubic(0.35):y(-53) end,
 			LVBarOffCommand=function(s) s:stoptweening():easeincubic(0.2):y(-30) end,
