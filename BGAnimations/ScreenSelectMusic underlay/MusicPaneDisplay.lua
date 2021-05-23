@@ -44,8 +44,8 @@ local BI = Def.ActorFrame{
 				s:xy( -130 + (24 * (_-1)), -53 ):zoom(0.8)
 				s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
 			end,
-			LVBarOnCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
-			LVBarOffCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
+			LVBarOnCommand=function(s) s:stoptweening():easeincubic(0.2):zoom(0) end,
+			LVBarOffCommand=function(s) s:stoptweening():easeoutcubic(0.35):zoom(0.8) end,
 		}
 	end
 
@@ -53,10 +53,10 @@ local BI = Def.ActorFrame{
 		local total = ach[5]["Grade_Tier0"..i]
 		BI[#BI+1] = Def.ActorFrame{
 			OnCommand=function(s)
-				s:xy( -106+(34*(i-1)), -53 ):rotationx(90)
+				s:xy( -106+(34*(i-1)), -53 )
 			end,
-			LVBarOnCommand=function(s) s:stoptweening():decelerate(0.2):rotationx(0) end,
-			LVBarOffCommand=function(s) s:stoptweening():bounceend(0.2):rotationx(90) end,
+			LVBarOnCommand=function(s) s:stoptweening():easeoutcubic(0.35):y(-53) end,
+			LVBarOffCommand=function(s) s:stoptweening():easeincubic(0.2):y(-30) end,
 			Def.Sprite{
 				Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),
 				OnCommand=function(s) s:x( -26 ):zoom(0.6) end,
