@@ -66,8 +66,8 @@ t[#t+1] = Def.Sprite{
 		s:xy(72*.35, 0):zoom(0.45):cropbottom(0.2):croptop(0.2)
 		chcontroller:y(20)
 	end,
-	ToEndCommand=function(s) chcontroller:stoptweening():decelerate(0.2):y(-30) end,
-	ToMoreCommand=function(s) chcontroller:stoptweening():decelerate(0.2):y(20) end,
+	ToEndCommand=function(s) chcontroller:stoptweening():easeoutsine(0.2):y(-30) end,
+	ToMoreCommand=function(s) chcontroller:stoptweening():easeinsine(0.2):y(20) end,
 	AllReadyMessageCommand=function(self)
 		-- If we're dealing with players, there could be the possibility of the translated More/Done text
 		-- to be longer than it's current x ending position, so fix that.

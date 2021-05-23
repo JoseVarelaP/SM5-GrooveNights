@@ -6,7 +6,7 @@ local height = Args.Height
 -- Every player has data contained within the PlayerStageStats. Locate it.
 local Stats = STATSMAN:GetCurStageStats():GetPlayerStageStats(Player)
 if not Stats then
-    return Def.Actor{}
+	return Def.Actor{}
 end
 
 -- Now that we have stats, we need to lookup how life was throughout the stage.
@@ -16,9 +16,9 @@ local LastSecond = LoadModule( "StageStats.TotalPossibleStepSeconds.lua" )()
 local LifeRecord = Stats:GetLifeRecord( LastSecond, SampleAmmount )
 
 local t = Def.ActorFrame{
-    OnCommand=function(self)
-        self:y( height + 2 )
-        local p = {}
+	OnCommand=function(self)
+		self:y( height + 2 )
+		local p = {}
 
 		for k,v in pairs( LifeRecord ) do
 			local x = scale( k, 1, SampleAmmount, -width*.5, width*.5 )
@@ -34,7 +34,7 @@ local t = Def.ActorFrame{
 				{ {width*.5,-height*.1,0}, Color.Black },
 			}
 		)
-    end
+	end
 }
 
 -- Body
@@ -52,42 +52,40 @@ local fMinLifeSoFar = 1
 local MinLifeSoFarAt = 0
 
 for k,v in pairs( LifeRecord ) do
-    if v <  fMinLifeSoFar then
-        fMinLifeSoFar = v
-        MinLifeSoFarAt = k
-    end
+	if v <  fMinLifeSoFar then
+		fMinLifeSoFar = v
+		MinLifeSoFarAt = k
+	end
 end
 
 local needsBarely = false
 
 -- the Barely text is triggered when the lowest life ever achieved in the file is within 0 and 0.1.
 if ( fMinLifeSoFar > 0 and fMinLifeSoFar < 0.1 ) then
-    needsBarely = true
+	needsBarely = true
 end
 
 t[#t+1] = Def.ActorFrame{
-    Name="Barely",
-    Condition=needsBarely,
-    InitCommand=function(self)
-        self:xy(
-            scale( MinLifeSoFarAt, 1, SampleAmmount, -width*.5, width*.5 ),
-            scale( fMinLifeSoFar, 0, 1, 0, -height ) - 32
-        )
-    end,
+	Name="Barely",
+	Condition=needsBarely,
+	InitCommand=function(self)
+		self:xy(
+			scale( MinLifeSoFarAt, 1, SampleAmmount, -width*.5, width*.5 ),
+			scale( fMinLifeSoFar, 0, 1, 0, -height ) - 32
+		)
+	end,
 	OnCommand=function(self)
-        local endpos = self:GetY()
-		self:addy(-20):diffusealpha(0):sleep(2):accelerate(0.2):diffusealpha(1):y( endpos + 15 )
-		    :decelerate(0.2):y( endpos )
-		    :accelerate(0.2):y( endpos + 15 )
+		local endpos = self:GetY()
+		self:addy(-20):diffusealpha(0):easeoutbounce(1):diffusealpha(1):y( endpos + 15 )
 	end,
 
 	Def.BitmapText{
-        Font="Common Normal",
+		Font="Common Normal",
 		Text=THEME:GetString("GraphDisplay", "Barely"),
 		InitCommand=function(self) self:zoom(0.25):x(1) end,
 	},
 	Def.Sprite{
-        Texture=THEME:GetPathG("GraphDisplay", "Barely Arrow"),
+		Texture=THEME:GetPathG("GraphDisplay", "Barely Arrow"),
 		InitCommand=function(self) self:zoom(0.75):y(10) end,
 		OnCommand=function(self) self:sleep(0.5):diffuseshift():effectcolor1(1,1,1,1):effectcolor2(1,1,1,0.2) end
 	}

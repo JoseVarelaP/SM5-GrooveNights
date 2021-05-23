@@ -190,11 +190,11 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 				:zoom(0)
 			end,
 			["ExitSelected".. ToEnumShortString(pn) .."MessageCommand"]=function(self,param)
-				self:stoptweening():tween(0.2,"decelerate"):zoom(1):diffusealpha(1)
+				self:stoptweening():easeoutelastic(0.5):zoom(1):diffusealpha(1)
 				self:GetParent():GetChild("PlayerReady"):play()
 			end,
 			["ExitUnselected".. ToEnumShortString(pn) .."MessageCommand"]=function(self,param)
-				self:stoptweening():tween(0.2,"accelerate"):zoom(0.3):diffusealpha(0)
+				self:stoptweening():easeincircle(0.2):zoom(0.3):diffusealpha(0)
 				self:GetParent():GetChild("PlayerNotReady"):play()
 			end,
 			AllReadyMessageCommand=function(self)
