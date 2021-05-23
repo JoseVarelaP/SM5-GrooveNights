@@ -105,6 +105,9 @@ local t = Def.ActorFrame{
 			GAMESTATE:SetCurrentStyle( "single" )
 			SCREENMAN:GetTopScreen():StartTransitioningScreen( "SM_GoToNextScreen" )
 		end
+	end,
+	BackCommand=function(self)
+		SCREENMAN:GetTopScreen():StartTransitioningScreen( "SM_GoToPrevScreen" )
 	end
 }
 

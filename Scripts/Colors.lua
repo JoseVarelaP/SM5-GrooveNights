@@ -17,6 +17,10 @@ Branch.AfterTitleMenu = function()
 	return "ScreenSelectProfile"
 end
 
+Branch.AfterSelectProfile = function()
+	return "ScreenSelectStyle2"
+end
+
 function OptionNameString(str)
 	return THEME:GetString('OptionNames',str)
 end
