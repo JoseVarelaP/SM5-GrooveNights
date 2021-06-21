@@ -21,4 +21,4 @@ t[#t+1] = Def.BitmapText{
     end,
 }
 
-return t;
+return t

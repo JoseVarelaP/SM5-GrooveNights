@@ -20,7 +20,7 @@ return Def.Actor{
 			self:playcommand("UpdateString", {Speed=text} )
 		end
 	end,
-	UpdateStringCommand=function(s)
+	UpdateStringCommand=function(self)
 		if speed[1] < Speedmargin then
 			speed[1] = Speedmargin
 		end
@@ -35,7 +35,7 @@ return Def.Actor{
 			MESSAGEMAN:Broadcast("SpeedChoiceChanged",{pn=pn,mode=speed[2],speed=speed[1]})
 		end
 	end,
-	OnCommand=function(s)
+	OnCommand=function(self)
 		local playeroptions = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred")
 		if playeroptions:XMod() then speed[1] = math.floor(playeroptions:XMod()*100) speed[2] = "x" end
 		if playeroptions:CMod() then speed[1] = math.floor(playeroptions:CMod()) speed[2] = "c" end
@@ -59,26 +59,26 @@ return Def.Actor{
 				text = string.upper(speed[2]) .. speed[1]
 			end
 			MESSAGEMAN:Broadcast("SpeedChoiceChanged",{pn=pn,mode=speed[2],speed=speed[1]})
-			s:queuecommand("UpdateString")
+			self:queuecommand("UpdateString")
 		end
 	end,
-	["MenuLeft"..ToEnumShortString(pn).."MessageCommand"]=function(s)
+	["MenuLeft"..ToEnumShortString(pn).."MessageCommand"]=function(self)
 		local row_index = SCREENMAN:GetTopScreen():GetCurrentRowIndex(pn)
 		if row_index == ORNum then
 			SOUND:PlayOnce( THEME:GetPathS("_change","value") )
 			speed[1] = speed[1] - Speedmargin
-			s:playcommand("UpdateString")
+			self:playcommand("UpdateString")
 		end
 	end,
-	["MenuRight"..ToEnumShortString(pn).."MessageCommand"]=function(s)
+	["MenuRight"..ToEnumShortString(pn).."MessageCommand"]=function(self)
 		local row_index = SCREENMAN:GetTopScreen():GetCurrentRowIndex(pn)
 		if row_index == ORNum then
 			SOUND:PlayOnce( THEME:GetPathS("_change","value") )
 			speed[1] = speed[1] + Speedmargin
-			s:playcommand("UpdateString")
+			self:playcommand("UpdateString")
 		end
 	end,
-	OffCommand=function(s)
+	OffCommand=function(self)
 		local playeroptions = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred")
 		playeroptions:XMod(1.00)
 

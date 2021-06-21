@@ -67,8 +67,8 @@ return Def.ActorFrame{
 		Name="Number",
 		--Condition=(not GAMESTATE:IsEventMode() and not currentdata.ColorOffset),
 		Text=curindex,
-		OnCommand=function(s)
-			s:y( -3 ):strokecolor(Color.Black)
+		OnCommand=function(self)
+			self:y( -3 ):strokecolor(Color.Black)
 		end
 	}
 }

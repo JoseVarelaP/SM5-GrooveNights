@@ -190,16 +190,16 @@ t[#t+1] = Def.BitmapText{
 
 t[#t+1] = Def.HelpDisplay {
 	File="novamono/36/_novamono 36px",
-	OnCommand=function(s)
-        s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+198):zoom(0.75):diffuseblink()
+	OnCommand=function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+198):zoom(0.75):diffuseblink()
 	end,
-    InitCommand=function(s)
-		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
+	InitCommand=function(self)
+		self:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
 		:SetTipsColonSeparated( LoadModule("Text.GenerateHelpText.lua")( {"HelpTextNormal"} ) )
 	end,
-	SetHelpTextCommand=function(s, params) s:SetTipsColonSeparated( params.Text ) end,
-	SelectMenuOpenedMessageCommand=function(s) s:stoptweening():decelerate(0.2):zoomy(0) end,
-	SelectMenuClosedMessageCommand=function(s) s:stoptweening():bouncebegin(0.2):zoomy(0.75) end
+	SetHelpTextCommand=function(self, params) self:SetTipsColonSeparated( params.Text ) end,
+	SelectMenuOpenedMessageCommand=function(self) self:stoptweening():decelerate(0.2):zoomy(0) end,
+	SelectMenuClosedMessageCommand=function(self) self:stoptweening():bouncebegin(0.2):zoomy(0.75) end
 }
 
 return t

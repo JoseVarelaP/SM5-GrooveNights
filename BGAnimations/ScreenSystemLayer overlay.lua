@@ -3,33 +3,33 @@ local function CreditsText( pn )
 	t[#t+1] = LoadFont(Var "LoadingScreen","credits") .. {
 		InitCommand=function(self)
 			self:name("Credits" .. PlayerNumberToString(pn))
-			ActorUtil.LoadAllCommandsAndSetXY(self,Var "LoadingScreen");
-		end;
+			ActorUtil.LoadAllCommandsAndSetXY(self,Var "LoadingScreen")
+		end,
 		UpdateTextCommand=function(self)
-			local str = ScreenSystemLayerHelpers.GetCreditsMessage(pn);
-			self:settext(str);
-		end;
+			local str = ScreenSystemLayerHelpers.GetCreditsMessage(pn)
+			self:settext(str)
+		end,
 		UpdateVisibleCommand=function(self)
-			local screen = SCREENMAN:GetTopScreen();
-			local bShow = true;
+			local screen = SCREENMAN:GetTopScreen()
+			local bShow = true
 			if screen then
-				local sClass = screen:GetName();
-				bShow = THEME:GetMetric( sClass, "ShowCreditDisplay" );
+				local sClass = screen:GetName()
+				bShow = THEME:GetMetric( sClass, "ShowCreditDisplay" )
 			end
-			self:visible( bShow );
+			self:visible( bShow )
 		end
-	};
-	return t;
-end;
+	}
+	return t
+end
 
 local t = Def.ActorFrame {}
 	-- Aux
-t[#t+1] = LoadActor(THEME:GetPathB("ScreenSystemLayer","aux"));
+t[#t+1] = LoadActor(THEME:GetPathB("ScreenSystemLayer","aux"))
 	-- Credits
 t[#t+1] = Def.ActorFrame {
- 	CreditsText( PLAYER_1 );
-	CreditsText( PLAYER_2 ); 
-};
+ 	CreditsText( PLAYER_1 )
+	CreditsText( PLAYER_2 ) 
+}
 
 -- Text
 t[#t+1] = Def.ActorFrame {
@@ -44,8 +44,8 @@ t[#t+1] = Def.ActorFrame {
 	},
 	Def.Sound{ Name="Notification", File=THEME:GetPathS( 'gnSystemMessage', 'sound' ) },
 	Def.BitmapText{
-		Font="Common Normal";
-		Name="Text";
+		Font="Common Normal",
+		Name="Text",
 		InitCommand=function(s)
 			s:maxwidth(750):align(0,0):xy(SCREEN_LEFT+10,SCREEN_TOP+14):shadowlength(1):diffusealpha(0)
 		end,
@@ -60,8 +60,8 @@ t[#t+1] = Def.ActorFrame {
 			self:finishtweening();
 		end
 		self:playcommand( "Off" );
-	end;
-	HideSystemMessageMessageCommand = cmd(finishtweening);
-};
+	end
+	HideSystemMessageMessageCommand = function(self) self:finishtweening() end
+}
 
-return t;
+return t

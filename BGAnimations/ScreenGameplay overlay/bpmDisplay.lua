@@ -35,20 +35,17 @@ local t = Def.ActorFrame{
 		self:xy(_screen.cx, SCREEN_BOTTOM-50):valign(1)
 	end,
 	OnCommand=function(self)
-		self:diffusealpha(0):sleep(0.25):decelerate(0.9):diffusealpha(1);
-		end;
+		self:diffusealpha(0):sleep(0.25):decelerate(0.9):diffusealpha(1)
+	end,
 	OffCommand=function(self)
 		self:decelerate(0.9):diffusealpha(0);
-		end;
+	end,
 
 	Def.BitmapText {
 		Font="_plex sans medium 24px";
 		Name="RatemodDisplay",
 		Text=MusicRate ~= 1 and MusicRate.."x rate" or "",
 		InitCommand=function(self) self:zoom(0.6):y(30) end;
-		OnCommand=function(self)
-			self:diffuse(color("#FFFFFF"));
-		end;
 	}
 }
 
@@ -62,8 +59,8 @@ if numPlayers == 1 or GAMESTATE:IsCourseMode() then
 			Name="BPMDisplay",
 			InitCommand=function(self) self:zoom(1) end;
 			OnCommand=function(self)
-				self:diffuse(color("#FFFFFF")):diffusetopedge(color("#DCE7FB")):strokecolor(color("#101E4B")):shadowlength(1)
-			end;
+				self:diffusetopedge(color("#DCE7FB")):strokecolor(color("#101E4B")):shadowlength(1)
+			end
 		}
 	}
 else
@@ -90,7 +87,7 @@ else
 				Font="novamono/36/_novamono 36px";
 				Name="BPMDisplay",
 				OnCommand=function(self)
-					self:diffuse(color("#FFFFFF")):diffusetopedge(color("#DCE7FB")):strokecolor(color("#101E4B")):shadowlength(1)
+					self:diffusetopedge(color("#DCE7FB")):strokecolor(color("#101E4B")):shadowlength(1)
 				end;
 			}
 		}
@@ -129,7 +126,7 @@ else
 			InitCommand=function(self) self:x(-60):zoom(1):shadowlength(1) end;
 			OnCommand=function(self)
 				self:diffuse(PlayerColor(PLAYER_1)):diffusebottomedge(PlayerCompColor(PLAYER_1)):strokecolor(ColorDarkTone((PlayerColor(PLAYER_1))))
-			end;			
+			end
 		},
 		Def.BitmapText {
 			Font="novamono/36/_novamono 36px",
@@ -137,7 +134,7 @@ else
 			InitCommand=function(self) self:x(60):zoom(1):shadowlength(1) end;
 			OnCommand=function(self)
 				self:diffuse(PlayerColor(PLAYER_2)):diffusebottomedge(PlayerCompColor(PLAYER_2)):strokecolor(ColorDarkTone((PlayerColor(PLAYER_2))))
-			end;
+			end
 		}
 	}
 end

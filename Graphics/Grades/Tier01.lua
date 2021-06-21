@@ -10,7 +10,7 @@ local Data = ...
 local t = Def.ActorFrame{
 	OnCommand=function(s)
 		s:zoom(0.2):xy(-1,-1):wag():effectmagnitude(0,0,2)
-	end,
+	end
 }
 
 for _,v in pairs(starpos) do
@@ -31,7 +31,7 @@ for _,v in pairs(starpos) do
 			end,
 			GradeSoundCommand=function(s)
 				SOUND:PlayOnce( THEME:GetPathS("gnGradeUp",_) )
-			end,
+			end
 		}
 	}
 end
@@ -68,7 +68,7 @@ t[#t+1] = Def.ActorFrame{
 					:decelerate(0.6):zoom(1.5):diffusealpha(1):accelerate(0.4):zoom(1)
 					:decelerate(0.1):zoom(0.9):diffusealpha(0.8):accelerate(0.1):zoom(1):diffusealpha(1)
 				end,
-				OnCommand=function(s) s:sleep(0.2) end,
+				OnCommand=function(s) s:sleep(0.2) end
 			}
 		},
 
@@ -96,7 +96,7 @@ t[#t+1] = Def.ActorFrame{
 					:decelerate(0.6):zoom(1.5):diffusealpha(1):accelerate(0.4):zoom(1)
 					:decelerate(0.1):zoom(0.9):diffusealpha(0.8):accelerate(0.1):zoom(1):diffusealpha(1)
 				end,
-				OnCommand=function(s) s:sleep(0.2) end,
+				OnCommand=function(s) s:sleep(0.2) end
 			}
 		},
 
@@ -124,7 +124,7 @@ t[#t+1] = Def.ActorFrame{
 					:decelerate(0.6):zoom(1.5):diffusealpha(1):accelerate(0.4):zoom(1)
 					:decelerate(0.1):zoom(0.9):diffusealpha(0.8):accelerate(0.1):zoom(1):diffusealpha(1)
 				end,
-				OnCommand=function(s) s:sleep(0.2) end,
+				OnCommand=function(s) s:sleep(0.2) end
 			}
 		},
 
@@ -152,10 +152,9 @@ t[#t+1] = Def.ActorFrame{
 					:decelerate(0.6):zoom(1.5):diffusealpha(1):accelerate(0.4):zoom(1)
 					:decelerate(0.1):zoom(0.9):diffusealpha(0.8):accelerate(0.1):zoom(1):diffusealpha(1)
 				end,
-				OnCommand=function(s) s:sleep(0.2) end,
+				OnCommand=function(s) s:sleep(0.2) end
 			}
-		},
-
+		}
 	}
 }
 

@@ -1,14 +1,14 @@
 local t = Def.ActorFrame{
 	OnCommand=function(s)
 		if GAMESTATE:Env()["Vibrate"] then
-            if SCREENMAN:GetTopScreen() then
-                for v in pairs( SCREENMAN:GetTopScreen():GetChildren() ) do
-                    if SCREENMAN:GetTopScreen():GetChild(v) then
-                        SCREENMAN:GetTopScreen():GetChild(v):vibrate():effectmagnitude(2,2,2)
-                    end
-                end
-            end
-        end
+			if SCREENMAN:GetTopScreen() then
+				for v in pairs( SCREENMAN:GetTopScreen():GetChildren() ) do
+					if SCREENMAN:GetTopScreen():GetChild(v) then
+						SCREENMAN:GetTopScreen():GetChild(v):vibrate():effectmagnitude(2,2,2)
+					end
+				end
+			end
+		end
 	end
 }
 
@@ -30,15 +30,15 @@ for var in ivalues(pos) do
 end
 t[#t+1] = Def.BitmapText{
 	Font="novamono/36/_novamono 36px",
-	InitCommand=function(s)
+	InitCommand=function(self)
 		local sClass = Var "LoadingScreen"
 		local string = Screen.String("HeaderText")
 		if GAMESTATE:Env()["AngryGrandpa"] and THEME:HasString( sClass, "GrandpaHeader" ) then
 			string = Screen.String("GrandpaHeader")
 		end
-		s:settext( string ):strokecolor(Color.Black)
+		self:settext( string ):strokecolor(Color.Black)
 	end,
-	BeginCommand=function(s) s:halign(0):xy( 20, 33 ):maxwidth( SCREEN_WIDTH*.6 - s:GetParent():GetChild("StageInfo"):GetChild("RoundArea"):GetZoomedWidth() ) end,
+	BeginCommand=function(self) self:halign(0):xy( 20, 33 ):maxwidth( SCREEN_WIDTH*.6 - self:GetParent():GetChild("StageInfo"):GetChild("RoundArea"):GetZoomedWidth() ) end,
 }
 
 -- Some stage graphics contain different coloring offsets depending on the text string.
@@ -62,8 +62,8 @@ local curindex = GAMESTATE:GetCurrentStageIndex()+( Var "LoadingScreen" ~= "Scre
 
 t[#t+1] = Def.ActorFrame{
 	Name="StageInfo",
-	OnCommand=function(s)
-		s:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-205 - ( currentdata.ColorOffset and 2 or 0 ) ):zoom(0.9)
+	OnCommand=function(self)
+		self:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-205 - ( currentdata.ColorOffset and 2 or 0 ) ):zoom(0.9)
 		:visible( SCREENMAN:GetTopScreen():GetScreenType() == "ScreenType_GameMenu" )
 	end,
 
@@ -71,8 +71,8 @@ t[#t+1] = Def.ActorFrame{
 		Font="journey/40/_journey 40px",
 		Name="RoundArea",
 		Text=THEME:GetString("ScreenSelectMusic", currentdata.Text ),
-		OnCommand=function(s)
-			s:zoom( currentdata.ColorOffset and 1 or 0.8):diffuse( currentdata.ColorOffset and Color.Red or Color.White ):strokecolor(Color.Black)
+		OnCommand=function(self)
+			self:zoom( currentdata.ColorOffset and 1 or 0.8):diffuse( currentdata.ColorOffset and Color.Red or Color.White ):strokecolor(Color.Black)
 		end
 	},
 	
@@ -80,8 +80,8 @@ t[#t+1] = Def.ActorFrame{
 		Font="journey/40/_journey 40px",
 		Condition=(not GAMESTATE:IsEventMode() and not currentdata.ColorOffset),
 		Text=curindex,
-		OnCommand=function(s)
-			s:xy( s:GetParent():GetChild("RoundArea"):GetZoomedWidth()*0.6, -4 ):diffuse(Color.Red):strokecolor(Color.Black)
+		OnCommand=function(self)
+			self:xy( s:GetParent():GetChild("RoundArea"):GetZoomedWidth()*0.6, -4 ):diffuse(Color.Red):strokecolor(Color.Black)
 		end
 	}
 }

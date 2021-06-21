@@ -33,7 +33,7 @@ t[#t+1] = Def.ActorFrame{
 	Def.BitmapText{
 		Font="Common Normal",
 		Text=THEME:GetString("ScreenSelectMusic","CurrentSort"),
-		InitCommand=function(self) self:y(0):zoom(0.8) end
+		InitCommand=function(self) self:zoom(0.8) end
 	},
 
 	Def.BitmapText{
@@ -47,31 +47,31 @@ t[#t+1] = Def.ActorFrame{
 t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
 
 t[#t+1] = loadfile( THEME:GetPathG('ScreenSelectMusic','StepsDisplayList') )()..{
-    OnCommand=function(s) s:xy( SCREEN_CENTER_X+136, SCREEN_CENTER_Y+14 ) end
+	OnCommand=function(s) s:xy( SCREEN_CENTER_X+136, SCREEN_CENTER_Y+14 ) end
 }
 
 
 t[#t+1] = Def.HelpDisplay {
 	File="novamono/36/_novamono 36px",
 	OnCommand=function(s)
-        s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+198):zoom(0.75):diffuseblink()
-        
-        local OptionStrings = {
-            ["DefaultJudgmentSize"] = 1,
-            ["DefaultJudgmentOpacity"] = 1,
-            ["DefaultComboSize"] = 1,
-            ["ToggleComboBounce"] = true,
-            ["ToggleJudgmentBounce"] = true,
-            ["ToggleComboExplosion"] = true,
-            ["ScoringFormat"] = 0,
-        }
-        for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
-            for _,v in pairs(OptionStrings) do
-                if not GAMESTATE:Env()[_.."Machinetemp"..pn] then GAMESTATE:Env()[_.."Machinetemp"..pn] = v end
-            end
-        end
+		s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+198):zoom(0.75):diffuseblink()
+		
+		local OptionStrings = {
+			["DefaultJudgmentSize"] = 1,
+			["DefaultJudgmentOpacity"] = 1,
+			["DefaultComboSize"] = 1,
+			["ToggleComboBounce"] = true,
+			["ToggleJudgmentBounce"] = true,
+			["ToggleComboExplosion"] = true,
+			["ScoringFormat"] = 0,
+		}
+		for pn in ivalues( GAMESTATE:GetEnabledPlayers() ) do
+			for _,v in pairs(OptionStrings) do
+				if not GAMESTATE:Env()[_.."Machinetemp"..pn] then GAMESTATE:Env()[_.."Machinetemp"..pn] = v end
+			end
+		end
 	end,
-    InitCommand=function(s)
+	InitCommand=function(s)
 		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
 		:SetTipsColonSeparated( LoadModule("Text.GenerateHelpText.lua")( {"HelpTextNormal","DifficultyChangingAvailableHelpTextAppend","SelectButtonAvailableHelpTextAppend"} ) )
 	end,
@@ -83,19 +83,19 @@ t[#t+1] = Def.HelpDisplay {
 GAMESTATE:Env()["gnNextScreen"] = "ScreenPlayerOptions"
 GAMESTATE:Env()["gnAlreadyAtMenu"] = false
 t[#t+1] = Def.ActorFrame{
-    OnCommand=function(self)
-        self:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-17-12 ):zoom(0.8):zoomy(0)
+	OnCommand=function(self)
+		self:xy( SCREEN_CENTER_X, SCREEN_BOTTOM-29 ):zoom(0.8):zoomy(0)
 
 		local CenterText = self:GetChild("ChangeSort"):GetChild("Dialog"):GetZoomedWidth()
 		self:GetChild("Easier"):x( -(CenterText*.5+50) )
 		self:GetChild("Harder"):x( ((CenterText*.5+20)) )
 		self:GetChild("ChangeSort"):x( -CenterText*.5 )
-    end,
+	end,
 	SelectMenuOpenedMessageCommand=function(self)
-		self:stoptweening():decelerate(0.2):y( SCREEN_BOTTOM-17-24 ):zoomy(0.8):diffusealpha(1)
+		self:stoptweening():decelerate(0.2):y( SCREEN_BOTTOM-41 ):zoomy(0.8):diffusealpha(1)
 	end,
 	SelectMenuClosedMessageCommand=function(self)
-		self:stoptweening():decelerate(0.2):diffusealpha(0):zoomy(0):y( SCREEN_BOTTOM-17-12 )
+		self:stoptweening():decelerate(0.2):diffusealpha(0):zoomy(0):y( SCREEN_BOTTOM-29 )
 	end,
 
 	Def.Sound{
@@ -105,16 +105,16 @@ t[#t+1] = Def.ActorFrame{
 		end,
 	},
 
-    Def.ActorFrame{
+	Def.ActorFrame{
 		Name="Easier",
-        Def.BitmapText{
+		Def.BitmapText{
 			Font="Common Normal",
 			Name="Button",
 			Text="&MENULEFT;",
 			OnCommand=function(self) self:x( -(self:GetParent():GetChild("Dialog"):GetZoomedWidth() + 15) ) end,
-        },
+		},
 
-        Def.BitmapText{
+		Def.BitmapText{
 			Font="Common Normal",
 			Name="Dialog",
 			Text=Screen.String("Easier"),
@@ -122,19 +122,19 @@ t[#t+1] = Def.ActorFrame{
 				self:halign(1):diffuseramp():effectperiod(1):effectoffset(0.20):effectclock("bgm")
 				:effectcolor1(color("#FFFFFF")):effectcolor2(color("#20D020"))
 			end
-        }
-    },
+		}
+	},
 
 	Def.ActorFrame{
 		Name="Harder",
-        Def.BitmapText{
+		Def.BitmapText{
 			Font="Common Normal",
 			Name="Button",
 			Text="&MENURIGHT;",
 			OnCommand=function(self) self:x( (self:GetParent():GetChild("Dialog"):GetZoomedWidth() + 15) ) end,
-        },
+		},
 
-        Def.BitmapText{
+		Def.BitmapText{
 			Font="Common Normal",
 			Name="Dialog",
 			Text=Screen.String("Harder"),
@@ -142,25 +142,25 @@ t[#t+1] = Def.ActorFrame{
 				self:halign(0):diffuseramp():effectperiod(1):effectoffset(0.20):effectclock("bgm")
 				:effectcolor1(color("#FFFFFF")):effectcolor2(color("#E06060"))
 			end
-        }
-    },
+		}
+	},
 
 	Def.ActorFrame{
 		Name="ChangeSort",
-        Def.BitmapText{
+		Def.BitmapText{
 			Font="Common Normal",
 			Name="Button",
 			Text="&START;",
 			InitCommand=function(self) self:x(-7):halign(1) end,
-        },
+		},
 
-        Def.BitmapText{
+		Def.BitmapText{
 			Font="Common Normal",
 			Name="Dialog",
 			Text=Screen.String("ChangeSort"),
 			InitCommand=function(self) self:halign(0) end
-        }
-    }
+		}
+	}
 }
 
 return t;

@@ -1,5 +1,5 @@
 local player = ...
-assert( player );
+assert( player )
 
 local ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
 -- This is to obtain data from the options the player has selected.
@@ -59,48 +59,48 @@ local function TrailOrSteps(pn)
 	return GAMESTATE:GetCurrentSteps(pn)
 end
 
-local t = Def.ActorFrame{};
+local t = Def.ActorFrame{}
 local isvalidplayer = LoadModule("Profile.IsMachine.lua")(player)
 
 local DoublesIsOn = GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_OnePlayerTwoSides" or GAMESTATE:Env()["UsingBOA"]
 t[#t+1] = Def.ActorFrame{
 	Def.Sprite{ Texture="base frame B" }..{
-		OnCommand=function(s)
-			s:diffuse(color("#060A0E"))
-		end;
-	};
+		OnCommand=function(self)
+			self:diffuse(color("#060A0E"))
+		end
+	},
 	Def.Sprite{ Texture="base frame F" }..{
-		OnCommand=function(s)
-			s:diffuse(color("#1C2C3C"))
-		end;
-	};
+		OnCommand=function(self)
+			self:diffuse(color("#1C2C3C"))
+		end
+	},
 
 	Def.Sprite{
 		Texture=THEME:GetPathG("Player","combo/explosion"),
-		OnCommand=function(s) s:xy( DoublesIsOn and -100 or -30*side(player), -200 ):spin():diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):linear(0.3):diffusealpha(0):zoom(1.7) end,
+		OnCommand=function(self) self:xy( DoublesIsOn and -100 or -30*side(player), -200 ):spin():diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):linear(0.3):diffusealpha(0):zoom(1.7) end,
 	},
 
 	Def.Sprite{
 		Texture=THEME:GetPathG("Player","combo/minisplode"),
-		OnCommand=function(s) s:xy( DoublesIsOn and -100 or -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.5):addrotationz(10) end,
+		OnCommand=function(self) self:xy( DoublesIsOn and -100 or -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.5):addrotationz(10) end,
 	},
 
 	Def.Sprite{
 		Texture=THEME:GetPathG("Player","combo/arrowsplode"),
-		OnCommand=function(s) s:xy( DoublesIsOn and -100 or -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.7):addrotationz(10) end,
+		OnCommand=function(self) self:xy( DoublesIsOn and -100 or -30*side(player), -200 ):diffusealpha(0):zoom(0.6):sleep(0.2):linear(0.3):diffusealpha(0.5):zoom(1.2):addrotationz(10):linear(0.3):diffusealpha(0):zoom(1.7):addrotationz(10) end,
 	},
 
 	LoadActor( THEME:GetPathG("", "Grades/".. (
 		ToEnumShortString( PlayerGrade ) ~= "Failed" and (GradeNum > 4 and "TierCommon" or ToEnumShortString( PlayerGrade ))
 		or "Failed"
 		) ..".lua" ), {player,GradeNum} )..{
-		OnCommand=function(s) s:xy( (DoublesIsOn and -93 or -30)*side(player), -200 ) end,
+		OnCommand=function(self) self:xy( (DoublesIsOn and -93 or -30)*side(player), -200 ) end,
 	},
 
 	Def.ActorFrame{
 	OnCommand=function(self)
 		self:xy( -156-1*3, -113 )
-	end;
+	end,
 		Def.Sprite{
 			Texture=THEME:GetPathG('_difficulty pips','B'),
 			OnCommand=function(self)
@@ -155,48 +155,48 @@ t[#t+1] = Def.ActorFrame{
 	},
 	Def.ActorFrame{
 		Condition=isvalidplayer,
-		OnCommand=function(s)
-			s:xy( -100, 6 )
+		OnCommand=function(self)
+			self:xy( -100, 6 )
 		end,
-		EvaluationInputChangedMessageCommand=function(s,param)
+		EvaluationInputChangedMessageCommand=function(self,param)
 			if param.Player == player then
-				s:stoptweening():linear(0.2):diffusealpha( param.Index == 1 and 1 or 0 )
+				self:stoptweening():linear(0.2):diffusealpha( param.Index == 1 and 1 or 0 )
 			end
 		end,
 
 		Def.Sprite{ 
-			Texture=LoadModule("Options.GetProfileData.lua")(player)["Image"];
-			OnCommand=function(s) s:setsize(64,64):diffusealpha(0):decelerate(0.2):diffusealpha(1) end,
+			Texture=LoadModule("Options.GetProfileData.lua")(player)["Image"],
+			OnCommand=function(self) self:setsize(64,64):diffusealpha(0):decelerate(0.2):diffusealpha(1) end,
 		},
 		Def.Sprite{			
 			Texture=THEME:GetPathG("","AvatarFrame"),
-			OnCommand=function(s)
-				s:xy(0,0):diffuse( color("#1C2C3C") )
+			OnCommand=function(self)
+				self:xy(0,0):diffuse( color("#1C2C3C") )
 			end
 		},
 
 		Def.ActorFrame{
-			OnCommand=function(s)
-				s:xy( 6,60 )
+			OnCommand=function(self)
+				self:xy( 6,60 )
 			end,
 			-- Level Indicator
 			Def.BitmapText{
 				Font="Common Normal",
-				OnCommand=function(s)
-					s:halign(0):xy( -38, -14 ):zoom(0.45)
-					s:settext( string.format(THEME:GetString("Level","Level"), ach[3]) )
+				OnCommand=function(self)
+					self:halign(0):xy( -38, -14 ):zoom(0.45)
+					:settext( string.format(THEME:GetString("Level","Level"), ach[3]) )
 				end,
 			},
 			Def.BitmapText{
 				Condition=LoadModule("Config.Load.lua")("ToggleEXPCounter","Save/GrooveNightsPrefs.ini"),
 				Font="Common Normal",
-				OnCommand=function(s)
-					s:halign(1):xy( 48, -12 ):zoom(0.35)
-					s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
+				OnCommand=function(self)
+					self:halign(1):xy( 48, -12 ):zoom(0.35)
+					:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
 				end,
 			},
-			Def.Quad{ OnCommand=function(s) s:diffuse( color("0.1,0.1,0.1,1") ):zoomto(90,4):xy(4,-2) end, },
-			Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2)
+			Def.Quad{ OnCommand=function(self) self:diffuse( color("0.1,0.1,0.1,1") ):zoomto(90,4):xy(4,-2) end, },
+			Def.Quad{ OnCommand=function(self) self:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2)
 				:cropright( (100-ach[1])/100 ) end, },
 			Def.Sprite{ Texture=THEME:GetPathG("","EXP/expBar") },
 		}
@@ -240,24 +240,24 @@ t[#t+1] = Def.ActorFrame{
 			Font="novamono/36/_novamono 36px",OnCommand=function(self)
 				self:xy(-65,-56):zoom(0.44):shadowlength(2):wrapwidthpixels(240):valign(0):diffusealpha(0.4)
 			end,
-			EvaluationInputChangedMessageCommand=function(s,param)
+			EvaluationInputChangedMessageCommand=function(self,param)
 				if param.Player == player then
-					s:finishtweening():diffusealpha(0.4):settext( string.format( THEME:GetString("ScreenEvaluation","Page"), param.Index, "2" ) ):sleep(0.3):linear(0.2):diffusealpha(0)
+					self:finishtweening():diffusealpha(0.4):settext( string.format( THEME:GetString("ScreenEvaluation","Page"), param.Index, "2" ) ):sleep(0.3):linear(0.2):diffusealpha(0)
 				end
 			end,
 		},
 			
 
 	Def.BitmapText{ Font="Common Normal", Text=THEME:GetString("ScreenEvaluation","Disqualified"),
-	Condition=STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified();
-	OnCommand=function(self)
-		self:xy(0,-26):zoom(0.6):shadowlength(2):wrapwidthpixels(400):diffusealpha(0.4)
-	end,
-	},
+		Condition=STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified(),
+		OnCommand=function(self)
+			self:xy(0,-26):zoom(0.6):shadowlength(2):wrapwidthpixels(400):diffusealpha(0.4)
+		end
+	}
 
-	-- LoadActor( "../ComboAwards/"..ComboAward..".lua" )..{ OnCommand=function(s) s:y(1.2) end; };
-	-- LoadActor( "../ComboAwards/"..DiffAward..".lua" )..{ OnCommand=function(s) s:y(1.2) end; };
-};
+	-- LoadActor( "../ComboAwards/"..ComboAward..".lua" )..{ OnCommand=function(s) s:y(1.2) end },
+	-- LoadActor( "../ComboAwards/"..DiffAward..".lua" )..{ OnCommand=function(s) s:y(1.2) end }
+}
 
 -- Achievement Icons
 local Achievements = {
@@ -270,13 +270,13 @@ for _,v in pairs(Achievements) do
     t[#t+1] = Def.Sprite{
 		Condition=isvalidplayer,
         Texture=THEME:GetPathG("",ach.Achievements[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+ach.Achievements[_]) or "achievements/achievement".. string.format("%04i",(v)) ),
-        OnCommand=function(s)
-			s:xy( -50, (20 * (_-1))-24 ):zoom(0.8)
-			s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
+        OnCommand=function(self)
+			self:xy( -50, (20 * (_-1))-24 ):zoom(0.8)
+			:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
 		end,
-		EvaluationInputChangedMessageCommand=function(s,param)
+		EvaluationInputChangedMessageCommand=function(self,param)
 			if param.Player == player then
-				s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+				self:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
 			end
 		end,
     }
@@ -288,40 +288,40 @@ for i=1,4 do
 	t[#t+1] = Def.Sprite{
 		Condition=isvalidplayer,
         Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),
-        OnCommand=function(s)
-            s:xy( -28, (24*(i-1))-24 ):zoom(0.6)
+        OnCommand=function(self)
+            self:xy( -28, (24*(i-1))-24 ):zoom(0.6)
 		end,
-		EvaluationInputChangedMessageCommand=function(s,param)
+		EvaluationInputChangedMessageCommand=function(self,param)
 			if param.Player == player then
-				s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+				self:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
 			end
-		end,
+		end
 	}
 	t[#t+1] = Def.BitmapText{
 		Condition=isvalidplayer,
 		Font="novamono/36/_novamono 36px",
 		Text=total,
-        OnCommand=function(s)
-            s:xy( -11, (24*(i-1))-28 ):zoom(0.5):diffuse( PlayerColor(player) )
+        OnCommand=function(self)
+            self:xy( -11, (24*(i-1))-28 ):zoom(0.5):diffuse( PlayerColor(player) )
 		end,
 		EvaluationInputChangedMessageCommand=function(s,param)
 			if param.Player == player then
 				s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
 			end
-		end,
+		end
     }
 end
 
 -- Info regarding all judgment data
 local JudgmentInfo = {
 	Types = { 'W1', 'W2', 'W3', 'W4', 'W5', 'Miss' },
-	RadarVal = { "Jumps", "Holds", "Mines", "Hands", "Rolls" },
-};
+	RadarVal = { "Jumps", "Holds", "Mines", "Hands", "Rolls" }
+}
 
 local PColor = {
 	["PlayerNumber_P1"] = color("#836002"),
-	["PlayerNumber_P2"] = color("#2F8425"),
-};
+	["PlayerNumber_P2"] = color("#2F8425")
+}
 
 local Colors = {
 	color("#3399cc"),
@@ -329,14 +329,14 @@ local Colors = {
 	color("#01cc33"),
 	color("#7f7fff"),
 	color("#f59331"),
-	color("#ff3f3f"),
+	color("#ff3f3f")
 }
 
 local totalnote = 0
 
 for index, ScWin in ipairs(JudgmentInfo.Types) do
 	t[#t+1] = Def.ActorFrame{
-		OnCommand=function(self) self:xy(130,-136) end;
+		OnCommand=function(self) self:xy(130,-136) end,
 		EvaluationInputChangedMessageCommand=function(s,param)
 			if param.Player == player then
 				s:stoptweening():sleep( 0.02*index ):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
@@ -361,7 +361,7 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 				local sco = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)
 				totalnote = totalnote + sco
 				self:settext(("%4.0f"):format( sco )):diffuse( PlayerColor(player) )
-				local leadingZeroAttr = { Length=4-tonumber(tostring(sco):len()); Diffuse=PColor[player] }
+				local leadingZeroAttr = { Length=4-tonumber(tostring(sco):len()), Diffuse=PColor[player] }
 				self:AddAttribute(0, leadingZeroAttr )
 				if GAMESTATE:GetPlayMode() == "PlayMode_Rave" then
 					self:xy(84,-96+16*index)
@@ -370,44 +370,44 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 		},
 
 		Def.Quad{
-			OnCommand=function(s)
-				s:xy(-120,16*index+8)
+			OnCommand=function(self)
+				self:xy(-120,16*index+8)
 				:halign(0):diffusealpha(0):zoomx(0):zoomy(1)
 				:accelerate((index/10)/2):zoomx(0):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
 				:zoomx(121):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
-			end;
+			end
 		},
 
 		Def.Sound{
 			Name="Sound",
 			File=THEME:GetPathS("gnJudgeBar", index..".ogg"),
-			SFXCommand=function(s) s:play() end
+			SFXCommand=function(self) self:play() end
 		},
 		
 		Def.Quad{
-			OnCommand=function(s)
-				s:xy(-120,16*index+8):diffuse( Colors[index] )
+			OnCommand=function(self)
+				self:xy(-120,16*index+8):diffuse( Colors[index] )
 				:halign(0):diffusealpha(1):zoomx(0):zoomy(1):queuecommand("Calculate")
-			end;
-			CalculateCommand=function(s)
-				local JudgeText = math.ceil(tonumber(STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)) / totalnote * 121);
+			end,
+			CalculateCommand=function(self)
+				local JudgeText = math.ceil(tonumber(STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)) / totalnote * 121)
 				if JudgeText >= 121 then JudgeText = 121 end
-				s:sleep( ((index-1)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
+				self:sleep( ((index-1)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
 			end,
 			SFXCommand=function(self)
 				self:GetParent():GetChild("Sound"):playcommand("SFX")
 			end	
-		};
+		},
 
 		Def.Sprite{
 			Texture=THEME:GetPathG("Player","combo/arrowswoosh"),
-			OnCommand=function(s) s:xy( -10, 16*index ):zoom(0):diffusealpha(0):playcommand("Bling") end,
-			BlingCommand=function(s)
-			s:sleep( (((index-1)/10)/2) +0.5):diffusealpha(1):zoom(0):addy(6):decelerate( 0.049*3 )
-			:addx( 12 ):zoom( 0.2 ):diffusealpha( 0.4 ):linear( 0.049*3 ):diffusealpha(0)
+			OnCommand=function(self) self:xy( -10, 16*index ):zoom(0):diffusealpha(0):playcommand("Bling") end,
+			BlingCommand=function(self)
+				self:sleep( (((index-1)/10)/2) +0.5):diffusealpha(1):zoom(0):addy(6):decelerate( 0.049*3 )
+				:addx( 12 ):zoom( 0.2 ):diffusealpha( 0.4 ):linear( 0.049*3 ):diffusealpha(0)
 			end,
 		},
-	};
+	}
 end
 
 
@@ -417,9 +417,9 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 
 	t[#t+1] = Def.ActorFrame{
 		OnCommand=function(self) self:xy(128,-36) end,
-		EvaluationInputChangedMessageCommand=function(s,param)
+		EvaluationInputChangedMessageCommand=function(self,param)
 			if param.Player == player then
-				s:stoptweening():sleep( 0.02*6 + (0.02*index)):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+				self:stoptweening():sleep( 0.02*6 + (0.02*index)):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
 			end
 		end,
 
@@ -449,8 +449,8 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 		},
 
 		Def.Quad{
-			OnCommand=function(s)
-				s:xy(-120,16*index+7)
+			OnCommand=function(self)
+				self:xy(-120,16*index+7)
 				:halign(0):diffusealpha(0):zoomx(0):zoomy(1)
 				:accelerate(((index+6)/10)/2):zoomx(0):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
 				:zoomx(121):decelerate(0.2):diffusealpha(0.3):accelerate(0.2):diffusealpha(0.1)
@@ -460,19 +460,19 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 		Def.Sound{
 			Name="Sound",
 			File=THEME:GetPathS("gnJudgeBar", (index+6)..".ogg"),
-			SFXCommand=function(s) s:play() end
+			SFXCommand=function(self) self:play() end
 		},
 		
 		Def.Quad{
-			OnCommand=function(s)
-				s:xy(-120,16*index+7)
+			OnCommand=function(self)
+				self:xy(-120,16*index+7)
 				:halign(0):diffusealpha(1):zoomx(0):zoomy(1):queuecommand("Calculate")
-			end;
-			CalculateCommand=function(s)
-				local JudgeText = math.ceil(performance / possible * 121);
+			end,
+			CalculateCommand=function(self)
+				local JudgeText = math.ceil(performance / possible * 121)
 				if JudgeText >= 121 then JudgeText = 121 end
 				-- lua.ReportScriptError( JudgeText .."/" .. totalnote )
-				s:sleep( ((index+5)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
+				self:sleep( ((index+5)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
 			end,
 			SFXCommand=function(self)
 				self:GetParent():GetChild("Sound"):playcommand("SFX")
@@ -481,26 +481,26 @@ for index, RCType in ipairs(JudgmentInfo.RadarVal) do
 
 		Def.Sprite{
 			Texture=THEME:GetPathG("Player","combo/arrowswoosh"),
-			OnCommand=function(s) s:xy( -9, 16*(index) ):zoom(0):diffusealpha(0):playcommand("Bling") end,
-			BlingCommand=function(s)
-				s:sleep( (((index+6)/10)/2) +0.4):diffusealpha(1):zoom(0):addy(6):decelerate( 0.049*3 )
+			OnCommand=function(self) self:xy( -9, 16*(index) ):zoom(0):diffusealpha(0):playcommand("Bling") end,
+			BlingCommand=function(self)
+				self:sleep( (((index+6)/10)/2) +0.4):diffusealpha(1):zoom(0):addy(6):decelerate( 0.049*3 )
 				:addx( 12 ):zoom( 0.2 ):diffusealpha(0.4):linear( 0.049*3 ):diffusealpha(0)
 			end,
 		},
 
-	};
+	}
 end
 
 -- Max Combo
 t[#t+1] = Def.ActorFrame{
-	OnCommand=function(s)
+	OnCommand=function(self)
 		if GAMESTATE:GetPlayMode() == "PlayMode_Rave" then
-			s:xy(-71,-4)
+			self:xy(-71,-4)
 		end
 	end,
-	EvaluationInputChangedMessageCommand=function(s,param)
+	EvaluationInputChangedMessageCommand=function(self,param)
 		if param.Player == player then
-			s:stoptweening():sleep(0.02*6):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
+			self:stoptweening():sleep(0.02*6):linear( 0.2 ):diffusealpha( param.Index == 1 and 1 or 0 )
 		end
 	end,
 
@@ -513,13 +513,13 @@ t[#t+1] = Def.ActorFrame{
 		end
 	},
 
-	Def.BitmapText{ Font="ScreenEvaluation judge";
+	Def.BitmapText{ Font="ScreenEvaluation judge",
 		OnCommand=function(self)
 			self:xy( 128, 16*4-3 ):zoom(0.5):halign(1)
 			local combo = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):MaxCombo()
 			self:settext( ("%5.0f"):format( combo ) )
 
-			local leadingZeroAttr = { Length=5-tonumber(tostring(combo):len()); Diffuse=PColor[player] }
+			local leadingZeroAttr = { Length=5-tonumber(tostring(combo):len()), Diffuse=PColor[player] }
 			self:AddAttribute(0, leadingZeroAttr )
 
 			:diffuse( PlayerColor(player) )
@@ -534,27 +534,27 @@ t[#t+1] = Def.ActorFrame{
 local offsetTable = GAMESTATE:Env()["OffsetTable"][player]
 local timingWindow = GAMESTATE:Env()["perColJudgeData"][player]
 local ArB = Def.ActorFrame{
-	OnCommand=function(s)
-		s:xy( -70, -116 ):diffusealpha(0)
+	OnCommand=function(self)
+		self:xy( -70, -116 ):diffusealpha(0)
 		local total = offsetTable.Early + offsetTable.Late
-		s:GetChild("Early"):cropright( 1 - (offsetTable.Early/total) )
-		s:GetChild("Late"):cropleft( 1 - (offsetTable.Late/total) )
+		self:GetChild("Early"):cropright( 1 - (offsetTable.Early/total) )
+		self:GetChild("Late"):cropleft( 1 - (offsetTable.Late/total) )
 	end,
-	EvaluationInputChangedMessageCommand=function(s,param)
+	EvaluationInputChangedMessageCommand=function(self,param)
 		if param.Player == player then
-			s:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 0 or 1 )
+			self:stoptweening():linear( 0.2 ):diffusealpha( param.Index == 1 and 0 or 1 )
 		end
 	end,
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Arrow Breakdown"), OnCommand=function(s) s:zoom(0.5):y(-8+96) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Offset Derivative"), OnCommand=function(s) s:zoom(0.5):xy(140,-4) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Early"), OnCommand=function(s) s:zoom(0.35):xy( 90,10 ) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Late"), OnCommand=function(s) s:zoom(0.35):xy( 185,10 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Arrow Breakdown"), OnCommand=function(self) self:zoom(0.5):y(-8+96) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Offset Derivative"), OnCommand=function(self) self:zoom(0.5):xy(140,-4) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Early"), OnCommand=function(self) self:zoom(0.35):xy( 90,10 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Late"), OnCommand=function(self) self:zoom(0.35):xy( 185,10 ) end },
 
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Early, OnCommand=function(s) s:zoom(0.35):xy( 90,24 ) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Late, OnCommand=function(s) s:zoom(0.35):xy( 185,24 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Early, OnCommand=function(self) self:zoom(0.35):xy( 90,24 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Late, OnCommand=function(self) self:zoom(0.35):xy( 185,24 ) end },
 
-	Def.Quad{ Name="Early", OnCommand=function(s) s:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Blue ) end, },
-	Def.Quad{ Name="Late", OnCommand=function(s) s:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Red ) end, },
+	Def.Quad{ Name="Early", OnCommand=function(self) self:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Blue ) end, },
+	Def.Quad{ Name="Late", OnCommand=function(self) self:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Red ) end, },
 }
 
 --local Side = {"&LEFT;","&DOWN;","&UP;","&RIGHT;"}
@@ -585,8 +585,8 @@ for i=1,col do
 		ArB[#ArB+1] = Def.BitmapText{
 			Font="novamono/36/_novamono 36px",
 			Text=timingWindow[i][ValTC],
-			OnCommand=function(s)
-				s:xy( scale( i, 1, col, -sidespacing, sidespacing ), 12*index+108 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
+			OnCommand=function(self)
+				self:xy( scale( i, 1, col, -sidespacing, sidespacing ), 12*index+108 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
 			end
 		}
 	end
@@ -605,24 +605,24 @@ if highscores then
 		local grade = highscores[i] and THEME:GetPathG("","Grades/GradeTier".. string.format("%04i", tonumber(string.sub( ToEnumShortString( highscores[i]:GetGrade() ), 5 )) ) )
 			or THEME:GetPathG("","_blank")
 		ArB[#ArB+1] = Def.ActorFrame{
-			OnCommand=function(s)
-				s:xy( 120, 35 + ( 16*(i-1) ) ):zoom(0.4)
+			OnCommand=function(self)
+				self:xy( 120, 35 + ( 16*(i-1) ) ):zoom(0.4)
 				if score == LoadModule("Gameplay.CalculatePercentage.lua")(player) << 0 then
 					local nm = {"Num","Nam","Scr"}
 					for _,v in pairs(nm) do
-						s:GetChild(v..i):diffuseshift():effectcolor1( Color.Yellow )
+						self:GetChild(v..i):diffuseshift():effectcolor1( Color.Yellow )
 					end
 				end
 			end,
 
-			Def.BitmapText{ Name="Num"..i, Font="novamono/36/_novamono 36px", Text="#"..i, OnCommand=function(s) s:x( -90 ) end, },
+			Def.BitmapText{ Name="Num"..i, Font="novamono/36/_novamono 36px", Text="#"..i, OnCommand=function(self) self:x( -90 ) end, },
 			Def.BitmapText{ Name="Nam"..i, Font="novamono/36/_novamono 36px", Text=name },
-			Def.Sprite{ Texture=grade, OnCommand=function(s) s:setsize( 40,40 ):x( 76 ) end, },
-			Def.BitmapText{ Name="Scr"..i, Font="novamono/36/_novamono 36px", Text=score, OnCommand=function(s) s:halign(1):x( 190 ) end, }
+			Def.Sprite{ Texture=grade, OnCommand=function(self) self:setsize( 40,40 ):x( 76 ) end, },
+			Def.BitmapText{ Name="Scr"..i, Font="novamono/36/_novamono 36px", Text=score, OnCommand=function(self) self:halign(1):x( 190 ) end, }
 		}
 	end
 end
 
 t[#t+1] = ArB
 
-return t;
+return t

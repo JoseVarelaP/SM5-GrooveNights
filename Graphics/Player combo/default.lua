@@ -48,7 +48,7 @@ local t = Def.ActorFrame {
 			end,
 			HundredMilestoneCommand=function(self)
 				self:rotationz(0):zoom(2.6):diffusealpha(0.5):linear(0.5):rotationz(90):zoom(2):diffusealpha(0)
-			end,
+			end
 		},
 
 		Def.Sprite{
@@ -137,8 +137,8 @@ local t = Def.ActorFrame {
 					self:finishtweening():zoom( staticzoom )
 				end
 			end
-		end,
-	};
+		end
+	},
 	Def.BitmapText{
 		Font="journey/40/_journey 40",
 		Text=THEME:GetString("ScreenGameplay","Combo"),
@@ -151,8 +151,8 @@ local t = Def.ActorFrame {
 			else
 				self:zoom( staticzoom )
 			end
-		end,
-	};
+		end
+	},
 	Def.BitmapText{
 		Font="journey/40/_journey 40",
 		Text=THEME:GetString("ScreenGameplay","Misses"),
@@ -175,12 +175,12 @@ local t = Def.ActorFrame {
 		c.Misses:visible(false)
 	end,
 	ComboCommand=function(self, param)
-		local iCombo = param.Misses or param.Combo;
+		local iCombo = param.Misses or param.Combo
 		if not iCombo or iCombo < ShowComboAt then
 			c.Number:visible(false):y(10)
 			c.Label:visible(false):y(0)
 			c.Misses:y(0)
-			return;
+			return
 		end
 
 		c.Label:visible(false)
@@ -222,7 +222,7 @@ local t = Def.ActorFrame {
 			PulseLabel( c.Misses, param )
 		end
 		-- Milestone Logic
-	end,
-};
+	end
+}
 
-return t;
+return t

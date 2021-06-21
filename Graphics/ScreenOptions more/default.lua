@@ -6,7 +6,7 @@ local t = Def.ActorFrame{
 	BeginCommand=function(s)
 		local screen = SCREENMAN:GetTopScreen():GetName()
 		s:y( THEME:GetMetric(screen,"SeparateExitRowY") )
-	end;
+	end
 	--CancelMessageCommand=function(s) s:playcommand("Off") end;
 }
 
@@ -18,15 +18,15 @@ for player in ivalues(PlayerNumber) do
 				MESSAGEMAN:Broadcast("ExitSelected".. ToEnumShortString(player) )
 				MESSAGEMAN:Broadcast("TweenCheck")
 			end
-		end;
+		end,
 		["ExitUnselected".. ToEnumShortString(player) .."Command"]=function(s)
 			if GAMESTATE:IsPlayerEnabled(player) then
 				ExitSelect[ player ] = false
 				MESSAGEMAN:Broadcast("ExitUnselected".. ToEnumShortString(player) )
 				MESSAGEMAN:Broadcast("TweenCheck")
 			end
-		end;
-	};
+		end
+	}
 end
 
 local chcontroller
@@ -62,12 +62,12 @@ t[#t+1] = Def.ActorFrameTexture{
 -- t[#t+1] = LoadActor("moreexit")..{
 t[#t+1] = Def.Sprite{
 	Texture="MoreDoneText",
-	OnCommand=function(s)
-		s:xy(72*.35, 0):zoom(0.45):cropbottom(0.2):croptop(0.2)
+	OnCommand=function(self)
+		self:xy(72*.35, 0):zoom(0.45):cropbottom(0.2):croptop(0.2)
 		chcontroller:y(20)
 	end,
-	ToEndCommand=function(s) chcontroller:stoptweening():easeoutsine(0.2):y(-30) end,
-	ToMoreCommand=function(s) chcontroller:stoptweening():easeinsine(0.2):y(20) end,
+	ToEndCommand=function(self) chcontroller:stoptweening():easeoutsine(0.2):y(-30) end,
+	ToMoreCommand=function(self) chcontroller:stoptweening():easeinsine(0.2):y(20) end,
 	AllReadyMessageCommand=function(self)
 		-- If we're dealing with players, there could be the possibility of the translated More/Done text
 		-- to be longer than it's current x ending position, so fix that.
@@ -80,24 +80,24 @@ t[#t+1] = Def.Sprite{
 			SCREENMAN:GetTopScreen():GetChild("Container"):GetChild("Cursor")[2]:addx( (chcontroller:GetChild("DONE"):GetZoomedWidth()*0.5)-60 )
 		end
 	end,
-	TweenCheckMessageCommand=function(s)
-		s:stoptweening():linear(.15)
+	TweenCheckMessageCommand=function(self)
+		self:stoptweening():linear(.15)
 		if GAMESTATE:GetNumPlayersEnabled() == 2 then
 			if ExitSelect[PLAYER_1] and ExitSelect[PLAYER_2] then
-				s:playcommand("ToEnd")
+				self:playcommand("ToEnd")
 				MESSAGEMAN:Broadcast("AllReady")
 			else
-				s:playcommand("ToMore")
+				self:playcommand("ToMore")
 			end
 		else
 			if ExitSelect[GAMESTATE:GetMasterPlayerNumber()] then
-				s:playcommand("ToEnd")
+				self:playcommand("ToEnd")
 				MESSAGEMAN:Broadcast("AllReady")
 			else
-				s:playcommand("ToMore")
+				self:playcommand("ToMore")
 			end
 		end
 	end
 }
 
-return t;
+return t

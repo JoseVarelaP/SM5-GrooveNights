@@ -29,8 +29,8 @@ end
 local t = Def.ActorFrame{
 	OnCommand=function(s)
 		SCREENMAN:GetTopScreen():AddInputCallback(Mapper)
-	end,
-};
+	end
+}
 
 local function side(pn)
 	local s = 1
@@ -52,16 +52,16 @@ end
 local DoublesIsOn = GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_OnePlayerTwoSides"
 for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 	t[#t+1] = Def.ActorFrame{
-	Condition=GAMESTATE:IsPlayerEnabled(player);
+	Condition=GAMESTATE:IsPlayerEnabled(player),
 		LoadActor( THEME:GetPathG("","ScreenEvaluation grade frame"), player )..{
 		InitCommand=function(self)
 			self:xy( DoublesIsOn and SCREEN_CENTER_X or ( SCREEN_CENTER_X+((-130*1.2)*side(player)) ),SCREEN_CENTER_Y+58)
 			if GAMESTATE:Env()["UsingBOA"] then
 				self:tween(0.5,"easeoutquad"):x( SCREEN_CENTER_X ):diffusealpha( GAMESTATE:GetMasterPlayerNumber() == player and 1 or 0 )
 			end
-		end,
-		};
-	};
+		end
+		}
+	}
 end
 
 t[#t+1] = loadfile( THEME:GetPathB("ScreenWithMenuElements","overlay") )()
@@ -75,52 +75,51 @@ t[#t+1] = Def.ActorFrame{
 	end,
 	Def.Sprite{
 		Texture=THEME:GetPathG("Common fallback","banner"),
-		InitCommand=function(s) s:y(SCREEN_CENTER_Y-114)
-		if GAMESTATE:IsCourseMode() then
-			s:Load( GAMESTATE:GetCurrentCourse():GetBannerPath() )
-		else
-			if GAMESTATE:GetCurrentSong():GetBannerPath() ~= nil then 
-				s:Load( GAMESTATE:GetCurrentSong():GetBannerPath() )
-			end
-			for pn in ivalues(PlayerNumber) do
-				if GAMESTATE:GetCurrentSong():GetGroupName() == PROFILEMAN:GetProfile(pn):GetDisplayName() then
-					s:Load( THEME:GetPathG("Banner","custom") )
+		InitCommand=function(self)
+			self:y(SCREEN_CENTER_Y-114)
+			if GAMESTATE:IsCourseMode() then
+				self:Load( GAMESTATE:GetCurrentCourse():GetBannerPath() )
+			else
+				if GAMESTATE:GetCurrentSong():GetBannerPath() ~= nil then 
+					self:Load( GAMESTATE:GetCurrentSong():GetBannerPath() )
+				end
+				for pn in ivalues(PlayerNumber) do
+					if GAMESTATE:GetCurrentSong():GetGroupName() == PROFILEMAN:GetProfile(pn):GetDisplayName() then
+						self:Load( THEME:GetPathG("Banner","custom") )
+					end
 				end
 			end
-		end
 		end,
-		OnCommand=function(s)
-			s:scaletoclipped( 418/2,130/2):ztest(1)
-		end;
+		OnCommand=function(self)
+			self:scaletoclipped( 418/2,130/2):ztest(1)
+		end
 	},
 
 	Def.BitmapText{
 		Font="Common Normal",
-		OnCommand=function(s)
-			s:y(SCREEN_CENTER_Y-178)
-			:zoom(0.75):maxwidth(450)
+		OnCommand=function(self)
+			self:y(SCREEN_CENTER_Y-178):zoom(0.75):maxwidth(450)
 			if GAMESTATE:GetCurrentSong() then
-				s:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
+				self:settext( GAMESTATE:GetCurrentSong():GetDisplayMainTitle() )
 			end
-		end,
+		end
 	},
 
 	Def.BitmapText{
 		Font="novamono/36/_novamono 36px",
-		OnCommand=function(s)
-			s:y( SCREEN_CENTER_Y-162 )
-			:zoom(0.5):maxwidth(450)
+		OnCommand=function(self)
+			self:y( SCREEN_CENTER_Y-162 ):zoom(0.5):maxwidth(450)
 			if GAMESTATE:GetCurrentSong() then
-				s:settext( GAMESTATE:GetCurrentSong():GetDisplayArtist() )
+				self:settext( GAMESTATE:GetCurrentSong():GetDisplayArtist() )
 			end
-		end,
+		end
 	},
 
 	Def.Sprite{
 		Texture=THEME:GetPathG("ScreenEvaluation Banner","Frame"),
-		OnCommand=function(s)
-			s:y( SCREEN_CENTER_Y-112 )
-		end,
+		OnCommand=function(self)
+			self:y( SCREEN_CENTER_Y-112 )
+		end
 	}
 }
 
@@ -128,16 +127,16 @@ t[#t+1] = LoadActor("TotalPlaytime.lua")
 
 t[#t+1] = Def.HelpDisplay {
 	File="Common Normal",
-	OnCommand=function(s)
-		s:x(SCREEN_CENTER_X):y(SCREEN_CENTER_Y+198):zoom(0.75):strokecolor(Color.Black):diffuseblink()
+	OnCommand=function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+198):zoom(0.75):strokecolor(Color.Black):diffuseblink()
 	end,
-	InitCommand=function(s)
-		s:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
-		s:SetTipsColonSeparated( LoadModule("Text.GenerateHelpText.lua")( {"HelpTextNormal","PageText","TakeScreenshotHelpTextAppend"} ) )
+	InitCommand=function(self)
+		self:SetSecsBetweenSwitches(THEME:GetMetric("HelpDisplay","TipSwitchTime"))
+		:SetTipsColonSeparated( LoadModule("Text.GenerateHelpText.lua")( {"HelpTextNormal","PageText","TakeScreenshotHelpTextAppend"} ) )
 	end,
-	SetHelpTextCommand=function(s, params) s:SetTipsColonSeparated( params.Text ) end,
-	SelectMenuOpenedMessageCommand=function(s) s:stoptweening():decelerate(0.2):zoomy(0) end,
-	SelectMenuClosedMessageCommand=function(s) s:stoptweening():bouncebegin(0.2):zoomy(0.75) end
+	SetHelpTextCommand=function(self, params) self:SetTipsColonSeparated( params.Text ) end,
+	SelectMenuOpenedMessageCommand=function(self) self:stoptweening():decelerate(0.2):zoomy(0) end,
+	SelectMenuClosedMessageCommand=function(self) self:stoptweening():bouncebegin(0.2):zoomy(0.75) end
 }
 
-return t;
+return t

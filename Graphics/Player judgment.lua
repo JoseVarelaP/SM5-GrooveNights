@@ -1,5 +1,5 @@
-local c;
-local player = Var "Player";
+local c
+local player = Var "Player"
 local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
 local PDir = (
 	(PROFILEMAN:GetProfile(player):GetDisplayName() ~= "" and MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none')
@@ -23,13 +23,13 @@ for _,v in pairs(settings) do
 end
 
 local TNSFrames = {
-	TapNoteScore_W1 = 0;
-	TapNoteScore_W2 = 1;
-	TapNoteScore_W3 = 2;
-	TapNoteScore_W4 = 3;
-	TapNoteScore_W5 = 4;
-	TapNoteScore_Miss = 5;
-};
+	TapNoteScore_W1 = 0,
+	TapNoteScore_W2 = 1,
+	TapNoteScore_W3 = 2,
+	TapNoteScore_W4 = 3,
+	TapNoteScore_W5 = 4,
+	TapNoteScore_Miss = 5
+}
 
 local RotTween = {
 	-- Even, Odd
@@ -39,56 +39,55 @@ local RotTween = {
 	TapNoteScore_W4 = {-5,5},
 	TapNoteScore_W5 = {-10,10},
 	TapNoteScore_Miss = {-30,30},
-};
+}
 
 local zoominit = settings[3] and ( settings[1] and 0.8*settings[1] or 0.8) or (settings[1] and 0.75*settings[1] or 0.75)
 
-local t = Def.ActorFrame {};
+local t = Def.ActorFrame {}
 t[#t+1] = Def.ActorFrame {
 	LoadActor("Judgment label") .. {
-		Name="Judgment";
+		Name="Judgment",
 		InitCommand=function(self)
 			self:pause():visible(false)
-		end;
-		OnCommand=THEME:GetMetric("Judgment","JudgmentOnCommand");
+		end,
+		OnCommand=THEME:GetMetric("Judgment","JudgmentOnCommand"),
 		ResetCommand=function(self)
 			self:finishtweening():stopeffect():visible(false)
-		end;
-	};
+		end
+	},
 	
 	InitCommand = function(self)
-		c = self:GetChildren();
-	end;
+		c = self:GetChildren()
+	end,
 
 	JudgmentMessageCommand=function(self, param)
-		if param.Player ~= player then return end;
-		if param.HoldNoteScore then return end;
+		if param.Player ~= player then return end
+		if param.HoldNoteScore then return end
 
-		local iNumStates = c.Judgment:GetNumStates();
-		local iFrame = TNSFrames[param.TapNoteScore];
+		local iNumStates = c.Judgment:GetNumStates()
+		local iFrame = TNSFrames[param.TapNoteScore]
 		
-		local iTapNoteOffset = param.TapNoteOffset;
+		local iTapNoteOffset = param.TapNoteOffset
 		
 		if not iFrame then return end
 		if iNumStates == 12 then
-			iFrame = iFrame * 2;
+			iFrame = iFrame * 2
 			if not param.Early then
-				iFrame = iFrame + 1;
+				iFrame = iFrame + 1
 			end
 		end
 
 		local pNum = (player == PLAYER_1) and 1 or 2
 		
-		self:playcommand("Reset");
+		self:playcommand("Reset")
 		c.Judgment:visible( true )
 		c.Judgment:diffusealpha( settings[2] or 1 )
 		c.Judgment:setstate( iFrame )
-		c.Judgment:rotationz( RotTween[param.TapNoteScore][math.random(1,2)] );
+		c.Judgment:rotationz( RotTween[param.TapNoteScore][math.random(1,2)] )
 		c.Judgment:zoom( zoominit )
 		c.Judgment:decelerate( 0.1 )
 		c.Judgment:zoom( settings[1] and 0.75*settings[1] or 0.75 )
-	end;
-};
+	end
+}
 
-
-return t;
+return t
