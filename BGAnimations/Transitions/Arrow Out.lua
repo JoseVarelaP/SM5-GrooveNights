@@ -12,14 +12,19 @@ return Def.ActorFrame{
 		end
 	},
 
+	Def.Sound{
+		IsAction = true,
+		File = THEME:GetPathS("gnScreenTransition whoosh", "short"),
+		StartTransitioningCommand = function(self)
+			self:play()
+		end
+	},
+
 	Def.Sprite{
 		Texture=THEME:GetPathG("","TransitionArrow"),
 		OnCommand=function(self)
 			self:xy(SCREEN_CENTER_X,SCREEN_BOTTOM+100):decelerate(0.2):y( SCREEN_CENTER_Y )
 			:vibrate():effectmagnitude(1,1,0):sleep(0.3)
-		end,
-		StartTransitioningCommand=function(self)
-			SOUND:PlayOnce( THEME:GetPathS("gnScreenTransition whoosh", "short") )
 		end
 	}
 }

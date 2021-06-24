@@ -7,7 +7,12 @@ local col = pn == PLAYER_2 and 2 or 1
 local Speedmargin = LoadModule("Config.Load.lua")("SpeedMargin","Save/OutFoxPrefs.ini") and LoadModule("Config.Load.lua")("SpeedMargin","Save/OutFoxPrefs.ini")*100 or 25
 local ORNum = 1
 
-return Def.Actor{
+return Def.ActorFrame{
+	Def.Sound{
+		Name = "value",
+		IsAction = true,
+		File = THEME:GetPathS("_change","value")
+	},
 	SpeedModTypeChangeMessageCommand=function(self,param)
 		if param.pn == pn then
 			speed[2] = param.choicename
@@ -65,7 +70,7 @@ return Def.Actor{
 	["MenuLeft"..ToEnumShortString(pn).."MessageCommand"]=function(self)
 		local row_index = SCREENMAN:GetTopScreen():GetCurrentRowIndex(pn)
 		if row_index == ORNum then
-			SOUND:PlayOnce( THEME:GetPathS("_change","value") )
+			self:GetChild("value"):play()
 			speed[1] = speed[1] - Speedmargin
 			self:playcommand("UpdateString")
 		end
@@ -73,7 +78,7 @@ return Def.Actor{
 	["MenuRight"..ToEnumShortString(pn).."MessageCommand"]=function(self)
 		local row_index = SCREENMAN:GetTopScreen():GetCurrentRowIndex(pn)
 		if row_index == ORNum then
-			SOUND:PlayOnce( THEME:GetPathS("_change","value") )
+			self:GetChild("value"):play()
 			speed[1] = speed[1] + Speedmargin
 			self:playcommand("UpdateString")
 		end

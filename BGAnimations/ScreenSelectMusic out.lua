@@ -45,15 +45,22 @@ t[#t+1] = Def.ActorFrame{
 	}
 }
 
+t[#t+1] = Def.Sound{
+	IsAction = true,
+	File = THEME:GetPathS("gnScreenTransition whoosh", "short"),
+	ShowPressStartForOptionsCommand = function(self)
+		self:play()
+	end
+}
+
 t[#t+1] = Def.Sprite{
 	Texture=THEME:GetPathG("","TransitionArrow"),
-	OnCommand=function(s)
-		s:visible(false)
+	OnCommand=function(self)
+		self:visible(false)
 	end,
-	ShowPressStartForOptionsCommand=function(s)
-		s:visible(true):xy(SCREEN_CENTER_X,SCREEN_BOTTOM+100):decelerate(0.2):y( SCREEN_CENTER_Y )
+	ShowPressStartForOptionsCommand=function(self)
+		self:visible(true):xy(SCREEN_CENTER_X,SCREEN_BOTTOM+100):decelerate(0.2):y( SCREEN_CENTER_Y )
 		:vibrate():effectmagnitude(1,1,0):sleep(0.3)
-		SOUND:PlayOnce( THEME:GetPathS("gnScreenTransition whoosh", "short") )
 	end,
 }
 

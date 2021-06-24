@@ -12,12 +12,19 @@ t[#t+1] = Def.ActorFrame{
 	LoadActor("CurrentStage.lua")
 }
 
+t[#t+1] = Def.Sound{
+	IsAction = true,
+	File = THEME:GetPathS("gnScreenTransition whoosh", "long"),
+	OnCommand = function(self)
+		self:play()
+	end
+}
+
 t[#t+1] = Def.Sprite{
 	Texture=THEME:GetPathG("","TransitionArrow"),
-	OnCommand=function(s)
-		s:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):accelerate(0.2):y(-60)
-		SOUND:PlayOnce( THEME:GetPathS("gnScreenTransition whoosh", "long") )
-	end,
+	OnCommand=function(self)
+		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):accelerate(0.2):y(-60)
+	end
 }
 
 return t

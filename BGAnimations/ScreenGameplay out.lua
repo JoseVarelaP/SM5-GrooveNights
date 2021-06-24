@@ -15,13 +15,18 @@ return Def.ActorFrame{
 		end
 	},
 
+	Def.Sound{
+		IsAction = true,
+		File = THEME:GetPathS("gnScreenTransition whoosh", "in"),
+		SFXCommand = function(self)
+			self:play()
+		end
+	},
+
 	Def.Sprite{
 		Texture=THEME:GetPathG("","TransitionArrow"),
 		OnCommand=function(self)
 			self:xy(SCREEN_CENTER_X,SCREEN_BOTTOM+100):queuecommand("SFX"):decelerate(0.2):y( SCREEN_CENTER_Y )
-		end,
-		SFXCommand=function(self)
-			SOUND:PlayOnce( THEME:GetPathS("gnScreenTransition whoosh", "in") )
 		end
 	}
 }

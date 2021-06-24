@@ -99,6 +99,7 @@ t[#t+1] = Def.ActorFrame{
 	end,
 
 	Def.Sound{
+		IsAction=true,
 		File=THEME:GetPathS("ScreenSelectMusic select","down"),
 		SelectMenuOpenedMessageCommand=function(self)
 			self:play()

@@ -34,9 +34,9 @@ t[#t+1] = Def.Sprite{
 	end
 }
 
-t[#t+1] = Def.Sound{ Name="PlayerReady", File=THEME:GetPathS( 'PlayerReady', 'sound' ) }
-t[#t+1] = Def.Sound{ Name="PlayerNotReady", File=THEME:GetPathS( 'PlayerNotReady', 'sound' ) }
-t[#t+1] = Def.Sound{ Name="PlayerBothReady", File=THEME:GetPathS( 'PlayerBothReady', 'sound' ) }
+t[#t+1] = Def.Sound{ IsAction=true, Name="PlayerReady", File=THEME:GetPathS( 'PlayerReady', 'sound' ) }
+t[#t+1] = Def.Sound{ IsAction=true, Name="PlayerNotReady", File=THEME:GetPathS( 'PlayerNotReady', 'sound' ) }
+t[#t+1] = Def.Sound{ IsAction=true, Name="PlayerBothReady", File=THEME:GetPathS( 'PlayerBothReady', 'sound' ) }
 local function side(pn)
 	local s = 1
 	if pn == PLAYER_1 then return s end
