@@ -75,9 +75,9 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 	if tonumber(config) == 3 then
 		Score[#Score+1] = Def.BitmapText{
 			Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni",
-			Font="_futurist metalic",
+			Font="journey/number/_journey 40",
 			OnCommand=function(self)
-				self:xy( player == PLAYER_1 and SCREEN_CENTER_X-156 or SCREEN_CENTER_X+156, SCREEN_TOP+76 ):zoom(0.6)
+				self:xy( player == PLAYER_1 and SCREEN_CENTER_X-156 or SCREEN_CENTER_X+156, SCREEN_TOP+76 ):zoomx(0.6):zoomy(0.54)
 				:diffuse( color ):playcommand("UpdateScore")
 			end,
 			JudgmentMessageCommand=function(self) self:queuecommand("UpdateScore") end,

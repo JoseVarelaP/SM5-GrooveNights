@@ -125,9 +125,9 @@ local t = Def.ActorFrame {
 
 	Def.BitmapText{
 		-- TODO: Either add engine function to provide adding x positioning to the current glyph or make a separate number set for combo.
-		Font="_xenotron metal",
+		Font="journey/number/_journey even 40",
 		Name="Number",
-		OnCommand = function(self) self:valign(1):y(0) end,
+		OnCommand = function(self) self:valign(1):zoomx(1.2):y(0) end,
 		ComboCommand=function(self)
 			if self:GetText() and self:GetText() ~= "" then
 				local zoomed = settings[2] and (scale( self:GetText() ,0,500,0.9,1.4) > 1.4 and 1.4 or scale( self:GetText() ,0,500,0.9,1.4)) or 1
@@ -177,7 +177,7 @@ local t = Def.ActorFrame {
 	ComboCommand=function(self, param)
 		local iCombo = param.Misses or param.Combo
 		if not iCombo or iCombo < ShowComboAt then
-			c.Number:visible(false):y(10)
+			c.Number:visible(false):y(6)
 			c.Label:visible(false):y(0)
 			c.Misses:y(0)
 			return

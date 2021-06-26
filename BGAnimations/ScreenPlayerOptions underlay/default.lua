@@ -250,7 +250,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 		}
 
 		t[#t+1] = Def.BitmapText{
-			Font="_xenotron metal",
+			Font="journey/number/_journey even 40",
 			Condition=GAMESTATE:Env()["gnNextScreen"] == "gnPlayerSettings",
 			Text=math.random(50),
 			OnCommand=function(self)

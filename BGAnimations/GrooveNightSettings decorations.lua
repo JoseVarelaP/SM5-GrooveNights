@@ -63,7 +63,7 @@ t[#t+1] = Def.ActorFrame{
 }
 
 t[#t+1] = Def.BitmapText{
-    Font="_xenotron metal",
+    Font="journey/number/_journey even 40",
     Condition=GAMESTATE:Env()["GNSetting"] == "Judgment",
     Text=math.random(1,100),
     OnCommand=function(self)
