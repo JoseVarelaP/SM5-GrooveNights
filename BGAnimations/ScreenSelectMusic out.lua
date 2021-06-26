@@ -36,7 +36,13 @@ t[#t+1] = Def.ActorFrame{
 		ShowPressStartForOptionsCommand=function(self)
 			self:diffusealpha(1):faderight(.3):fadeleft(.3):cropright(-0.3):cropleft(-0.3):linear(0.3):cropleft(1.3)
 			-- Ending fade is here because the HideMessageCommand happens too late.
-			:sleep(1.5):cropright(1.3):cropleft(-0.3):linear(0.3):cropright(-0.3)
+			:sleep(1.5):queuecommand("BeginFadeout")
+		end,
+		BeginFadeoutCommand=function(self)
+			if SOUND.Volume then
+				SOUND:Volume(0,0.2)
+			end
+			self:cropright(1.3):cropleft(-0.3):linear(0.3):cropright(-0.3)
 		end,
 		ShowEnteringOptionsCommand=function(self)
 			-- When the player needs to go to the menu, force the crop to the end state.

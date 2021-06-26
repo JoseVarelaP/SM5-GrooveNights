@@ -44,6 +44,9 @@ return Def.ActorFrame{
 			:diffusealpha(0)
 		end,
 		LoadCommand=function(s)
+			if SOUND.Volume then
+				SOUND:Volume(0,0.6)
+			end
 			s:sleep(0.2):linear(0.2):diffusealpha(1)
 		end
 	}
