@@ -15,6 +15,7 @@ local function CreditsText( pn )
 			if screen then
 				local sClass = screen:GetName()
 				bShow = THEME:GetMetric( sClass, "ShowCreditDisplay" )
+				bShow = GAMESTATE:GetCoinMode() ~= 'CoinMode_Home'
 			end
 			self:visible( bShow )
 		end
@@ -27,7 +28,7 @@ local t = Def.ActorFrame {}
 t[#t+1] = LoadActor(THEME:GetPathB("ScreenSystemLayer","aux"))
 	-- Credits
 t[#t+1] = Def.ActorFrame {
- 	CreditsText( PLAYER_1 )
+ 	CreditsText( PLAYER_1 ),
 	CreditsText( PLAYER_2 ) 
 }
 
@@ -40,7 +41,7 @@ t[#t+1] = Def.ActorFrame {
 		Texture=THEME:GetPathG("ScreenSystemLayer","MessageFrame"),
 		InitCommand=function(s)
 			s:zoomtowidth( SCREEN_WIDTH ):diffuse( color("#1C2C3C") ):align(0,0)
-		end,
+		end
 	},
 	Def.Sound{ Name="Notification", File=THEME:GetPathS( 'gnSystemMessage', 'sound' ) },
 	Def.BitmapText{
@@ -53,14 +54,14 @@ t[#t+1] = Def.ActorFrame {
 		OffCommand=function(s) s:sleep(3):sleep(0.5):diffusealpha(0) end,
 	},
 	SystemMessageMessageCommand = function(self, params)
-		self:GetChild("Text"):settext( params.Message );
+		self:GetChild("Text"):settext( params.Message )
 		self:GetChild("Notification"):play()
-		self:playcommand( "On" );
+		self:playcommand( "On" )
 		if params.NoAnimate then
-			self:finishtweening();
+			self:finishtweening()
 		end
-		self:playcommand( "Off" );
-	end
+		self:playcommand( "Off" )
+	end,
 	HideSystemMessageMessageCommand = function(self) self:finishtweening() end
 }
 

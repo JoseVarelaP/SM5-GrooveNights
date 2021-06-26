@@ -1,5 +1,5 @@
 local Data = ...
-local t = Def.ActorFrame{
+return Def.ActorFrame{
 	OnCommand=function(self)
 		self:zoom(0.28):xy(-1,-1):wag():effectmagnitude(0,0,2)
 	end,
@@ -29,5 +29,3 @@ local t = Def.ActorFrame{
 		}
 	}
 }
-
-return t
