@@ -29,6 +29,9 @@ end
 local t = Def.ActorFrame{
 	OnCommand=function(s)
 		SCREENMAN:GetTopScreen():AddInputCallback(Mapper)
+	end,
+	OffCommand=function(s)
+		SCREENMAN:GetTopScreen():RemoveInputCallback(Mapper)
 	end
 }
 

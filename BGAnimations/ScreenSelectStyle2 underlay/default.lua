@@ -1,6 +1,7 @@
 local Choices = {
 	{
 		Video = "1player",
+		Color = color("#00CC33"),
 		--Description = "One Player uses 4 panels",
 		--Grandpa = "play once",
 		Available = function( pnm )
@@ -9,6 +10,7 @@ local Choices = {
 	},
 	{
 		Video = "2player",
+		Color = color("#66CCCC"),
 		--Description = "Two Players, each uses 4 panels",
 		--Grandpa = "play twice",
 		Available = function( pnm )
@@ -21,6 +23,7 @@ local Choices = {
 	},
 	{
 		Video = "double",
+		Color = color("#FF3333"),
 		--Description = "One Player uses all 8 panels",
 		--Grandpa = "play once then twice",
 		Available = function( pnm )
@@ -43,12 +46,14 @@ local Choices = {
 
 local snm = Var "LoadingScreen"
 local curchoice = 0
+local needsGrandpa = GAMESTATE:Env()["AngryGrandpa"]
 local t = Def.ActorFrame{
 	OnCommand=function(self)
-		SCREENMAN:GetTopScreen():AddInputCallback( LoadModule("Lua.InputSystem.lua")(self) )
-		GAMESTATE:JoinPlayer(0)
-		GAMESTATE:UnjoinPlayer(1)
-		self:playcommand("UpdateArea",{Val=1})
+		self.callback = LoadModule("Lua.InputSystem.lua")(self)
+		SCREENMAN:GetTopScreen():AddInputCallback( self.callback )
+		--GAMESTATE:JoinPlayer(0)
+		--GAMESTATE:UnjoinPlayer(1)
+		self:playcommand("UpdateArea",{Val=1,Mute=true})
 		SCREENMAN:GetTopScreen():SetAllowLateJoin(true)
 	end,
 	MenuLeftCommand=function(self)
@@ -86,8 +91,11 @@ local t = Def.ActorFrame{
 		if og ~= curchoice then
 			-- Update the current video preview with the new choice.
 			self:GetChild("VideoLoader"):playcommand("NewVid", { Video = THEME:GetPathB("ScreenSelectStyle2","underlay/video_".. Choices[curchoice].Video) })
+			if (curchoice ~= 0 and not param.Mute) then
+				self:GetChild("SoundChange"):play()
+			end
 			self:GetChild("Description"):settext(
-				THEME:GetString( snm, Choices[curchoice].Video .. (GAMESTATE:Env()["AngryGrandpa"] and "Grandpa" or "Description") )
+				THEME:GetString( snm, Choices[curchoice].Video .. (needsGrandpa and "Grandpa" or "Description") )
 			)
 
 			self:GetChild("Scroller"):playcommand("UpdateCur")
@@ -103,10 +111,14 @@ local t = Def.ActorFrame{
 			end
 		else
 			GAMESTATE:SetCurrentStyle( "single" )
+			self:GetChild("SoundChosen"):play()
+			SCREENMAN:GetTopScreen():RemoveInputCallback( self.callback )
+			SCREENMAN:GetTopScreen():SetAllowLateJoin(false)
 			SCREENMAN:GetTopScreen():StartTransitioningScreen( "SM_GoToNextScreen" )
 		end
 	end,
 	BackCommand=function(self)
+		SCREENMAN:GetTopScreen():RemoveInputCallback( self.callback )
 		SCREENMAN:GetTopScreen():StartTransitioningScreen( "SM_GoToPrevScreen" )
 	end
 }
@@ -118,6 +130,9 @@ t[#t+1] = Def.Quad{
 		self:xy( SCREEN_CENTER_X, SCREEN_CENTER_Y-80 ):diffuse(Color.Black):zoomto(264,210)
 	end
 }
+
+t[#t+1] = Def.Sound{ IsAction = true, Name = "SoundChange", File = THEME:GetPathS("_change","value") }
+t[#t+1] = Def.Sound{ IsAction = true, Name = "SoundChosen", File = THEME:GetPathS("Common","start") }
 
 t[#t+1] = Def.Sprite{
 	Name="VideoLoader",
@@ -142,14 +157,19 @@ for k,v in pairs( Choices ) do
 		UpdateCurCommand=function(self)
 			self:stoptweening():tween(0.3,"easeoutcubic"):zoom( curchoice == k and 0.6 or 0.5 )
 		end,
-		Def.Sprite{
-			Name="ModeGraphic", Texture=THEME:GetPathG("Select","Style/".. v.Video),
+		Def.BitmapText{
+			Font="journey/40/_journey 40px",
+			Name="ModeGraphic",
+			Text=THEME:GetString(snm, v.Video.."title"),
+			InitCommand=function(self)
+				self:diffuse( v.Color or Color.White ):zoom(2):y(-8)
+			end,
 			UpdateCurCommand=function(self)
-				self:stoptweening():tween(0.1,"linear"):diffuse( v.Available() and Color.White or ColorDarkTone(Color.White) )
+				self:stoptweening():tween(0.1,"linear"):diffuse( v.Available() and v.Color or ColorDarkTone(Color.White) )
 			end
 		},
 		Def.Sprite{
-			Name="Lock", Texture=THEME:GetPathG("Select","Style/Lock"),
+			Name="Lock", Texture=THEME:GetPathG("Select Style","Lock"),
 			UpdateCurCommand=function(self)
 				self:stoptweening():tween(0.5,"easeoutelastic"):zoom(1):diffusealpha( v.Available() and 0 or 1 )
 			end
