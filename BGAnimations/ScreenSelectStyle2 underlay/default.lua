@@ -2,6 +2,7 @@ local Choices = {
 	{
 		Video = "1player",
 		Color = color("#00CC33"),
+		Style = "single",
 		--Description = "One Player uses 4 panels",
 		--Grandpa = "play once",
 		Available = function( pnm )
@@ -13,6 +14,7 @@ local Choices = {
 		Color = color("#66CCCC"),
 		--Description = "Two Players, each uses 4 panels",
 		--Grandpa = "play twice",
+		Style = "versus",
 		Available = function( pnm )
 			local CanJoin = true
 
@@ -26,6 +28,8 @@ local Choices = {
 		Color = color("#FF3333"),
 		--Description = "One Player uses all 8 panels",
 		--Grandpa = "play once then twice",
+		Style = "double",
+		NeedsRemoval = true,
 		Available = function( pnm )
 			--local coins = GAMESTATE:GetCoins()
 			--local coinsPerCredit = PREFSMAN:GetPreference("CoinsPerCredit")
@@ -34,7 +38,7 @@ local Choices = {
 
 			if (GAMESTATE:GetNumPlayersEnabled() < 2 and not GAMESTATE:PlayersCanJoin()) then CanJoin = false end
 			if GAMESTATE:GetPremium() == "Premium_Off" then CanJoin = false end
-			if GAMESTATE:GetCoinMode() == "CoinMode_Pay" and remaining ~= 0 then CanJoin = false end
+			-- if GAMESTATE:GetCoinMode() == "CoinMode_Pay" and remaining ~= 0 then CanJoin = false end
 
 			--if GAMESTATE:GetPremium() ~= "Premium_Off" and not (GAMESTATE:GetCoinMode() ~= "CoinMode_Pay" or GAMESTATE:IsEventMode())
 			--(GAMESTATE:GetCoinMode() == COIN_MODE_FREE or GAMESTATE:GetCoinMode() == COIN_MODE_HOME or GAMESTATE:IsEventMode())
@@ -103,23 +107,36 @@ local t = Def.ActorFrame{
 	end,
 	StartCommand=function(self)
 		-- If the player is not available, perform a series of checks to see if it's capable of joining.
+		local PlayerSelected = self.pn
 		if not GAMESTATE:IsPlayerEnabled(self.pn) then
-			local remaining = GAMESTATE:GetCoinsNeededToJoin()
+			--local remaining = GAMESTATE:GetCoinsNeededToJoin()
+			--lua.ReportScriptError(remaining)
 
-			if remaining == 0 or GAMESTATE:PlayersCanJoin() then
+			if GAMESTATE:EnoughCreditsToJoin() or GAMESTATE:PlayersCanJoin() then
 				GAMESTATE:JoinPlayer(self.pn)
 			end
 		else
-			GAMESTATE:SetCurrentStyle( "single" )
+			if( Choices[curchoice].NeedsRemoval ) then
+				local rev = OtherPlayer[ PlayerSelected ]
+				GAMESTATE:UnjoinPlayer( rev )
+			end
+			GAMESTATE:SetCurrentPlayMode( "regular" )
+			GAMESTATE:SetCurrentStyle( Choices[curchoice].Style )
+			if( Choices[curchoice].Style == "double" ) then
+				LoadModule("Config.Save.lua")("AutoSetStyle","false","Save/GrooveNightsPrefs.ini")
+				THEME:ReloadMetrics()
+			end
 			self:GetChild("SoundChosen"):play()
-			SCREENMAN:GetTopScreen():RemoveInputCallback( self.callback )
-			SCREENMAN:GetTopScreen():SetAllowLateJoin(false)
-			SCREENMAN:GetTopScreen():StartTransitioningScreen( "SM_GoToNextScreen" )
+			self:playcommand("RemoveObjects", {"SM_GoToNextScreen"})
 		end
 	end,
 	BackCommand=function(self)
+		self:playcommand("RemoveObjects", {"SM_GoToPrevScreen"})
+	end,
+	RemoveObjectsCommand=function(self,GoTo)
 		SCREENMAN:GetTopScreen():RemoveInputCallback( self.callback )
-		SCREENMAN:GetTopScreen():StartTransitioningScreen( "SM_GoToPrevScreen" )
+		SCREENMAN:GetTopScreen():SetAllowLateJoin(false)
+		SCREENMAN:GetTopScreen():StartTransitioningScreen( GoTo[1] )
 	end
 }
 

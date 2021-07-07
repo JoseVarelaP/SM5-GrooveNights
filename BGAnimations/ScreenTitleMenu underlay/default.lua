@@ -8,6 +8,7 @@ return Def.ActorFrame{
 			:zoomx(1.1)
 
 			local ogfall = LoadModule("Config.Load.lua")("MachineOffset","Save/GrooveNightsPrefs.ini")
+			LoadModule("Config.Save.lua")("AutoSetStyle","true","Save/GrooveNightsPrefs.ini")
 
 			if ogfall then
 				local curoffset = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )

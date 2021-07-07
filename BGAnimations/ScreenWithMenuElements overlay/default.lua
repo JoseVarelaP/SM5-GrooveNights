@@ -81,7 +81,7 @@ t[#t+1] = Def.ActorFrame{
 		Condition=(not GAMESTATE:IsEventMode() and not currentdata.ColorOffset),
 		Text=curindex,
 		OnCommand=function(self)
-			self:xy( s:GetParent():GetChild("RoundArea"):GetZoomedWidth()*0.6, -4 ):diffuse(Color.Red):strokecolor(Color.Black)
+			self:xy( self:GetParent():GetChild("RoundArea"):GetZoomedWidth()*0.6, -4 ):diffuse(Color.Red):strokecolor(Color.Black)
 		end
 	}
 }
