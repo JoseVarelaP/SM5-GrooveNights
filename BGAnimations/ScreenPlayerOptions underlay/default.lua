@@ -1,5 +1,7 @@
 local t = Def.ActorFrame{}
 
+local containsSong = GAMESTATE:GetCurrentSong()
+
 local Steps = {}
 local DifficultyIndex = {
 	["Difficulty_Beginner"] = 1,
@@ -10,9 +12,12 @@ local DifficultyIndex = {
 	["Difficulty_Edit"] = 6,
 }
 
-for _,v in pairs( GAMESTATE:GetCurrentSong():GetStepsByStepsType( GAMESTATE:GetCurrentStyle():GetStepsType() ) ) do
-	Steps[ DifficultyIndex[ v:GetDifficulty() ] ] = v
+if containsSong then
+	for _,v in pairs( GAMESTATE:GetCurrentSong():GetStepsByStepsType( GAMESTATE:GetCurrentStyle():GetStepsType() ) ) do
+		Steps[ DifficultyIndex[ v:GetDifficulty() ] ] = v
+	end
 end
+
 t[#t+1] = Def.Quad{
 	OnCommand=function(self)
 		self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y)
@@ -43,6 +48,7 @@ local function side(pn)
 	return s*(-1)
 end
 
+if containsSong then
 for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 	t[#t+1] = LoadActor("../SpeedModUpdate.lua",pn)
 	local PDir = MEMCARDMAN:GetCardState(pn) == 'MemoryCardState_none' and PROFILEMAN:GetProfileDir(string.sub(pn,-1)-1).."/GrooveNightsPrefs.ini" or "Save/TEMP"..pn
@@ -232,7 +238,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 		t[#t+1] = Def.Sprite{
 			Texture=THEME:GetPathG("Judgment","label"),
 			Condition=GAMESTATE:Env()["gnNextScreen"] == "gnPlayerSettings",
-			OnCommand=function(self)
+			InitCommand=function(self)
 				self:animate(0):xy( SCREEN_CENTER_X-240*side(pn), SCREEN_CENTER_Y-166 )
 				:zoom( 0.75*DJS )
 				:diffusealpha( DJO )
@@ -253,7 +259,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 			Font="journey/number/_journey even 40",
 			Condition=GAMESTATE:Env()["gnNextScreen"] == "gnPlayerSettings",
 			Text=math.random(50),
-			OnCommand=function(self)
+			InitCommand=function(self)
 				self:animate(0):xy( SCREEN_CENTER_X-130*side(pn), SCREEN_CENTER_Y-166 )
 				:zoom( 0.75*DCS )
 			end,
@@ -263,6 +269,7 @@ for pn in ivalues( GAMESTATE:GetHumanPlayers() ) do
 				end
 			end
 		}
+end
 end
 
 t[#t+1] = Def.Sprite{
