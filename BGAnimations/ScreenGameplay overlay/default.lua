@@ -49,6 +49,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 	local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
 	local totalNotes = LoadModule("Pane.RadarValue.lua")(player,6)
 	local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1] or 0
+	config = tonumber(config)
 	
 	local ScoringMethodology = LoadModule("Gameplay.CalculatePercentage.lua")( player )
 	Score[#Score+1] = Def.BitmapText{
@@ -72,7 +73,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 
 	-- Dedicated true score percentage.
 	-- Only applicable on Flat Scoring
-	if tonumber(config) == 3 then
+	if config == 3 then
 		Score[#Score+1] = Def.BitmapText{
 			Condition=GAMESTATE:IsPlayerEnabled(player) and GAMESTATE:GetPlayMode() ~= "PlayMode_Oni",
 			Font="journey/number/_journey 40",

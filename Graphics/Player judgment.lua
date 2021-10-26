@@ -7,19 +7,19 @@ local PDir = (
 	or "Save/TEMP"..player
 )
 local settings = {"DefaultJudgmentSize","DefaultJudgmentOpacity","ToggleJudgmentBounce"}
-for _,v in pairs(settings) do
-	-- In case the profile is an actual profile or USB
-	if not GAMESTATE:IsDemonstration() then
+-- In case the profile is an actual profile or USB
+if not GAMESTATE:IsDemonstration() then
+	for _,v in pairs(settings) do
 		if isRealProf then
 			settings[_] = LoadModule("Config.Load.lua")(v,PDir)
 		-- If not, then we'll use the temporary set for regular players.
 		else
 			settings[_] = GAMESTATE:Env()[v.."Machinetemp"..player]
 		end
-	else
-		-- Set defaults
-		settings = {1,1,true}
 	end
+else
+	-- Set defaults
+	settings = {1,1,true}
 end
 
 local TNSFrames = {
@@ -33,18 +33,17 @@ local TNSFrames = {
 
 local RotTween = {
 	-- Even, Odd
-	TapNoteScore_W1 = {0,0},
-	TapNoteScore_W2 = {0,0},
-	TapNoteScore_W3 = {-3,3},	
-	TapNoteScore_W4 = {-5,5},
-	TapNoteScore_W5 = {-10,10},
-	TapNoteScore_Miss = {-30,30},
+	TapNoteScore_W1 = 0,
+	TapNoteScore_W2 = 0,
+	TapNoteScore_W3 = 3,
+	TapNoteScore_W4 = 5,
+	TapNoteScore_W5 = 10,
+	TapNoteScore_Miss = 30,
 }
 
 local zoominit = settings[3] and ( settings[1] and 0.8*settings[1] or 0.8) or (settings[1] and 0.75*settings[1] or 0.75)
 
-local t = Def.ActorFrame {}
-t[#t+1] = Def.ActorFrame {
+return Def.ActorFrame {
 	LoadActor("Judgment label") .. {
 		Name="Judgment",
 		InitCommand=function(self)
@@ -76,18 +75,14 @@ t[#t+1] = Def.ActorFrame {
 				iFrame = iFrame + 1
 			end
 		end
-
-		local pNum = (player == PLAYER_1) and 1 or 2
 		
 		self:playcommand("Reset")
 		c.Judgment:visible( true )
 		c.Judgment:diffusealpha( settings[2] or 1 )
 		c.Judgment:setstate( iFrame )
-		c.Judgment:rotationz( RotTween[param.TapNoteScore][math.random(1,2)] )
+		c.Judgment:rotationz( RotTween[param.TapNoteScore] * (math.random(1,2) == 2 and 1 or -1) )
 		c.Judgment:zoom( zoominit )
 		c.Judgment:decelerate( 0.1 )
 		c.Judgment:zoom( settings[1] and 0.75*settings[1] or 0.75 )
 	end
 }
-
-return t
