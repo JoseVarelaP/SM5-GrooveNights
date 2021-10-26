@@ -14,7 +14,14 @@ function DifficultyColor( dc )
 end
 
 Branch.AfterTitleMenu = function()
-	return "ScreenSelectProfile"
+	if PROFILEMAN:GetNumLocalProfiles() > 1 then
+		return "ScreenSelectProfile"
+	end
+	return "ScreenProfileLoad"
+end
+
+Branch.AfterProfileLoad = function()
+	return Branch.AfterSelectProfile()
 end
 
 Branch.AfterSelectProfile = function()

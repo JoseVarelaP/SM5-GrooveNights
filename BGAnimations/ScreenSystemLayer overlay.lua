@@ -14,7 +14,7 @@ local function CreditsText( pn )
 			local bShow = true
 			if screen then
 				local sClass = screen:GetName()
-				bShow = THEME:GetMetric( sClass, "ShowCreditDisplay" )
+				--bShow = THEME:GetMetric( sClass, "ShowCreditDisplay" )
 				bShow = GAMESTATE:GetCoinMode() ~= 'CoinMode_Home'
 			end
 			self:visible( bShow )
