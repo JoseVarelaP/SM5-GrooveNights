@@ -7,6 +7,38 @@ local col = pn == PLAYER_2 and 2 or 1
 local Speedmargin = LoadModule("Config.Load.lua")("SpeedMargin","Save/OutFoxPrefs.ini") and LoadModule("Config.Load.lua")("SpeedMargin","Save/OutFoxPrefs.ini")*100 or 25
 local ORNum = 1
 
+local speedtypes = {
+	["x"] = function(playeroptions) playeroptions:XMod(speed[1]*0.01) end,
+	["c"] = function(playeroptions) playeroptions:CMod(speed[1]) end,
+	["m"] = function(playeroptions) playeroptions:MMod(speed[1]) end,
+	["a"] = function(playeroptions) playeroptions:AMod(speed[1]) end,
+}
+
+local speedset = setmetatable(speedtypes,{
+	__index = function(this, key)
+		if this[key] then
+			this[key]()
+		end
+	end
+})
+
+local calculateNewMargin = function(curSpeed, speedMargin)
+	-- Left is lowest posible, right is highest.
+	local marginarea = {}
+	-- calculate the current offset of the current speeed to the allowed margin.
+	local speedOffset = math.mod( curSpeed, speedMargin )
+
+	local marginHalve = speedMargin*.5
+	local newval = curSpeed
+	if speedOffset < marginHalve then
+		newval = curSpeed - speedOffset
+	else
+		newval = (curSpeed + Speedmargin) - speedOffset
+	end
+
+	return newval
+end
+
 return Def.ActorFrame{
 	Def.Sound{
 		Name = "value",
@@ -29,6 +61,9 @@ return Def.ActorFrame{
 		if speed[1] < Speedmargin then
 			speed[1] = Speedmargin
 		end
+
+		speed[1] = calculateNewMargin(speed[1],Speedmargin)
+
 		if isPlayerOptions and SCREENMAN:GetTopScreen() and SCREENMAN:GetTopScreen():GetOptionRow(ORNum) then
 			local text = ""
 			if speed[2] == "x" then
@@ -87,14 +122,7 @@ return Def.ActorFrame{
 		local playeroptions = GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred")
 		playeroptions:XMod(1.00)
 
-		if speed[2] == "x" then
-			playeroptions:XMod(speed[1]*0.01)
-		elseif speed[2] == "c" then
-			playeroptions:CMod(speed[1])
-		elseif speed[2] == "m" then
-			playeroptions:MMod(speed[1])
-		elseif speed[2] == "a" then
-			playeroptions:AMod(speed[1])
-		end
+		-- Set the new speed to the player. This is handled by a metatable.
+		speedset[speed[2]](playeroptions)
 	end
 }
