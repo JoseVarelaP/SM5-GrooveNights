@@ -179,7 +179,7 @@ function UpdateInternal3(self, Player)
 			end
 		else
 			joinframe:GetChild("JoinText"):settext( Strings.ConfirmText )
-			seltext:settext( Strings.UsingCard )
+			seltext:settext( MEMCARDMAN:GetName(Player) )
 			SCREENMAN:GetTopScreen():SetProfileIndex(Player, 0)
 		end
 	end
@@ -193,66 +193,101 @@ local t = Def.ActorFrame {
 		self:queuecommand('UpdateInternal2')
 	end,
 
-	CodeMessageCommand = function(self, params)
-		if params.Name == 'Start' or params.Name == 'Center' then
-			MESSAGEMAN:Broadcast("StartButton")
-			if not GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-				SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, -1)
+	StartCommand = function(self)
+		MESSAGEMAN:Broadcast("StartButton")
+		if not GAMESTATE:IsHumanPlayer(self.pn) then
+			SCREENMAN:GetTopScreen():SetProfileIndex(self.pn, -1)
+			
+			local isHuman = GAMESTATE:IsHumanPlayer(self.pn)
+			local isUsingCard = MEMCARDMAN:GetCardState(self.pn) ~= 'MemoryCardState_none'
 
-				local isHuman = GAMESTATE:IsHumanPlayer(params.PlayerNumber)
-				local isUsingCard = MEMCARDMAN:GetCardState(params.PlayerNumber) ~= 'MemoryCardState_none'
-
-				if isHuman and isUsingCard then
-					local pn = tonumber( string.sub( params.PlayerNumber, -1 ) )
-					local frame = self:GetChild(string.format('P%uFrame', pn))
-					local seltext = frame:GetChild('SelectedProfileText')
-					self:GetChild("CardAvailable"):play()
-					frame:GetChild("FrameB"):stoptweening():easeoutexpo(0.4):croptop(0.77)
-					frame:GetChild("FrameF"):stoptweening():easeoutexpo(0.4):croptop(0.77)
-					seltext:stoptweening():easeoutexpo(0.4):x(50):zoom(0.8)
-					frame:GetChild("MemoryCardIcon"):stoptweening():y(80):easeoutbounce(0.8):diffusealpha(1):y( 106 )
-					frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutbounce(0.8):rotationz( 0 )
-				end
-			else
-				SCREENMAN:GetTopScreen():Finish()
-			end
-		end
-		if params.Name == 'Up' or params.Name == 'Up2' or params.Name == 'DownLeft' then
-			if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-				local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
-				if ind > 1 then
-					if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind - 1 ) then
-						MESSAGEMAN:Broadcast("DirectionButton")
-						self:queuecommand('UpdateInternal2')
-					end
-				end
-			end
-		end
-		if params.Name == 'Down' or params.Name == 'Down2' or params.Name == 'DownRight' then
-			if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-				local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
-				if ind > 0 then
-					if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind + 1 ) then
-						MESSAGEMAN:Broadcast("DirectionButton")
-						self:queuecommand('UpdateInternal2')
-					end
-				end
-			end
-		end
-		if params.Name == 'Back' then
-			if GAMESTATE:GetNumPlayersEnabled()==0 then
-				SCREENMAN:GetTopScreen():Cancel()
-			else
-				MESSAGEMAN:Broadcast("BackButton")
-				local pn = tonumber( string.sub( params.PlayerNumber, -1 ) )
+			if isHuman and isUsingCard then
+				local pn = tonumber( string.sub( self.pn, -1 ) )
 				local frame = self:GetChild(string.format('P%uFrame', pn))
-				frame:GetChild("FrameB"):stoptweening():easeinoutexpo(0.4):croptop(0)
-				frame:GetChild("FrameF"):stoptweening():easeinoutexpo(0.4):croptop(0)
-				frame:GetChild("MemoryCardIcon"):stoptweening():easeoutexpo(0.8):diffusealpha(1):y( 120 ):diffusealpha(0)
-				frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutexpo(0.8):rotationz( math.random(20) )
-				SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, -2)
+				local seltext = frame:GetChild('SelectedProfileText')
+				self:GetChild("CardAvailable"):play()
+				frame:GetChild("FrameB"):stoptweening():easeoutexpo(0.4):croptop(0.77)
+				frame:GetChild("FrameF"):stoptweening():easeoutexpo(0.4):croptop(0.77)
+				seltext:stoptweening():easeoutexpo(0.4):x(50):zoom(0.8)
+				frame:GetChild("MemoryCardIcon"):stoptweening():y(80):easeoutbounce(0.8):diffusealpha(1):y( 106 )
+				frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutbounce(0.8):rotationz( 0 )
+			end
+		else
+			SCREENMAN:GetTopScreen():Finish()
+		end
+	end,
+
+	MenuUpCommand=function(self)
+		self:playcommand("Offset",{ PlayerNumber = self.pn })
+	end,
+	MenuDownCommand=function(self)
+		self:playcommand("Offset",{ PlayerNumber = self.pn })
+	end,
+
+	OffsetCommand=function(self,params)
+		if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
+			local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
+			if ind > 0 then
+				if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind + 1 ) then
+					MESSAGEMAN:Broadcast("DirectionButton")
+					self:queuecommand('UpdateInternal2')
+				end
 			end
 		end
+	end,
+
+	BackCommand=function(self)
+		if GAMESTATE:GetNumPlayersEnabled()==0 then
+			SCREENMAN:GetTopScreen():Cancel()
+		else
+			MESSAGEMAN:Broadcast("BackButton")
+			local pn = tonumber( string.sub( self.pn, -1 ) )
+			local frame = self:GetChild(string.format('P%uFrame', pn))
+			frame:GetChild("FrameB"):stoptweening():easeinoutexpo(0.4):croptop(0)
+			frame:GetChild("FrameF"):stoptweening():easeinoutexpo(0.4):croptop(0)
+			frame:GetChild("MemoryCardIcon"):stoptweening():easeoutexpo(0.8):diffusealpha(1):y( 120 ):diffusealpha(0)
+			frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutexpo(0.8):rotationz( math.random(20) )
+			SCREENMAN:GetTopScreen():SetProfileIndex(self.pn, -2)
+		end
+	end,
+
+	CodeMessageCommand = function(self, params)
+		--if params.Name == 'Up' or params.Name == 'Up2' or params.Name == 'DownLeft' then
+		--	if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
+		--		local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
+		--		if ind > 1 then
+		--			if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind - 1 ) then
+		--				MESSAGEMAN:Broadcast("DirectionButton")
+		--				self:queuecommand('UpdateInternal2')
+		--			end
+		--		end
+		--	end
+		--end
+		--if params.Name == 'Down' or params.Name == 'Down2' or params.Name == 'DownRight' then
+		--	if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
+		--		local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
+		--		if ind > 0 then
+		--			if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind + 1 ) then
+		--				MESSAGEMAN:Broadcast("DirectionButton")
+		--				self:queuecommand('UpdateInternal2')
+		--			end
+		--		end
+		--	end
+		--end
+		--if params.Name == 'Back' then
+		--	if GAMESTATE:GetNumPlayersEnabled()==0 then
+		--		SCREENMAN:GetTopScreen():Cancel()
+		--	else
+		--		MESSAGEMAN:Broadcast("BackButton")
+		--		local pn = tonumber( string.sub( params.PlayerNumber, -1 ) )
+		--		local frame = self:GetChild(string.format('P%uFrame', pn))
+		--		frame:GetChild("FrameB"):stoptweening():easeinoutexpo(0.4):croptop(0)
+		--		frame:GetChild("FrameF"):stoptweening():easeinoutexpo(0.4):croptop(0)
+		--		frame:GetChild("MemoryCardIcon"):stoptweening():easeoutexpo(0.8):diffusealpha(1):y( 120 ):diffusealpha(0)
+		--		frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutexpo(0.8):rotationz( math.random(20) )
+		--		SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, -2)
+		--	end
+		--end
 	end,
 
 	PlayerJoinedMessageCommand=function(self, params)
@@ -262,6 +297,7 @@ local t = Def.ActorFrame {
 		self:queuecommand('UpdateInternal2')
 	end,
 	OnCommand=function(self, params)
+		SCREENMAN:GetTopScreen():AddInputCallback( LoadModule("Lua.InputSystem.lua")(self) )
 		self:queuecommand('UpdateInternal2')
 	end,
 	UpdateInternal2Command=function(self)
