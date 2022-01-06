@@ -126,7 +126,7 @@ t[#t+1] = Def.BitmapText {
 	Font="novamono/36/_novamono 36px",
 	Text=PROFILEMAN:GetProfile(player):GetDisplayName(),
     OnCommand=function(s)
-        s:xy(-114,20):zoom(0.5):diffuse( PlayerColor(player) )
+        s:xy(-114,20):zoom(0.5):diffuse( PlayerColor(player) ):maxwidth(120)
 	end,
 };
 
