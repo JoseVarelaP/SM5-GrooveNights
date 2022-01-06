@@ -1,4 +1,6 @@
 local isArcadeSetting = GAMESTATE:GetCoinMode() ~= "CoinMode_Home"
+-- If there are profiles, an animation must carry out.
+local hasProfiles = PROFILEMAN:GetNumLocalProfiles() > 0
 return Def.ActorFrame{
 	Def.Quad{
 		OnCommand=function(self)
@@ -31,5 +33,10 @@ return Def.ActorFrame{
 				:sleep(0.05):accelerate(.2):y( SCREEN_HEIGHT+200 )
 			end
 		}
+	},
+
+	Def.ActorFrame{
+		Condition=not isArcadeSetting and hasProfiles,
+		loadfile( THEME:GetPathB("Transitions/Arrow","In") )()
 	}
 }

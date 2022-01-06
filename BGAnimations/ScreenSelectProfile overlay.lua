@@ -213,6 +213,7 @@ local t = Def.ActorFrame {
 				frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutbounce(0.8):rotationz( 0 )
 			end
 		else
+
 			SCREENMAN:GetTopScreen():Finish()
 		end
 	end,
@@ -251,45 +252,6 @@ local t = Def.ActorFrame {
 		end
 	end,
 
-	CodeMessageCommand = function(self, params)
-		--if params.Name == 'Up' or params.Name == 'Up2' or params.Name == 'DownLeft' then
-		--	if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-		--		local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
-		--		if ind > 1 then
-		--			if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind - 1 ) then
-		--				MESSAGEMAN:Broadcast("DirectionButton")
-		--				self:queuecommand('UpdateInternal2')
-		--			end
-		--		end
-		--	end
-		--end
-		--if params.Name == 'Down' or params.Name == 'Down2' or params.Name == 'DownRight' then
-		--	if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-		--		local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
-		--		if ind > 0 then
-		--			if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind + 1 ) then
-		--				MESSAGEMAN:Broadcast("DirectionButton")
-		--				self:queuecommand('UpdateInternal2')
-		--			end
-		--		end
-		--	end
-		--end
-		--if params.Name == 'Back' then
-		--	if GAMESTATE:GetNumPlayersEnabled()==0 then
-		--		SCREENMAN:GetTopScreen():Cancel()
-		--	else
-		--		MESSAGEMAN:Broadcast("BackButton")
-		--		local pn = tonumber( string.sub( params.PlayerNumber, -1 ) )
-		--		local frame = self:GetChild(string.format('P%uFrame', pn))
-		--		frame:GetChild("FrameB"):stoptweening():easeinoutexpo(0.4):croptop(0)
-		--		frame:GetChild("FrameF"):stoptweening():easeinoutexpo(0.4):croptop(0)
-		--		frame:GetChild("MemoryCardIcon"):stoptweening():easeoutexpo(0.8):diffusealpha(1):y( 120 ):diffusealpha(0)
-		--		frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutexpo(0.8):rotationz( math.random(20) )
-		--		SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, -2)
-		--	end
-		--end
-	end,
-
 	PlayerJoinedMessageCommand=function(self, params)
 		self:queuecommand('UpdateInternal2')
 	end,
@@ -307,9 +269,9 @@ local t = Def.ActorFrame {
 
 	children = {
 		-- sounds
-		LoadActor( THEME:GetPathS("Common","start") )..{ StartButtonMessageCommand=function (self) self:play() end },
+		LoadActor( THEME:GetPathS("PlayerReady","sound") )..{ StartButtonMessageCommand=function (self) self:play() end },
 		LoadActor( THEME:GetPathS("MemoryCardManager","ready") )..{ Name="CardAvailable" },
-		LoadActor( THEME:GetPathS("MemoryCardManager","disconnect") )..{ BackButtonMessageCommand= function (self) self:play() end },
+		LoadActor( THEME:GetPathS("PlayerNotReady","sound") )..{ BackButtonMessageCommand= function (self) self:play() end },
 		LoadActor( THEME:GetPathS("_change","value") )..{ DirectionButtonMessageCommand= function (self) self:play() end }
 	}
 }
@@ -329,7 +291,7 @@ for i,Player in pairs( PlayerNumber ) do
 			self:GetChild('Scroller'):visible( isHuman and not isUsingCard )
 			self:GetChild('SmallFrame'):visible( isHuman and not isUsingCard )
 			if isHuman and isUsingCard then
-				--self:GetChild("CardAvailable"):play()
+				self:GetParent():GetChild("CardAvailable"):play()
 				seltext:stoptweening():easeoutexpo(0.4):x(50):zoom(0.8)
 				self:GetChild("MemoryCardIcon"):stoptweening():y(80):easeoutbounce(0.8):diffusealpha(1):y( 106 )
 				self:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutbounce(0.8):rotationz( 0 )

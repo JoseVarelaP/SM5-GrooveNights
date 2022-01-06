@@ -14,7 +14,7 @@ return Def.ActorFrame{
 
 	Def.Sound{
 		IsAction = true,
-		File = THEME:GetPathS("gnScreenTransition whoosh", "short"),
+		File = THEME:GetPathS("gnScreenTransition whoosh", "in"),
 		OnCommand = function(self)
 			self:play()
 		end
