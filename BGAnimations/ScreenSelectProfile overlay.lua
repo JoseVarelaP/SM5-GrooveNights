@@ -298,7 +298,7 @@ for i,Player in pairs( PlayerNumber ) do
 			end
 		end,
 		OffCommand= function (self)
-			self:bouncebegin(0.35):zoom(0)
+			self:bouncebegin(0.35):diffusealpha(0)
 		end,
 		PlayerJoinedMessageCommand=function(self,param)
 		end,

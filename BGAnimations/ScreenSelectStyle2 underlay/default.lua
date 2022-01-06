@@ -128,6 +128,9 @@ local t = Def.ActorFrame{
 			end
 			self:GetChild("SoundChosen"):play()
 			self:playcommand("RemoveObjects", {"SM_GoToNextScreen"})
+			if SOUND.Volume then
+				SOUND:Volume(0,0.4)
+			end
 		end
 	end,
 	BackCommand=function(self)

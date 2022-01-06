@@ -15,18 +15,10 @@ if isArcadeSetting then
 			end
 		},
 
-		Def.Sound{
-			IsAction = true,
-			File = THEME:GetPathS("gnScreenTransition whoosh", "short"),
-			StartTransitioningCommand = function(self)
-				self:play()
-			end
-		},
-
 		Def.Sprite{
 			Texture=THEME:GetPathG("","TransitionArrow"),
 			OnCommand=function(self)
-				self:xy(SCREEN_CENTER_X,SCREEN_BOTTOM+100):zoom(1.9):decelerate(0.2):y( SCREEN_CENTER_Y )
+				self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y):zoom(0):easeoutexpo(0.6):zoom(1.9):y( SCREEN_CENTER_Y )
 			end
 		},
 

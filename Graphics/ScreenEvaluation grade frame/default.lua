@@ -106,7 +106,7 @@ t[#t+1] = Def.ActorFrame{
 		Def.Sprite{
 			Texture=THEME:GetPathG('_difficulty pips','B'),
 			OnCommand=function(self)
-				self:xy(0,0):animate(0):playcommand("Update")
+				self:animate(0):playcommand("Update")
 			end,
 			UpdateCommand=function(self,parent) self:setstate( LoadModule("Gameplay.SetFrameDifficulty.lua")(player,true) ) end
 		},
@@ -114,8 +114,7 @@ t[#t+1] = Def.ActorFrame{
 		Def.Sprite{
 			Texture=THEME:GetPathG('_difficulty pips','F'),
 			OnCommand=function(self)
-				self:xy(0,0):animate(0)
-				:diffuse(color("#1C2C3C"))
+				self:animate(0):diffuse(color("#1C2C3C"))
 			end,
 			UpdateCommand=function(self,parent) self:setstate( LoadModule("Gameplay.SetFrameDifficulty.lua")(player,true) ) end
 		},
