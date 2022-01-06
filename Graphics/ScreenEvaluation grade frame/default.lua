@@ -11,9 +11,11 @@ local optionslist = ""
 local PlayerGrade = "Grade_Tier17"
 local GradeNum = 17
 
-PlayerGrade = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetGrade()
+local PlayerStats = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+
+PlayerGrade = PlayerStats:GetGrade()
 GradeNum = tonumber(string.sub( ToEnumShortString( PlayerGrade ), 5 ))
-if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetFailed( player ) then
+if PlayerStats:GetFailed( player ) then
 	PlayerGrade = "Grade_Failed"
 end
 -- Now set a ipairs instance to get all things.
@@ -32,15 +34,15 @@ local DiffAward = "_empty"
 
 -- If we do get an award, then return the value it gives.
 -- I know this is a shit method, but I've tried some others with no success.
-if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPeakComboAward() ~= nil then
-	if string.len( STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPeakComboAward() ) > 1 then
-		ComboAward = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetPeakComboAward()
+if PlayerStats:GetPeakComboAward() ~= nil then
+	if string.len( PlayerStats:GetPeakComboAward() ) > 1 then
+		ComboAward = PlayerStats:GetPeakComboAward()
 	end
 end
 
 -- time for checks for each PerDifficulty award.
-if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetStageAward() ~= nil then
-	DiffAward = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetStageAward()
+if PlayerStats:GetStageAward() ~= nil then
+	DiffAward = PlayerStats:GetStageAward()
 end
 
 local function side(pn)
@@ -215,7 +217,7 @@ t[#t+1] = Def.ActorFrame{
 			end,
 			BeginCommand=function(self)
 				self:Load("ComboGraphP"..pnum(player))
-				local playerStageStats = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+				local playerStageStats = PlayerStats
 				local stageStats = STATSMAN:GetCurStageStats()
 				self:Set(stageStats, playerStageStats)
 			end,
@@ -246,14 +248,6 @@ t[#t+1] = Def.ActorFrame{
 				end
 			end,
 		},
-			
-
-	Def.BitmapText{ Font="Common Normal", Text=THEME:GetString("ScreenEvaluation","Disqualified"),
-		Condition=STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified(),
-		OnCommand=function(self)
-			self:xy(0,-26):zoom(0.6):shadowlength(2):wrapwidthpixels(400):diffusealpha(0.4)
-		end
-	}
 
 	-- LoadActor( "../ComboAwards/"..ComboAward..".lua" )..{ OnCommand=function(s) s:y(1.2) end },
 	-- LoadActor( "../ComboAwards/"..DiffAward..".lua" )..{ OnCommand=function(s) s:y(1.2) end }
@@ -358,7 +352,7 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 		Def.BitmapText{ Font="ScreenEvaluation judge",
 			OnCommand=function(self)
 				self:y(1+16*index):zoom(0.5):halign(1):diffuse( PlayerColor(player) )
-				local sco = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)
+				local sco = PlayerStats:GetTapNoteScores("TapNoteScore_"..ScWin)
 				totalnote = totalnote + sco
 				self:settext(("%4.0f"):format( sco )):diffuse( PlayerColor(player) )
 				local leadingZeroAttr = { Length=4-tonumber(tostring(sco):len()), Diffuse=PColor[player] }
@@ -390,7 +384,7 @@ for index, ScWin in ipairs(JudgmentInfo.Types) do
 				:halign(0):diffusealpha(1):zoomx(0):zoomy(1):queuecommand("Calculate")
 			end,
 			CalculateCommand=function(self)
-				local JudgeText = math.ceil(tonumber(STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetTapNoteScores("TapNoteScore_"..ScWin)) / totalnote * 121)
+				local JudgeText = math.ceil(tonumber(PlayerStats:GetTapNoteScores("TapNoteScore_"..ScWin)) / totalnote * 121)
 				if JudgeText >= 121 then JudgeText = 121 end
 				self:sleep( ((index-1)/10)/2 ):accelerate(0.5):zoomx(JudgeText):queuecommand("SFX")
 			end,
@@ -412,8 +406,8 @@ end
 
 
 for index, RCType in ipairs(JudgmentInfo.RadarVal) do
-	local performance = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetRadarActual():GetValue( "RadarCategory_"..RCType )
-	local possible = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetRadarPossible():GetValue( "RadarCategory_"..RCType )
+	local performance = PlayerStats:GetRadarActual():GetValue( "RadarCategory_"..RCType )
+	local possible = PlayerStats:GetRadarPossible():GetValue( "RadarCategory_"..RCType )
 
 	t[#t+1] = Def.ActorFrame{
 		OnCommand=function(self) self:xy(128,-36) end,
@@ -516,7 +510,7 @@ t[#t+1] = Def.ActorFrame{
 	Def.BitmapText{ Font="ScreenEvaluation judge",
 		OnCommand=function(self)
 			self:xy( 128, 16*4-3 ):zoom(0.5):halign(1)
-			local combo = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):MaxCombo()
+			local combo = PlayerStats:MaxCombo()
 			self:settext( ("%5.0f"):format( combo ) )
 
 			local leadingZeroAttr = { Length=5-tonumber(tostring(combo):len()), Diffuse=PColor[player] }
@@ -592,8 +586,33 @@ for i=1,col do
 	end
 end
 
+if PlayerStats:IsDisqualified() then
+	t[#t+1] = Def.ActorFrame{
+		OnCommand=function(self)
+			self:sleep(0.5):queuecommand("ShowStuff")
+		end,
+		Def.BitmapText{
+			Font="Common Normal",
+			Text=THEME:GetString("ScreenEvaluation","Disqualified"),
+			OnCommand=function(self)
+				self:xy(0,70):zoom(0.5):wrapwidthpixels(400):diffusealpha(0)
+			end,
+			ShowStuffCommand=function(self)
+				self:easeoutcubic(0.3):y(90):diffusealpha(0.8)
+			end
+		},
+
+		Def.Sound{
+			File=THEME:GetPathS("MemoryCardManager","error"),
+			ShowStuffCommand=function(self)
+				self:play()
+			end
+		}
+	}
+end
+
 local machineProfile = PROFILEMAN:GetMachineProfile()
--- local index = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetMachineHighScoreIndex()
+-- local index = PlayerStats:GetMachineHighScoreIndex()
 local SongOrCourse = GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse() or GAMESTATE:GetCurrentSong()
 local StepsOrTrail = GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentTrail(player) or GAMESTATE:GetCurrentSteps(player)
 local highscoreList = (SongOrCourse and StepsOrTrail) and machineProfile:GetHighScoreList(SongOrCourse,StepsOrTrail)
