@@ -5,7 +5,6 @@ return Def.ActorFrame{
 				if PROFILEMAN:IsPersistentProfile(pn) then
 					PROFILEMAN:SaveProfile( pn )
 				end
-				GAMESTATE:Env()[pn.."gnCalculation"] = LoadModule("GrooveNights.LevelCalculator.lua")(pn)
 			end
 		end
 		s:queuecommand("Load")

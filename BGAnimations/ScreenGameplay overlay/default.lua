@@ -54,6 +54,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 	local totalNotes = LoadModule("Pane.RadarValue.lua")(player,6)
 	local config = LoadModule("Config.gnLoad.lua")(player, "ScoringFormat")[1] or 0
 	config = tonumber(config)
+	local ach = GAMESTATE:Env()[player.."gnCalculation"] and GAMESTATE:Env()[player.."gnCalculation"](player) or nil
 	
 	local ScoringMethodology = LoadModule("Gameplay.CalculatePercentage.lua")( player )
 	Score[#Score+1] = Def.BitmapText{
@@ -115,6 +116,7 @@ for player in ivalues( GAMESTATE:GetEnabledPlayers() ) do
 		OnCommand=function(s)
 			s:xy( player == PLAYER_1 and 56 or SCREEN_RIGHT-56, 25 )
 		end,
+		OffCommand=function() if ach then ach:PromiseNewData() end end,
 		Def.Sprite{
 			Condition=GAMESTATE:IsPlayerEnabled(player),
 			Texture=THEME:GetPathG("_difficulty","icons"),

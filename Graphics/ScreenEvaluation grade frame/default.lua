@@ -1,7 +1,8 @@
 local player = ...
 assert( player )
 
-local ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
+--local ach = LoadModule("GrooveNights.LevelCalculator.lua")(player)
+local ach = GAMESTATE:Env()[player.."gnCalculation"]
 -- This is to obtain data from the options the player has selected.
 -- First we get the state. Then the option array, which is a bunch of strings that later give a table.
 local PlayerState = GAMESTATE:GetPlayerState(player)
@@ -54,6 +55,13 @@ end
 local function pnum(pn)
 	if pn == PLAYER_2 then return 2 end
 	return 1
+end
+
+local enableEXP = LoadModule("Config.Load.lua")("EnableExperienceCalculation","Save/GrooveNightsPrefs.ini")
+
+ach:GenerateFullData()
+if enableEXP then
+	ach:GenerateNewLevelFromCalculations()
 end
 
 local function TrailOrSteps(pn)
@@ -177,6 +185,7 @@ t[#t+1] = Def.ActorFrame{
 		},
 
 		Def.ActorFrame{
+			Condition=enableEXP,
 			OnCommand=function(self)
 				self:xy( 6,60 )
 			end,
@@ -259,13 +268,14 @@ local Achievements = {
     11, -- DeadCount
     14, -- StarCount
 }
+local achstats = ach:GetAchievementStats()
 for _,v in pairs(Achievements) do
     t[#t+1] = Def.Sprite{
 		Condition=isvalidplayer,
-        Texture=THEME:GetPathG("",ach.Achievements[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+ach.Achievements[_]) or "achievements/achievement".. string.format("%04i",(v)) ),
+        Texture=THEME:GetPathG("",achstats[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+achstats[_]) or "achievements/achievement".. string.format("%04i",(v)) ),
         OnCommand=function(self)
 			self:xy( -50, (20 * (_-1))-24 ):zoom(0.8)
-			:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
+			:diffuse( achstats[_] > 0 and Color.White or color("#555555") )
 		end,
 		EvaluationInputChangedMessageCommand=function(self,param)
 			if param.Player == player then
@@ -276,8 +286,9 @@ for _,v in pairs(Achievements) do
 end
 
 -- Now show the achieved scores
+--ach:CalculateTierSums()
 for i=1,4 do
-	local total = ach[5]["Grade_Tier0"..i]
+	local total = ach.TierSum["Grade_Tier0"..i]
 	t[#t+1] = Def.Sprite{
 		Condition=isvalidplayer,
         Texture=THEME:GetPathG("","achievements/achievement".. string.format( "%04i", i )),

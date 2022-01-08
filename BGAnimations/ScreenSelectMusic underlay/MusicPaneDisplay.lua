@@ -8,10 +8,15 @@ local function side(pn)
 	if pn == PLAYER_1 then return s end
 	return s*(-1)
 end
+local enableEXP = LoadModule("Config.Load.lua")("EnableExperienceCalculation","Save/GrooveNightsPrefs.ini")
 if not GAMESTATE:Env()[player.."gnCalculation"] then
 	GAMESTATE:Env()[player.."gnCalculation"] = LoadModule("GrooveNights.LevelCalculator.lua")(player)
 end
 local ach = GAMESTATE:Env()[player.."gnCalculation"]
+ach:GenerateFullData()
+if enableEXP then
+	ach:GenerateNewLevelFromCalculations()
+end
 local t = Def.ActorFrame{
     OnCommand=function(s)
         local ymargin = player == PLAYER_1 and 30 or 130
@@ -23,9 +28,9 @@ local t = Def.ActorFrame{
 }
 
 local BI = Def.ActorFrame{
-	OnCommand=function(s)
-		s:y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
-	end,
+	OnCommand=function(self)
+		self:y( LoadModule("Options.GetProfileData.lua")(player)["Name"] ~= "No Card"  and 0 or 30 )
+	end
 }
 
 	BI[#BI+1] = Def.Sprite{ Texture="PaneDisplay under.png", OnCommand=function(s) s:diffuse( color("#060A0E") ):zoom(0.8):xy(-28,-33) end }
@@ -37,20 +42,22 @@ local BI = Def.ActorFrame{
 		11, -- DeadCount
 		14, -- StarCount
 	}
+	local achstats = ach:GetAchievementStats()
 	for _,v in pairs(Achievements) do
 		BI[#BI+1] = Def.Sprite{
-			Texture=THEME:GetPathG("",ach.Achievements[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+ach.Achievements[_]) or "achievements/achievement".. string.format("%04i",(v)) ),
+			Texture=THEME:GetPathG("",achstats[_] > 0 and "achievements/achievement".. string.format("%04i",(v-1)+achstats[_]) or "achievements/achievement".. string.format("%04i",(v)) ),
 			OnCommand=function(s)
 				s:xy( -130 + (24 * (_-1)), -53 ):zoom(0.8)
-				s:diffuse( ach.Achievements[_] > 0 and Color.White or color("#555555") )
+				s:diffuse( achstats[_] > 0 and Color.White or color("#555555") )
 			end,
 			LVBarOnCommand=function(s) s:stoptweening():easeincubic(0.2):zoom(0) end,
 			LVBarOffCommand=function(s) s:stoptweening():easeoutcubic(0.35):zoom(0.8) end,
 		}
 	end
 
+	--ach:CalculateTierSums()
 	for i=1,4 do
-		local total = ach[5]["Grade_Tier0"..i]
+		local total = ach.TierSum["Grade_Tier0"..i]
 		BI[#BI+1] = Def.ActorFrame{
 			OnCommand=function(s)
 				s:xy( -106+(34*(i-1)), -30 )
@@ -68,6 +75,7 @@ local BI = Def.ActorFrame{
 
 	-- Level & Progress Stats --
 	BI[#BI+1] = Def.ActorFrame{
+		Condition=enableEXP,
 		OnCommand=function(s)
 			s:xy( 40, -46 )
 		end,
