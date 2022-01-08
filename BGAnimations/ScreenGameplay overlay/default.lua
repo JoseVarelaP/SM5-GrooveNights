@@ -16,12 +16,16 @@ local ProgressBar = Def.ActorFrame{
 
 	Def.BitmapText{
 		Font="novamono/36/_novamono 36px",
-		OnCommand=function(s) s:zoom(0.6):y(-4):strokecolor(Color.Black):maxwidth( SCREEN_WIDTH/1.02 ) end,
-		InitCommand=function(s) s:playcommand("Update") end,
-		CurrentSongChangedMessageCommand=function(s) s:playcommand("Update") end,
-		UpdateCommand=function(s)
+		OnCommand=function(self) self:zoom(0.6):y(-4):strokecolor(Color.Black):maxwidth( SCREEN_WIDTH/1.02 ) end,
+		InitCommand=function(self)
+			if not GAMESTATE:IsCourseMode() then
+				self:playcommand("Update")
+			end
+		end,
+		CurrentSongChangedMessageCommand=function(self) self:playcommand("Update") end,
+		UpdateCommand=function(self)
 			local song = GAMESTATE:GetCurrentSong()
-			s:settext( song and ( GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDisplayFullTitle().." - "..song:GetDisplayFullTitle() or song:GetDisplayFullTitle()) or "", song:GetTranslitFullTitle() )
+			self:settext( song and ( GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDisplayFullTitle().." - "..song:GetDisplayFullTitle() or song:GetDisplayFullTitle()) or "", song:GetTranslitFullTitle() )
 		end
 	}
 }

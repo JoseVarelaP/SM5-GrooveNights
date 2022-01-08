@@ -45,7 +45,7 @@ if GAMESTATE:IsCourseMode() then
 		{
 			Name = "end_course",
 			Action = function( screen )
-				screen:PostScreenMessage('SM_NotesEnded', 0)
+				screen:PostScreenMessage('SM_LeaveGameplay', 0)
 			end
 		},
 	}

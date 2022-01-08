@@ -224,7 +224,7 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
 		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
 		if StepsOrCourse() then
 			s:settext(
-				LoadModule("Gameplay.DifficultyName.lua")( "Steps", player )
+				LoadModule("Gameplay.DifficultyName.lua")( GAMESTATE:GetCurrentCourse() and "Trail" or "Steps", player )
 			)
 			:diffuse( DifficultyColor( StepsOrCourse():GetDifficulty() ) )
 		end
@@ -240,12 +240,16 @@ t[#t+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( 
     t[#t+1] = Def.BitmapText{
 		Font="novamono/36/_novamono 36px",
 		InitCommand=function(self) self:x(ObtainData.DiffPlacement):y(-14):maxwidth(110):zoom(0.56) end;
-		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(s)
+		["CurrentSteps"..ToEnumShortString(player).."ChangedMessageCommand"]=function(self)
         if StepsOrCourse() then
-            s:settext(
-                GAMESTATE:GetCurrentSteps(player):GetAuthorCredit() and GAMESTATE:GetCurrentSteps(player):GetAuthorCredit()
-                or GAMESTATE:GetCurrentSteps(player):GetDescription()
-            )
+			if GAMESTATE:GetCurrentCourse() then
+				self:settext( GAMESTATE:GetCurrentCourse():GetScripter() )
+			else
+				self:settext(
+					GAMESTATE:GetCurrentSteps(player):GetAuthorCredit() and GAMESTATE:GetCurrentSteps(player):GetAuthorCredit()
+					or GAMESTATE:GetCurrentSteps(player):GetDescription()
+				)
+			end
 		end
 	end
 	};
