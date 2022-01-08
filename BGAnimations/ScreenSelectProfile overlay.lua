@@ -218,12 +218,10 @@ local t = Def.ActorFrame {
 		end
 	end,
 
-	MenuUpCommand=function(self)
-		self:playcommand("Offset",{ PlayerNumber = self.pn, index = -1 })
-	end,
-	MenuDownCommand=function(self)
-		self:playcommand("Offset",{ PlayerNumber = self.pn, index = 1 })
-	end,
+	MenuLeftCommand=function(self) self:playcommand("Offset",{ PlayerNumber = self.pn, index = -1 }) end,
+	MenuUpCommand=function(self) self:playcommand("Offset",{ PlayerNumber = self.pn, index = -1 }) end,
+	MenuDownCommand=function(self) self:playcommand("Offset",{ PlayerNumber = self.pn, index = 1 }) end,
+	MenuRightCommand=function(self) self:playcommand("Offset",{ PlayerNumber = self.pn, index = 1 }) end,
 
 	OffsetCommand=function(self,params)
 		if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
