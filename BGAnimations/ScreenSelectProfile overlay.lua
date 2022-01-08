@@ -219,20 +219,20 @@ local t = Def.ActorFrame {
 	end,
 
 	MenuUpCommand=function(self)
-		self:playcommand("Offset",{ PlayerNumber = self.pn })
+		self:playcommand("Offset",{ PlayerNumber = self.pn, index = -1 })
 	end,
 	MenuDownCommand=function(self)
-		self:playcommand("Offset",{ PlayerNumber = self.pn })
+		self:playcommand("Offset",{ PlayerNumber = self.pn, index = 1 })
 	end,
 
 	OffsetCommand=function(self,params)
 		if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-			local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber)
-			if ind > 0 then
-				if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind + 1 ) then
-					MESSAGEMAN:Broadcast("DirectionButton")
-					self:queuecommand('UpdateInternal2')
-				end
+			local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber) + params.index
+			if ind < 0 then ind = 0 end
+			if ind > PROFILEMAN:GetNumLocalProfiles() then ind = PROFILEMAN:GetNumLocalProfiles() end
+			if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind ) then
+				MESSAGEMAN:Broadcast("DirectionButton")
+				self:queuecommand('UpdateInternal2')
 			end
 		end
 	end,
