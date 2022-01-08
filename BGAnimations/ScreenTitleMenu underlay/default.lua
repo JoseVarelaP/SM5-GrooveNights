@@ -2,6 +2,9 @@ return Def.ActorFrame{
 	Def.Sprite{
 		Texture="HomeFrame",
 		Condition=GAMESTATE:GetCoinMode() == "CoinMode_Home",
+		InitCommand=function(self)
+			MESSAGEMAN:Broadcast("UpdateTitleImage")
+		end,
 		OnCommand=function(self)
 			self:xy(SCREEN_CENTER_X,SCREEN_CENTER_Y+130)
 			:diffusealpha(0):linear(0.3):diffusealpha(0.8)
