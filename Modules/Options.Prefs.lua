@@ -20,6 +20,13 @@ return {
 		Choices = fornumrange(0,1,0.1),
 		Values = fornumrange(0,1,0.1),
 	},
+	FlashComboColor =
+	{
+		Default = true,
+		UserPref = true,
+		Choices = { OptionNameString('Off'), OptionNameString('On') },
+		Values = { false, true }
+	},
 	ToggleJudgmentBounce =
 	{
 		Default = true,

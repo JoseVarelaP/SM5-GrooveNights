@@ -19,7 +19,8 @@ local LabelMinZoom = THEME:GetMetric("Combo", "LabelMinZoom")
 local LabelMaxZoom = THEME:GetMetric("Combo", "LabelMaxZoom")
 
 local isRealProf = LoadModule("Profile.IsMachine.lua")(player)
-local settings = {"DefaultComboSize","ToggleComboSize","ToggleComboBounce","ToggleComboExplosion"}
+local settings = {"DefaultComboSize","ToggleComboSize","ToggleComboBounce","ToggleComboExplosion","FlashComboColor"}
+
 for _,v in pairs(settings) do
 	-- In case the profile is an actual profile or USB
 	if not GAMESTATE:IsDemonstration() then
@@ -30,7 +31,17 @@ for _,v in pairs(settings) do
 			settings[_] = GAMESTATE:Env()[v.."Machinetemp"..player]
 		end
 	else
-		settings = {1,true,true,true}
+		settings = {1,true,true,true,true}
+	end
+end
+
+local function ColoringBeat(number, label, color1, color2)
+	if settings[5] then
+		number:diffuseshift():effectcolor1(color1):effectcolor2(color2):effectperiod(0.5)
+		label:diffuseshift():effectcolor1(color1):effectcolor2(color2):effectperiod(0.5)
+	else
+		number:finishtweening():diffuse(color1)
+		label:finishtweening():diffuse(color1)
 	end
 end
 
@@ -195,14 +206,11 @@ local t = Def.ActorFrame {
 		c.Label:visible(true)
 		-- FullCombo Rewards
 		if param.FullComboW1 then
-			c.Number:diffuseshift():effectcolor1(color("#9BD8EC")):effectcolor2(color("#6ECDEC")):effectperiod(0.5)
-			c.Label:diffuseshift():effectcolor1(color("#9BD8EC")):effectcolor2(color("#6ECDEC")):effectperiod(0.5)
+			ColoringBeat(c.Number, c.Label, color("#9BD8EC"), color("#6ECDEC"))
 		elseif param.FullComboW2 then
-			c.Number:diffuseshift():effectcolor1(color("#FFDD77")):effectcolor2(color("#FFCC33")):effectperiod(0.5)
-			c.Label:diffuseshift():effectcolor1(color("#FFDD77")):effectcolor2(color("#FFCC33")):effectperiod(0.5)
+			ColoringBeat(c.Number, c.Label, color("#FFDD77"), color("#FFCC33"))
 		elseif param.FullComboW3 then
-			c.Number:diffuseshift():effectcolor1(color("#9BE999")):effectcolor2(color("#42E93D")):effectperiod(0.5)
-			c.Label:diffuseshift():effectcolor1(color("#9BE999")):effectcolor2(color("#42E93D")):effectperiod(0.5)
+			ColoringBeat(c.Number, c.Label, color("#9BE999"), color("#42E93D"))
 		elseif param.Combo then
 			c.Number:diffuse(Color("White")):stopeffect()
 			c.Label:stopeffect():diffuse(Color("White"))
