@@ -147,11 +147,16 @@ function UpdateInternal3(self, Player)
 	local isHuman = GAMESTATE:IsHumanPlayer(Player)
 	local isUsingCard = MEMCARDMAN:GetCardState(Player) ~= 'MemoryCardState_none'
 
+	local isAvailableforCard =  isHuman and isUsingCard
+	frame:GetChild("FrameB"):stoptweening():easeoutexpo(0.4):croptop(isAvailableforCard and 0.77 or 0)
+	frame:GetChild("FrameF"):stoptweening():easeoutexpo(0.4):croptop(isAvailableforCard and 0.77 or 0)
+	seltext:stoptweening():easeoutexpo(0.4):x( isAvailableforCard and 50 or 0 ):zoom(0.8)
 	if isHuman and isUsingCard then
-		--self:GetChild("CardAvailable"):play()
-		frame:GetChild("FrameB"):stoptweening():easeoutexpo(0.4):croptop(0.77)
-		frame:GetChild("FrameF"):stoptweening():easeoutexpo(0.4):croptop(0.77)
-		seltext:stoptweening():easeoutexpo(0.4):x(50):zoom(0.8)
+		frame:GetChild("MemoryCardIcon"):stoptweening():y(80):easeoutbounce(0.8):diffusealpha(1):y( 106 )
+		frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutbounce(0.8):rotationz( 0 )
+	else
+		frame:GetChild("MemoryCardIcon"):stoptweening():easeoutexpo(0.8):diffusealpha(1):y( 120 ):diffusealpha(0)
+		frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutexpo(0.8):rotationz( math.random(20) )
 	end
 
 	frame:stoptweening():easeoutexpo(0.4):y( SCREEN_CENTER_Y + ((isHuman and isUsingCard) and -60 or 0) )
@@ -297,8 +302,6 @@ for i,Player in pairs( PlayerNumber ) do
 		end,
 		OffCommand= function (self)
 			self:bouncebegin(0.35):diffusealpha(0)
-		end,
-		PlayerJoinedMessageCommand=function(self,param)
 		end,
 		children = LoadPlayerStuff(Player)
 	}
