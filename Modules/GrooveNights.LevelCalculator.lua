@@ -6,7 +6,6 @@
 -- This multiplier can multiply based on the level that you are.
 local Difs = {"Beginner","Easy","Medium","Hard","Challenge","Edit"}
 local StepTypes = {"StepsType_Dance_Single","StepsType_Dance_Double"}
-local TierMult = { 10,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1,1 }
 
 -- While we're at it, let's calculate the badges.
 local Achievements = {
@@ -37,17 +36,31 @@ return setmetatable({
 		StarCount = {0,0},
 	},
 
+	EXPToNextLevel = 0,
+	EXPLevelTrunc = 0,
+
+	CanDoScoresWithGrade = function(this)
+		return this.Profile.GetTotalScoresWithGrade ~= nil
+	end,
+
 	CalculateTierSums = function(this)
 		if not this.NeedsNewData then return this end
-		for _,st in pairs(StepTypes) do
-			for i,v in pairs( Difs ) do
-				for Ti=1,17 do
-					if not this.TierSum["Grade_Tier"..string.format("%02i",Ti)] then
-						this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = 0
+		if this:CanDoScoresWithGrade() then
+			for Ti=1,17 do
+				this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = this.Profile:GetTotalScoresWithGrade( Ti-1 )
+			end
+		else
+			local TierMult = { 10,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1,1 }
+			for _,st in pairs(StepTypes) do
+				for i,v in pairs( Difs ) do
+					for Ti=1,17 do
+						if not this.TierSum["Grade_Tier"..string.format("%02i",Ti)] then
+							this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = 0
+						end
+						this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = this.TierSum["Grade_Tier"..string.format("%02i",Ti)] + this.Profile:GetTotalStepsWithTopGrade(
+							st,v,"Grade_Tier"..string.format("%02i",Ti))
+						this.gnTotalPlayer = this.gnTotalPlayer + i * TierMult[Ti] * this.Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Tier"..string.format("%02i",Ti))
 					end
-					this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = this.TierSum["Grade_Tier"..string.format("%02i",Ti)] + this.Profile:GetTotalStepsWithTopGrade(
-						st,v,"Grade_Tier"..string.format("%02i",Ti))
-					this.gnTotalPlayer = this.gnTotalPlayer + i * TierMult[Ti] * this.Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Tier"..string.format("%02i",Ti))
 				end
 			end
 		end
@@ -64,11 +77,17 @@ return setmetatable({
 		if not this.NeedsNewData then return this end
 		-- Had to do the Tier calculation again because the data gets lost before
 		-- it reaches here.
-		for _,st in pairs(StepTypes) do
-			for i,v in pairs( Difs ) do
-				for Ti=1,4 do
-					this.AchievementStats.StarCount[2] = this.AchievementStats.StarCount[2] + ( this.Profile:GetTotalStepsWithTopGrade(st,v,
-					"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
+		if this:CanDoScoresWithGrade() then
+			for Ti=1,4 do
+				this.AchievementStats.StarCount[2] = this.Profile:GetTotalScoresWithGrade( Ti-1 )
+			end
+		else
+			for _,st in pairs(StepTypes) do
+				for i,v in pairs( Difs ) do
+					for Ti=1,4 do
+						this.AchievementStats.StarCount[2] = this.AchievementStats.StarCount[2] + ( this.Profile:GetTotalStepsWithTopGrade(st,v,
+						"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
+					end
 				end
 			end
 		end
@@ -80,10 +99,17 @@ return setmetatable({
 		if not this.NeedsNewData then return this end
 		-- Same with Star Calculation, the data gets lost on the way here, so
 		-- we need to recalculate the tier.
-		for _,st in pairs(StepTypes) do
+		if this:CanDoScoresWithGrade() then
 			for i,v in pairs( Difs ) do
-				this.AchievementStats.DeadCount[2] = this.AchievementStats.DeadCount[2] + this.Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Failed")
-				this.AchievementStats.DeadCount[2] = this.AchievementStats.DeadCount[2] + this.Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Tier17")
+				this.AchievementStats.DeadCount[2] = this.Profile:GetTotalScoresWithGrade( "Grade_Failed" )
+				this.AchievementStats.DeadCount[2] = this.Profile:GetTotalScoresWithGrade( "Grade_Tier17" )
+			end
+		else
+			for _,st in pairs(StepTypes) do
+				for i,v in pairs( Difs ) do
+					this.AchievementStats.DeadCount[2] = this.AchievementStats.DeadCount[2] + this.Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Failed")
+					this.AchievementStats.DeadCount[2] = this.AchievementStats.DeadCount[2] + this.Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Tier17")
+				end
 			end
 		end
 		for _,var in pairs( Achievements[3] ) do if this.AchievementStats.DeadCount[2] >= var then this.AchievementStats.DeadCount[1] = _ end end
@@ -119,8 +145,11 @@ return setmetatable({
 			end
 		end
 
+		this.EXPToNextLevel = GNExperience
+		this.EXPLevelTrunc = GNPercentage
+
 		-- EXP Achievement check
-		for _,var in pairs( Achievements[2] ) do if this.PlayerLevel >= var then this.AchievementStats.ExpCount = _ end end
+		for _,var in pairs( Achievements[2] ) do if this.PlayerLevel >= var then this.AchievementStats.ExpCount[1] = _ end end
 		return this
 	end,
 

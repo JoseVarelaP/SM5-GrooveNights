@@ -218,7 +218,6 @@ local t = Def.ActorFrame {
 				frame:GetChild("MemoryCardIcon"):GetChild("Graphic"):stoptweening():easeoutbounce(0.8):rotationz( 0 )
 			end
 		else
-
 			SCREENMAN:GetTopScreen():Finish()
 		end
 	end,

@@ -8,7 +8,8 @@ local function side(pn)
 	if pn == PLAYER_1 then return s end
 	return s*(-1)
 end
-local enableEXP = LoadModule("Config.Load.lua")("EnableExperienceCalculation","Save/GrooveNightsPrefs.ini")
+local enableEXP = true--LoadModule("Config.Load.lua")("EnableExperienceCalculation","Save/GrooveNightsPrefs.ini")
+lua.ReportScriptError( tostring(enableEXP) )
 if not GAMESTATE:Env()[player.."gnCalculation"] then
 	GAMESTATE:Env()[player.."gnCalculation"] = LoadModule("GrooveNights.LevelCalculator.lua")(player)
 end
@@ -84,7 +85,7 @@ local BI = Def.ActorFrame{
 			Font="Common Normal",
 			OnCommand=function(s)
 				s:halign(0):xy( -38, -13 ):zoom(0.4)
-				s:settext( string.format(THEME:GetString("Level","Level"), ach[3]) )
+				s:settext( string.format(THEME:GetString("Level","Level"), ach.PlayerLevel) )
 			end,
 		},
 		Def.BitmapText{
@@ -92,11 +93,11 @@ local BI = Def.ActorFrame{
 			Font="Common Normal",
 			OnCommand=function(s)
 				s:halign(1):xy( 48, -13 ):zoom(0.3)
-				s:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
+				s:settext( "(".. math.floor(ach.gnTotalPlayer).."/".. math.floor(0) ..")" )
 			end,
 		},
 		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.1,0.1,0.1,1") ):zoomto(90,4):xy(4,-2) end, },
-		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2):cropright( (100-ach[1])/100 ) end,
+		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2):cropright( (100-ach.EXPLevelTrunc)/100 ) end,
 		},
 		Def.Sprite{ Texture=THEME:GetPathG("","EXP/expBar") },
 	}
