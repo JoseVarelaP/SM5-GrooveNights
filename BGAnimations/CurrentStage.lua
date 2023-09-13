@@ -25,21 +25,18 @@ local CourseIndx = 1
 local function ConvertText( child )
 	curindex = GAMESTATE:IsCourseMode() and CourseIndx or GAMESTATE:GetCurrentStageIndex()+1
 	local str = string.format( THEME:GetString("ScreenGameplay", stagecases[GAMESTATE:GetCurrentStage()] ), curindex )
-	local start,length = 0,0
 
-	-- This will contain all possible changes to change the color method.
-	local charindex = 0
 	local ColoringProcess = {}
 	--for k in string.gmatch( str, "%[(.-)%]" ) do
-	for k in string.gmatch( str, "(%g+)" ) do
-		
-		for m in string.gmatch( k,"%[(.-)%]" ) do
-			--lua.ReportScriptError( "aaa at ".. m )
-			ColoringProcess[#ColoringProcess+1] = { Start = charindex > 1 and charindex+1 or 0, Attr = { Diffuse = Color.Red, Length = m:len() } }
-		end
-		charindex = charindex + k:len()
-		--lua.ReportScriptError( "starting at ".. k )
-	end
+	for p1,m,p2 in str:gmatch("()(%[.-%])()" ) do
+        ColoringProcess[#ColoringProcess+1] = {
+        	Start = p1-1,
+        	Attr = {
+        		Diffuse = Color.Red,
+        		Length = m:len()-1
+        	}
+        }
+    end
 	
 	-- We're done, get rid of the brackets themselves.
 	child:settext( str:gsub( "%[","" ):gsub("%]","") )

@@ -152,6 +152,12 @@ return {
 			end
 		end,
 	},
+	AutoOffsetChangeOnBoot = 
+	{
+		Default = false,
+		Choices = { OptionNameString('Off'), OptionNameString('On') },
+		Values = { false, true }
+	},
 	ToggleSystemClock = 
 	{
 		Default = false,

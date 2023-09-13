@@ -57,12 +57,9 @@ local function pnum(pn)
 	return 1
 end
 
-local enableEXP = LoadModule("Config.Load.lua")("EnableExperienceCalculation","Save/GrooveNightsPrefs.ini")
+local enableEXP = true
 
 ach:GenerateFullData()
-if enableEXP then
-	ach:GenerateNewLevelFromCalculations()
-end
 
 local function TrailOrSteps(pn)
 	if GAMESTATE:IsCourseMode() then return GAMESTATE:GetCurrentTrail(pn) end
@@ -194,7 +191,7 @@ t[#t+1] = Def.ActorFrame{
 				Font="Common Normal",
 				OnCommand=function(self)
 					self:halign(0):xy( -38, -14 ):zoom(0.45)
-					:settext( string.format(THEME:GetString("Level","Level"), ach[3]) )
+					:settext( string.format(THEME:GetString("Level","Level"), ach.PlayerLevel) )
 				end,
 			},
 			Def.BitmapText{
@@ -202,12 +199,12 @@ t[#t+1] = Def.ActorFrame{
 				Font="Common Normal",
 				OnCommand=function(self)
 					self:halign(1):xy( 48, -12 ):zoom(0.35)
-					:settext( "(".. math.floor(ach[2]).."/".. math.floor(ach[4]) ..")" )
+					:settext( "(".. math.floor(ach.EXPCurrentLevel).."/".. math.floor(ach.EXPToNextLevel) ..")" )
 				end,
 			},
 			Def.Quad{ OnCommand=function(self) self:diffuse( color("0.1,0.1,0.1,1") ):zoomto(90,4):xy(4,-2) end, },
 			Def.Quad{ OnCommand=function(self) self:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2)
-				:cropright( (100-ach[1])/100 ) end, },
+				:cropright( 1-ach.EXPLevelTrunc ) end, },
 			Def.Sprite{ Texture=THEME:GetPathG("","EXP/expBar") },
 		}
 

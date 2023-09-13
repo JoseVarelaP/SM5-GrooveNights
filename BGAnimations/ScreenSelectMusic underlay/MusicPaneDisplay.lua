@@ -8,16 +8,14 @@ local function side(pn)
 	if pn == PLAYER_1 then return s end
 	return s*(-1)
 end
-local enableEXP = true--LoadModule("Config.Load.lua")("EnableExperienceCalculation","Save/GrooveNightsPrefs.ini")
-lua.ReportScriptError( tostring(enableEXP) )
+local enableEXP = true
 if not GAMESTATE:Env()[player.."gnCalculation"] then
 	GAMESTATE:Env()[player.."gnCalculation"] = LoadModule("GrooveNights.LevelCalculator.lua")(player)
 end
+
 local ach = GAMESTATE:Env()[player.."gnCalculation"]
 ach:GenerateFullData()
-if enableEXP then
-	ach:GenerateNewLevelFromCalculations()
-end
+
 local t = Def.ActorFrame{
     OnCommand=function(s)
         local ymargin = player == PLAYER_1 and 30 or 130
@@ -89,20 +87,45 @@ local BI = Def.ActorFrame{
 			end,
 		},
 		Def.BitmapText{
-			Condition=LoadModule("Config.Load.lua")("ToggleEXPCounter","Save/GrooveNightsPrefs.ini"),
+			Condition=LoadModule("Config.Load.lua")("ToggleEXPCounter","Save/GrooveNightsPrefs.ini") and not ach:AchievedMaxLevel(),
 			Font="Common Normal",
 			OnCommand=function(s)
 				s:halign(1):xy( 48, -13 ):zoom(0.3)
-				s:settext( "(".. math.floor(ach.gnTotalPlayer).."/".. math.floor(0) ..")" )
+				s:settext( "(".. math.floor(ach.EXPCurrentLevel).."/".. math.floor(ach.EXPToNextLevel) ..")" )
 			end,
 		},
 		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.1,0.1,0.1,1") ):zoomto(90,4):xy(4,-2) end, },
-		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2):cropright( (100-ach.EXPLevelTrunc)/100 ) end,
+		Def.Quad{ OnCommand=function(s) s:diffuse( color("0.6,0.8,0.9,1") ):zoomto(90,4):xy(4,-2):cropright( 1-ach.EXPLevelTrunc ) end,
 		},
 		Def.Sprite{ Texture=THEME:GetPathG("","EXP/expBar") },
 	}
 
 	BI[#BI+1] = Def.Sprite{ Texture="PaneDisplay F", OnCommand=function(s) s:diffuse( color("#1C2C3C") ):zoom(0.8):xy(-28,-33):cropleft(0.02) end }
+	BI[#BI+1] = Def.ActorFrame{
+		Condition=ach:AchievedMaxLevel(),
+		OnCommand=function(self)
+			self:xy(78,-58)
+		end,
+		Def.Sprite{
+			Texture=THEME:GetPathB("ScreenGameplay","Overlay/winning.png"),
+			InitCommand=function(self)
+				self:zoom(0.3)
+			end
+		},
+		Def.Sprite{
+			Texture=THEME:GetPathG("","Grades/fireworks"),
+			Frames = {
+				{Frame=4, Delay=0.05},
+				{Frame=5, Delay=0.05},
+				{Frame=6, Delay=0.05},
+				{Frame=7, Delay=0.05},
+				{Frame=12, Delay=3},
+			},
+			InitCommand=function(self)
+				self:zoom(0.5)
+			end
+		}
+	}
 
 t[#t+1] = BI
 

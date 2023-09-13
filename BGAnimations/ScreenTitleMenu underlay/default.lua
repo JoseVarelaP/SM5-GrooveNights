@@ -10,13 +10,14 @@ return Def.ActorFrame{
 			:diffusealpha(0):linear(0.3):diffusealpha(0.8)
 			:zoomx(1.1)
 
+			local automaticOffsetChange = LoadModule("Config.Load.lua")("AutoOffsetChangeOnBoot","Save/GrooveNightsPrefs.ini")
 			local ogfall = LoadModule("Config.Load.lua")("MachineOffset","Save/GrooveNightsPrefs.ini")
 			LoadModule("Config.Save.lua")("AutoSetStyle","true","Save/GrooveNightsPrefs.ini")
 
 			if ogfall then
 				local curoffset = string.format( "%.3f", PREFSMAN:GetPreference( "GlobalOffsetSeconds" ) )
 				--lua.ReportScriptError( tostring(ogfall) .. " - " .. tostring(curoffset) )
-				if ogfall ~= curoffset then
+				if automaticOffsetChange and (ogfall ~= curoffset) then
 					SCREENMAN:SystemMessage("Diverging offset detected, resetting to last known original state. (" .. ogfall .. ")")
 					PREFSMAN:SetPreference( "GlobalOffsetSeconds", ogfall )
 				end

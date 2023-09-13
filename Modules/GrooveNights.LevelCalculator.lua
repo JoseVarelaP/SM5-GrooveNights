@@ -15,6 +15,8 @@ local Achievements = {
 	{100,500,1000}, -- StarCount
 }
 
+local TierMult = { 10,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1,1 }
+
 return setmetatable({
 	-- Current EXP from the player
 	gnTotalPlayer = 0,
@@ -43,24 +45,49 @@ return setmetatable({
 		return this.Profile.GetTotalScoresWithGrade ~= nil
 	end,
 
+	FormatGradeTier = function(this, grade)
+		return "Grade_Tier"..string.format("%02i",grade)
+	end,
+
 	CalculateTierSums = function(this)
 		if not this.NeedsNewData then return this end
+		this.gnTotalPlayer = 0
+		--[[
 		if this:CanDoScoresWithGrade() then
 			for Ti=1,17 do
-				this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = this.Profile:GetTotalScoresWithGrade( Ti-1 )
+				local curTier = "Grade_Tier"..string.format("%02i",Ti)
+				this.TierSum[curTier] = this.Profile:GetTotalScoresWithGrade( Ti-1 )
+				this.gnTotalPlayer = this.gnTotalPlayer + (TierMult[Ti] * this.TierSum[curTier])
 			end
 		else
-			local TierMult = { 10,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3,2.5,2,1.5,1,1 }
 			for _,st in pairs(StepTypes) do
 				for i,v in pairs( Difs ) do
 					for Ti=1,17 do
-						if not this.TierSum["Grade_Tier"..string.format("%02i",Ti)] then
-							this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = 0
+						local curTier = "Grade_Tier"..string.format("%02i",Ti)
+						if not this.TierSum[curTier] then
+							this.TierSum[curTier] = 0
 						end
-						this.TierSum["Grade_Tier"..string.format("%02i",Ti)] = this.TierSum["Grade_Tier"..string.format("%02i",Ti)] + this.Profile:GetTotalStepsWithTopGrade(
-							st,v,"Grade_Tier"..string.format("%02i",Ti))
-						this.gnTotalPlayer = this.gnTotalPlayer + i * TierMult[Ti] * this.Profile:GetTotalStepsWithTopGrade(st,v,"Grade_Tier"..string.format("%02i",Ti))
+
+						local stepsWithGrade = this.Profile:GetTotalStepsWithTopGrade(st,v,curTier)
+						this.TierSum[curTier] = this.TierSum[curTier] + stepsWithGrade
+						this.gnTotalPlayer = this.gnTotalPlayer + (i * TierMult[Ti] * stepsWithGrade)
 					end
+				end
+			end
+		end
+		]]
+		for Ti=1,17 do
+			this.TierSum[this:FormatGradeTier(Ti)] = 0
+		end
+		for STIndex,st in pairs(StepTypes) do
+			for i,v in pairs( Difs ) do
+				for Ti=1,17 do
+					local curTier = this:FormatGradeTier(Ti)
+
+					local stepsWithGrade = this.Profile:GetTotalStepsWithTopGrade(st,v,curTier)
+					this.TierSum[curTier] = this.TierSum[curTier] + stepsWithGrade
+					local calculation = (i * STIndex * TierMult[Ti] * stepsWithGrade)
+					this.gnTotalPlayer = this.gnTotalPlayer + calculation
 				end
 			end
 		end
@@ -77,16 +104,17 @@ return setmetatable({
 		if not this.NeedsNewData then return this end
 		-- Had to do the Tier calculation again because the data gets lost before
 		-- it reaches here.
+		this.AchievementStats.StarCount[2] = 0
 		if this:CanDoScoresWithGrade() then
 			for Ti=1,4 do
-				this.AchievementStats.StarCount[2] = this.Profile:GetTotalScoresWithGrade( Ti-1 )
+				this.AchievementStats.StarCount[2] = this.AchievementStats.StarCount[2] + this.Profile:GetTotalScoresWithGrade( Ti-1 )
 			end
 		else
 			for _,st in pairs(StepTypes) do
 				for i,v in pairs( Difs ) do
 					for Ti=1,4 do
 						this.AchievementStats.StarCount[2] = this.AchievementStats.StarCount[2] + ( this.Profile:GetTotalStepsWithTopGrade(st,v,
-						"Grade_Tier"..string.format("%02i",Ti)) * (5-Ti) )
+						this:FormatGradeTier(Ti)) * (5-Ti) )
 					end
 				end
 			end
@@ -99,10 +127,11 @@ return setmetatable({
 		if not this.NeedsNewData then return this end
 		-- Same with Star Calculation, the data gets lost on the way here, so
 		-- we need to recalculate the tier.
+		this.AchievementStats.DeadCount[2] = 0
 		if this:CanDoScoresWithGrade() then
 			for i,v in pairs( Difs ) do
-				this.AchievementStats.DeadCount[2] = this.Profile:GetTotalScoresWithGrade( "Grade_Failed" )
-				this.AchievementStats.DeadCount[2] = this.Profile:GetTotalScoresWithGrade( "Grade_Tier17" )
+				this.AchievementStats.DeadCount[2] = this.AchievementStats.DeadCount[2] + this.Profile:GetTotalScoresWithGrade( "Grade_Failed" )
+				this.AchievementStats.DeadCount[2] = this.AchievementStats.DeadCount[2] + this.Profile:GetTotalScoresWithGrade( "Grade_Tier17" )
 			end
 		else
 			for _,st in pairs(StepTypes) do
@@ -117,35 +146,39 @@ return setmetatable({
 	end,
 
 	GenerateNewLevelFromCalculations = function(this)
-		this.ExpMultiplier = this.ExpMultiplier + ( this.AchievementStats.SongCount[1]/10 ) + ( this.AchievementStats.StarCount[1]/10 ) + ( this.AchievementStats.ExpCount[1]/10 )
+		this.ExpMultiplier = 1 + ( this.AchievementStats.SongCount[1]/10 ) + ( this.AchievementStats.StarCount[1]/10 ) + ( this.AchievementStats.ExpCount[1]/10 )
 
 		-- Done main calculation, now multiply based on the EXP Mult!
-		this.gnTotalPlayer = this.gnTotalPlayer * this.ExpMultiplier
+		local multipliedPlayerExp = this.gnTotalPlayer * this.ExpMultiplier
+		lua.ReportScriptError(multipliedPlayerExp)
+		-- this.gnTotalPlayer = this.gnTotalPlayer * this.ExpMultiplier
 
 		-- Time to return our current level.
 		local GNExperience = 0
 		local GNPercentage = 0
+		local lastLevelXPMargin = 0
 		local curlevcurve = 0
-		for i= 1, 100 do -- MaxLevel on modern GrooveNights is 100.
+		for i= 1, 99 do -- MaxLevel on modern GrooveNights is 100.
 			-- Calculate each level before we check.
 			local NewCurve = GNExperience
 			GNExperience = GNExperience + ( 75 * math.pow( 1.2, i ))
 
-			if GNExperience <= this.gnTotalPlayer then
+			if GNExperience <= multipliedPlayerExp then
 				-- yoy did gud, have another level
-				this.PlayerLevel = this.PlayerLevel + 1
+				this.PlayerLevel = i+1
 			else
 				-- If we didn't get a new level, then calculate the threshold for the current level
 				-- and then stop, we don't need to do all.
-				this.gnTotalPlayer = this.gnTotalPlayer - NewCurve;
+				multipliedPlayerExp = multipliedPlayerExp - NewCurve;
 				NewCurve = GNExperience - NewCurve;
 				curlevcurve = NewCurve
-				GNPercentage = (this.gnTotalPlayer/NewCurve)*93
+				GNPercentage = multipliedPlayerExp/NewCurve
 				break
 			end
 		end
 
-		this.EXPToNextLevel = GNExperience
+		this.EXPCurrentLevel = multipliedPlayerExp
+		this.EXPToNextLevel = curlevcurve
 		this.EXPLevelTrunc = GNPercentage
 
 		-- EXP Achievement check
@@ -160,12 +193,17 @@ return setmetatable({
 		this:CalculateSongCount()
 		this:CalculateStarCount()
 		this:CalculateLostCount()
+		this:GenerateNewLevelFromCalculations()
 
 		this.NeedsNewData = false
 		return this
 	end,
 
 	PromiseNewData = function(this) this.NeedsNewData = true end,
+
+	AchievedMaxLevel = function(this)
+		return this.PlayerLevel >= 100
+	end,
 
 	GetAchievementStats = function(this)
 		return {
