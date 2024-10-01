@@ -253,7 +253,7 @@ return Def.ActorFrame{
 	ProgressBar,
 	BPMDisplay,
 	Score,
-	loadfile( THEME:GetPathB("ScreenGameplay","overlay/stepCollector.lua") )(),
+	--loadfile( THEME:GetPathB("ScreenGameplay","overlay/stepCollector.lua") )(),
 	LoadActor("../TotalPlaytime.lua", true)..{ Condition=not GAMESTATE:IsDemonstration() },
 	Def.Quad{
 		InitCommand=function(s) s:diffuse(0,0,0,1) end;

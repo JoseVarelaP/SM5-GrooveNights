@@ -532,14 +532,23 @@ t[#t+1] = Def.ActorFrame{
 }
 
 -- Arrow Breakdown / Offset Information
-local offsetTable = GAMESTATE:Env()["OffsetTable"][player]
-local timingWindow = GAMESTATE:Env()["perColJudgeData"][player]
+local earlies = 0
+local lates = 0
+local offsetTable = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetOffsetData()
+local timingWindow = STATSMAN:GetCurStageStats():GetPlayerStageStats(player):GetColumnScores()
+
+-- Go through the note data and register the notes that are early/late.
+for i,v in ipairs(offsetTable) do
+	-- params.TapNoteScore ~= "TapNoteScore_CheckpointHit" and params.TapNoteScore ~= "TapNoteScore_CheckpointMiss"
+	if v[2] >= 0 then lates = lates + 1 else earlies = earlies + 1 end
+end
+
 local ArB = Def.ActorFrame{
 	OnCommand=function(self)
 		self:xy( -70, -116 ):diffusealpha(0)
-		local total = offsetTable.Early + offsetTable.Late
-		self:GetChild("Early"):cropright( 1 - (offsetTable.Early/total) )
-		self:GetChild("Late"):cropleft( 1 - (offsetTable.Late/total) )
+		local total = earlies + lates
+		self:GetChild("Early"):cropright( 1 - (earlies/total) )
+		self:GetChild("Late"):cropleft( 1 - (lates/total) )
 	end,
 	EvaluationInputChangedMessageCommand=function(self,param)
 		if param.Player == player then
@@ -551,8 +560,8 @@ local ArB = Def.ActorFrame{
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Early"), OnCommand=function(self) self:zoom(0.35):xy( 90,10 ) end },
 	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=Screen.String("Late"), OnCommand=function(self) self:zoom(0.35):xy( 185,10 ) end },
 
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Early, OnCommand=function(self) self:zoom(0.35):xy( 90,24 ) end },
-	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=offsetTable.Late, OnCommand=function(self) self:zoom(0.35):xy( 185,24 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=earlies, OnCommand=function(self) self:zoom(0.35):xy( 90,24 ) end },
+	Def.BitmapText{ Font="novamono/36/_novamono 36px", Text=lates, OnCommand=function(self) self:zoom(0.35):xy( 185,24 ) end },
 
 	Def.Quad{ Name="Early", OnCommand=function(self) self:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Blue ) end, },
 	Def.Quad{ Name="Late", OnCommand=function(self) self:zoomto( 121, 1 ):xy( 138, 18 ):diffuse( Color.Red ) end, },
@@ -585,7 +594,7 @@ for i=1,col do
 	for index, ValTC in ipairs(JudgmentInfo.Types) do
 		ArB[#ArB+1] = Def.BitmapText{
 			Font="novamono/36/_novamono 36px",
-			Text=timingWindow[i][ValTC],
+			Text=timingWindow[i]["TapNoteScore_"..ValTC],
 			OnCommand=function(self)
 				self:xy( scale( i, 1, col, -sidespacing, sidespacing ), 12*index+108 ):zoom(0.5):diffuse( JudgmentLineToColor( "JudgmentLine_"..ValTC ) )
 			end
